@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+<script src="/support.js"></script>
 </head>
 <body>
 <x-dc>
@@ -12,15 +12,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=Lexend:wght@400;700&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
-<link href="nb-theme.css" rel="stylesheet">
-<script src="nb-icons.js"></script>
+<link href="/nb-theme.css" rel="stylesheet">
+<script src="/nb-icons.js"></script>
+<script src="/nb-proto-nav.js" defer></script>
 </helmet>
 <div ref="{{ rootRef }}" style="position:relative;min-height:100vh;background:var(--bg);color:var(--text);display:flex;flex-direction:column">
   <a href="#ws-main" style="position:absolute;left:12px;top:-80px;z-index:100;background:var(--primary);color:var(--on-primary);padding:12px 16px;border-radius:8px;font-weight:700;text-decoration:none" style-focus="top:12px">Skip to content</a>
 
   <header style="flex:none;display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border)">
     <button type="button" onClick="{{ goLanding }}" aria-label="NeuroBridge home" style="display:flex;align-items:center;gap:12px;border:0;background:transparent;padding:0;cursor:pointer;min-height:44px;text-align:left">
-      <img src="assets/babcock-logo.jpeg" alt="Babcock University" style="height:40px;width:auto;display:block;border-radius:2px">
+      <img src="/assets/babcock-logo.jpeg" alt="Babcock University" style="height:40px;width:auto;display:block;border-radius:2px">
       <span style="display:flex;flex-direction:column;line-height:1.15"><span style="font-weight:700">NeuroBridge</span><span style="font-size:0.8125rem;color:var(--text-muted)">Learning support</span></span>
     </button>
     <div style="flex:1 1 auto"></div>
@@ -364,7 +365,7 @@ class Component extends DCLogic {
       {who:'Your lecturers',icon:'presentation',bg:'var(--primary-bg)',fg:'var(--primary)',c:[NO,NO,ASK,NO],t:['Never','Never','If you say yes','No']},
       {who:'Department heads',icon:'chart-column',bg:'var(--warning-bg)',fg:'var(--warning-ink)',c:[NO,NO,NO,YES],t:['Never','Never','Never','Small groups hidden']},
     ].map(r=>({...r, cells:r.c.map((c,i)=>({...c, text:r.t[i], col:COLS[i]}))}));
-    const finish = () => { this.toast('All set. Opening your workspace…'); this.delay(()=>{ window.location.href = 'Student%20Workspace.dc.html'; }, 1200); };
+    const finish = () => { this.toast('All set. Opening your workspace…'); this.delay(()=>{ window.location.href = '/student'; }, 1200); };
     const pad = isMobile ? '24px 16px 40px' : '48px 24px 64px';
     return {
       rootRef:this.rootRef, isMobile, notMobile:!isMobile,
@@ -397,10 +398,10 @@ class Component extends DCLogic {
       verifyCode:e=>{ e.preventDefault(); if (s.code.length!==6) return this.setState({codeErr:'Enter all 6 digits.'}); this.setState({busy:'mfa'}); this.delay(()=>{ this.setState({busy:null}); if (s.code==='000000') return this.setState({codeErr:'That code didn\'t work. Codes change every 30 seconds, so try the newest one.'}); this.go('route'); }); },
       resend:()=>this.toast('Enter one of the backup codes you saved when you set up your account.'),
       workspaces:[
-        {label:'Support Officer',sub:'Caseload, triage and support plans',icon:'heart-handshake',href:'Support%20Officer%20Workspace.dc.html'},
-        {label:'Lecturer',sub:'Accommodations and Teaching Studio',icon:'presentation',href:'Lecturer%20Workspace.dc.html'},
-        {label:'Department Head',sub:'Inclusion dashboard and reports',icon:'chart-column',href:'Leadership%20and%20Admin%20Workspace.dc.html'},
-        {label:'System Admin',sub:'Users, courses, audit log and settings',icon:'settings',href:'Leadership%20and%20Admin%20Workspace.dc.html'},
+        {label:'Support Officer',sub:'Caseload, triage and support plans',icon:'heart-handshake',href:'/support-officer'},
+        {label:'Lecturer',sub:'Accommodations and Teaching Studio',icon:'presentation',href:'/lecturer'},
+        {label:'Department Head',sub:'Inclusion dashboard and reports',icon:'chart-column',href:'/leadership'},
+        {label:'System Admin',sub:'Users, courses, audit log and settings',icon:'settings',href:'/leadership'},
       ],
       obNum:String(s.ob), ob1:s.ob===1, ob2:s.ob===2, ob3:s.ob===3, obMax: s.ob===2?'860px':'680px',
       obDots:[1,2,3].map(n=>({w:n===s.ob?'32px':'12px', bg:n<=s.ob?'var(--primary)':'var(--border)', current:n===s.ob?'step':'false', label:'Step '+n+(n<s.ob?', done':n===s.ob?', current':'')})),

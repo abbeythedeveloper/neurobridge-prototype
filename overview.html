@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+<script src="/support.js"></script>
 </head>
 <body>
 <x-dc>
@@ -13,13 +13,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=Lexend:wght@400;700&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
-<link href="nb-theme.css" rel="stylesheet">
-<script src="nb-icons.js"></script>
+<link href="/nb-theme.css" rel="stylesheet">
+<script src="/nb-icons.js"></script>
+<script src="/nb-proto-nav.js" defer></script>
 </helmet>
 <div style="width:1680px;padding:64px;display:flex;flex-direction:column;gap:72px;background:var(--bg);color:var(--text);font-size:16px">
 
   <header style="display:flex;align-items:center;gap:20px">
-    <img src="assets/babcock-logo.jpeg" alt="Babcock University" style="height:56px;width:auto;border-radius:2px">
+    <img src="/assets/babcock-logo.jpeg" alt="Babcock University" style="height:56px;width:auto;border-radius:2px">
     <div style="display:flex;flex-direction:column;gap:2px"><h1 style="margin:0;font-size:2.5rem;line-height:1.15">NeuroBridge · design overview</h1><span style="color:var(--text-muted);font-size:1.125rem">Privacy board, Reading preferences applied, and every screen in the prototype</span></div>
   </header>
 
@@ -138,12 +139,12 @@ class Component extends DCLogic {
       rows,
       rpCols:[{...defCol, screens}, {...softCol, screens}],
       files:[
-        {title:'Welcome and sign-in',sub:'Public and first run',href:'Welcome%20and%20Sign-in.dc.html',icon:'log-in',bg:'var(--accent-bg)',fg:'var(--accent-ink)',screens:['Landing','Sign in','Staff code (MFA)','Student onboarding, 3 steps','Access denied','Urgent help'],journey:''},
-        {title:'Student workspace',sub:'Mobile-first',href:'Student%20Workspace.dc.html',icon:'user',bg:'var(--accent-bg)',fg:'var(--accent-ink)',screens:['Home','Check-in','Request support','Who sees my support','Support plan','Messages','Appointments'],journey:'Check-in → request → disclosure settings → support plan'},
-        {title:'Support Officer workspace',sub:'Desktop and tablet',href:'Support%20Officer%20Workspace.dc.html',icon:'heart-handshake',bg:'var(--privacy-bg)',fg:'var(--privacy)',screens:['Caseload','Case detail','Assign professional','Support plan builder','Follow-ups'],journey:'Open new case → assign professional → build support plan'},
-        {title:'Lecturer workspace',sub:'Desktop and tablet',href:'Lecturer%20Workspace.dc.html',icon:'presentation',bg:'var(--primary-bg)',fg:'var(--primary)',screens:['My courses','Accommodations','Teaching Studio, 5 steps','Lesson library'],journey:'Setup → configure → review with citations → export'},
-        {title:'Department Head and System Admin',sub:'Desktop and tablet',href:'Leadership%20and%20Admin%20Workspace.dc.html',icon:'chart-column',bg:'var(--warning-bg)',fg:'var(--warning-ink)',screens:['Inclusion dashboard','Teaching readiness','Reports','Users and roles','Courses and curriculum','Accommodation catalogue','Audit log','Settings'],journey:''},
-        {title:'Design system',sub:'Tokens and components',href:'NeuroBridge%20Design%20System.dc.html',icon:'swatch-book',bg:'var(--surface-2)',fg:'var(--text)',screens:['Light, dark, high contrast','Core components','Privacy chip','Data and charts','Navigation','Reading preferences'],journey:''},
+        {title:'Welcome and sign-in',sub:'Public and first run',href:'/sign-in',icon:'log-in',bg:'var(--accent-bg)',fg:'var(--accent-ink)',screens:['Landing','Sign in','Staff code (MFA)','Student onboarding, 3 steps','Access denied','Urgent help'],journey:''},
+        {title:'Student workspace',sub:'Mobile-first',href:'/student',icon:'user',bg:'var(--accent-bg)',fg:'var(--accent-ink)',screens:['Home','Check-in','Request support','Who sees my support','Support plan','Messages','Appointments'],journey:'Check-in → request → disclosure settings → support plan'},
+        {title:'Support Officer workspace',sub:'Desktop and tablet',href:'/support-officer',icon:'heart-handshake',bg:'var(--privacy-bg)',fg:'var(--privacy)',screens:['Caseload','Case detail','Assign professional','Support plan builder','Follow-ups'],journey:'Open new case → assign professional → build support plan'},
+        {title:'Lecturer workspace',sub:'Desktop and tablet',href:'/lecturer',icon:'presentation',bg:'var(--primary-bg)',fg:'var(--primary)',screens:['My courses','Accommodations','Teaching Studio, 5 steps','Lesson library'],journey:'Setup → configure → review with citations → export'},
+        {title:'Department Head and System Admin',sub:'Desktop and tablet',href:'/leadership',icon:'chart-column',bg:'var(--warning-bg)',fg:'var(--warning-ink)',screens:['Inclusion dashboard','Teaching readiness','Reports','Users and roles','Courses and curriculum','Accommodation catalogue','Audit log','Settings'],journey:''},
+        {title:'Design system',sub:'Tokens and components',href:'/design-system',icon:'swatch-book',bg:'var(--surface-2)',fg:'var(--text)',screens:['Light, dark, high contrast','Core components','Privacy chip','Data and charts','Navigation','Reading preferences'],journey:''},
       ].map(f=>({...f, hasJourney:!!f.journey})),
     };
   }
