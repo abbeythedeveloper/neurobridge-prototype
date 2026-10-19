@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=Lexend:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
+<link href="nb-theme.css" rel="stylesheet">
+<script src="nb-icons.js"></script>
+</helmet>
+<div ref="{{ rootRef }}" style="position:relative;height:100vh;overflow:hidden;background:var(--bg);color:var(--text);display:flex;flex-direction:column">
+  <a href="#so-main" style="position:absolute;left:12px;top:-80px;z-index:100;background:var(--primary);color:var(--on-primary);padding:12px 16px;border-radius:8px;font-weight:700;text-decoration:none" style-focus="top:12px">Skip to content</a>
+
+  <header style="flex:none;display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border)">
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <button type="button" onClick="{{ openDrawer }}" aria-label="Open menu" aria-expanded="{{ drawerExpanded }}" style="width:44px;height:44px;flex:none;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="menu" size="22"></nb-icon></button>
+    </sc-if>
+    <img src="assets/babcock-logo.jpeg" alt="Babcock University" style="height:40px;width:auto;display:block;border-radius:2px">
+    <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0">
+      <span style="font-weight:700">NeuroBridge</span>
+      <span style="font-size:0.8125rem;color:var(--text-muted)">Support office</span>
+    </div>
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1 1 240px;max-width:440px;margin-left:16px;position:relative">
+        <label for="so-search" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search your caseload</label>
+        <input id="so-search" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search your caseload by name or case number" style="width:100%;min-height:44px;padding:0 14px 0 42px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+        <span style="position:absolute;left:12px;top:12px;color:var(--text-muted);display:flex"><nb-icon name="search" size="20"></nb-icon></span>
+      </div>
+    </sc-if>
+    <div style="flex:1 1 auto"></div>
+    <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+      <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;background:var(--primary-bg);color:var(--primary);font-size:0.8125rem;font-weight:700;white-space:nowrap"><nb-icon name="badge-check" size="16"></nb-icon>Signed in as Support Officer</span>
+    </sc-if>
+    <button type="button" onClick="{{ toggleNotif }}" aria-expanded="{{ notifExpanded }}" aria-label="{{ notifAria }}" style="position:relative;width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--surface-2)"><nb-icon name="bell" size="22"></nb-icon><sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ true }}"><span style="position:absolute;top:5px;right:3px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:var(--danger);color:#FFFFFF;font-size:0.6875rem;font-weight:700;display:flex;align-items:center;justify-content:center">3</span></sc-if></button>
+    <button type="button" onClick="{{ openPrefs }}" aria-haspopup="dialog" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;font-size:0.875rem;cursor:pointer"><nb-icon name="type" size="20"></nb-icon>Reading</button>
+    <span aria-hidden="true" style="width:40px;height:40px;flex:none;border-radius:50%;background:var(--accent-bg);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem">MO</span>
+  </header>
+
+  <div style="flex:1 1 auto;min-height:0;display:flex">
+    <sc-if value="{{ showSidebar }}" hint-placeholder-val="{{ true }}">
+      <nav aria-label="Main" style="flex:none;width:{{ sideW }};border-right:1px solid var(--border);background:var(--surface);padding:16px {{ sidePadX }};display:flex;flex-direction:column;gap:2px;overflow:auto">
+        <sc-for list="{{ sideItems }}" as="si" hint-placeholder-count="3">
+          <button type="button" onClick="{{ si.onClick }}" aria-current="{{ si.current }}" style="display:flex;flex-direction:{{ si.dir }};align-items:center;gap:{{ si.gap }};min-height:{{ si.minH }};padding:{{ si.pad }};border-radius:8px;border:0;border-left:3px solid {{ si.bar }};background:{{ si.bg }};color:{{ si.fg }};font-weight:{{ si.weight }};font-size:{{ si.fs }};text-align:{{ si.align }};cursor:pointer;line-height:1.2" style-hover="background:var(--surface-2)"><nb-icon name="{{ si.icon }}" size="22"></nb-icon><span style="flex:1">{{ si.label }}</span><sc-if value="{{ si.hasCount }}" hint-placeholder-val="{{ false }}"><span style="font-size:0.8125rem;color:var(--text-muted);font-weight:400">{{ si.count }}</span></sc-if></button>
+        </sc-for>
+        <div style="flex:1"></div>
+        <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:12px;border-radius:8px;background:var(--surface-2);display:flex;flex-direction:column;gap:4px;font-size:0.875rem;margin-bottom:8px">
+            <span style="font-weight:700">Your caseload</span>
+            <span style="color:var(--text-muted)">Computing &amp; Engineering, Management, Basic &amp; Applied Sciences</span>
+          </div>
+        </sc-if>
+        <button type="button" onClick="{{ toggleCollapse }}" style="display:flex;flex-direction:{{ urgentDir }};align-items:center;gap:{{ urgentGap }};min-height:48px;padding:{{ urgentPad }};border-radius:8px;border:0;background:transparent;color:var(--text-muted);font-size:{{ urgentFs }};cursor:pointer;line-height:1.2"><nb-icon name="{{ collapseIcon }}" size="22"></nb-icon><span>{{ collapseLabel }}</span></button>
+      </nav>
+    </sc-if>
+
+    <main id="so-main" ref="{{ mainRef }}" tabindex="-1" style="flex:1 1 auto;min-width:0;overflow:auto;outline:none">
+      <div style="max-width:1200px;margin:0 auto;padding:{{ mainPad }};display:flex;flex-direction:column;gap:24px">
+
+        <sc-if value="{{ hasCrumbs }}" hint-placeholder-val="{{ false }}">
+          <nav aria-label="Breadcrumb"><ol style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:0.9375rem">
+            <sc-for list="{{ crumbs }}" as="c" hint-placeholder-count="2">
+              <li style="display:flex;align-items:center;gap:6px"><sc-if value="{{ c.link }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ c.onClick }}" style="border:0;background:transparent;padding:0;color:var(--primary);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:44px">{{ c.label }}</button><span aria-hidden="true" style="color:var(--text-muted);display:flex"><nb-icon name="chevron-right" size="16"></nb-icon></span></sc-if><sc-if value="{{ c.last }}" hint-placeholder-val="{{ false }}"><span aria-current="page" style="font-weight:700">{{ c.label }}</span></sc-if></li>
+            </sc-for>
+          </ol></nav>
+        </sc-if>
+
+        <!-- DASHBOARD -->
+        <sc-if value="{{ sDash }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <h1 style="margin:0;font-size:2rem;line-height:1.25">Caseload</h1>
+              <p style="margin:0;color:var(--text-muted)">Thursday 15 October · first reply target is 5 working days</p>
+            </div>
+            <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--surface-2);font-size:0.875rem"><nb-icon name="filter" size="16"></nb-icon>Showing only your 3 faculties</span>
+          </div>
+
+          <sc-if value="{{ dashLoading }}" hint-placeholder-val="{{ false }}">
+            <div aria-busy="true" aria-label="Loading caseload" style="display:flex;flex-direction:column;gap:16px;animation:nbPulse 1.6s ease-in-out infinite">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px"><div style="height:120px;border-radius:10px;background:var(--surface);border:1px solid var(--border)"></div><div style="height:120px;border-radius:10px;background:var(--surface);border:1px solid var(--border)"></div><div style="height:120px;border-radius:10px;background:var(--surface);border:1px solid var(--border)"></div><div style="height:120px;border-radius:10px;background:var(--surface);border:1px solid var(--border)"></div></div>
+              <div style="border-radius:10px;background:var(--surface);border:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:18px"><div style="width:40%;height:18px;border-radius:6px;background:var(--surface-2)"></div><div style="height:14px;border-radius:4px;background:var(--surface-2)"></div><div style="height:14px;border-radius:4px;background:var(--surface-2)"></div><div style="height:14px;border-radius:4px;background:var(--surface-2)"></div><div style="height:14px;border-radius:4px;background:var(--surface-2)"></div></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ dashError }}" hint-placeholder-val="{{ false }}">
+            <div role="alert" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+              <span style="width:56px;height:56px;border-radius:50%;background:var(--danger-bg);color:var(--danger);display:flex;align-items:center;justify-content:center"><nb-icon name="cloud-off" size="28"></nb-icon></span>
+              <h2 style="margin:0;font-size:1.25rem">We couldn't load your caseload</h2>
+              <p style="margin:0;color:var(--text-muted);max-width:44ch">The connection to the case system dropped. No changes were lost.</p>
+              <button type="button" onClick="{{ retryDash }}" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="refresh-cw" size="20"></nb-icon>Try again</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ dashReady }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px">
+              <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+                <button type="button" onClick="{{ k.onClick }}" style="text-align:left;background:var(--surface);border:1px solid {{ k.bd }};border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:8px;cursor:pointer" style-hover="border-color:var(--primary)">
+                  <span style="display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%"><span style="font-size:0.9375rem;color:var(--text-muted)">{{ k.label }}</span><span style="color:{{ k.fg }};display:flex"><nb-icon name="{{ k.icon }}" size="20"></nb-icon></span></span>
+                  <span style="font-size:2rem;font-weight:700;line-height:1.1">{{ k.value }}</span>
+                  <span style="font-size:0.875rem;color:{{ k.noteColor }};font-weight:{{ k.noteW }}">{{ k.note }}</span>
+                </button>
+              </sc-for>
+            </div>
+
+            <section aria-labelledby="h-queue" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)">
+                <div style="display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;align-items:center">
+                  <h2 id="h-queue" style="margin:0;font-size:1.25rem">Request queue</h2>
+                  <span style="display:inline-flex;align-items:center;gap:6px;font-size:0.875rem;color:var(--text-muted)"><nb-icon name="scroll-text" size="16"></nb-icon>Opening a case is logged</span>
+                </div>
+                <div role="group" aria-label="Filter by status" style="display:flex;flex-wrap:wrap;gap:6px">
+                  <sc-for list="{{ statusFilters }}" as="f" hint-placeholder-count="6">
+                    <button type="button" aria-pressed="{{ f.pressed }}" onClick="{{ f.onClick }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ f.bd }};background:{{ f.bg }};color:{{ f.fg }};font-size:0.9375rem;font-weight:700;cursor:pointer">{{ f.label }}<span style="font-weight:400">{{ f.count }}</span></button>
+                  </sc-for>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:12px">
+                  <div style="display:flex;flex-direction:column;gap:4px;flex:1 1 220px">
+                    <label for="f-fac" style="font-size:0.875rem;font-weight:700">Faculty</label>
+                    <select id="f-fac" value="{{ facFilter }}" onChange="{{ onFac }}" style="min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+                      <option value="all">All my faculties</option>
+                      <option value="Computing &amp; Engineering Sciences">Computing &amp; Engineering Sciences</option>
+                      <option value="Management Sciences">Management Sciences</option>
+                      <option value="Basic &amp; Applied Sciences">Basic &amp; Applied Sciences</option>
+                    </select>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:4px;flex:1 1 160px">
+                    <label for="f-urg" style="font-size:0.875rem;font-weight:700">Urgency</label>
+                    <select id="f-urg" value="{{ urgFilter }}" onChange="{{ onUrg }}" style="min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+                      <option value="all">Any urgency</option><option value="2">Urgent</option><option value="1">Soon</option><option value="0">Standard</option>
+                    </select>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:4px;flex:1 1 160px">
+                    <label for="f-date" style="font-size:0.875rem;font-weight:700">Received</label>
+                    <select id="f-date" value="{{ dateFilter }}" onChange="{{ onDate }}" style="min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+                      <option value="all">Any time</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option>
+                    </select>
+                  </div>
+                  <sc-if value="{{ notDesktop }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:4px;flex:1 1 220px">
+                      <label for="f-q" style="font-size:0.875rem;font-weight:700">Search</label>
+                      <input id="f-q" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Name or case number" style="min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+              <div style="overflow-x:auto">
+                <div role="table" aria-label="Request queue" style="min-width:1080px">
+                  <div role="row" style="display:grid;grid-template-columns:96px minmax(150px,1.1fr) minmax(170px,1.3fr) 104px 156px minmax(140px,1fr) 84px 150px 80px;align-items:center;border-bottom:1px solid var(--border);background:var(--surface-2)">
+                    <sc-for list="{{ columns }}" as="col" hint-placeholder-count="9">
+                      <div role="columnheader" aria-sort="{{ col.ariaSort }}" style="padding:8px 14px;font-size:0.875rem;color:var(--text-muted);font-weight:700;white-space:nowrap">
+                        <sc-if value="{{ col.sortable }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ col.onSort }}" style="display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 6px;margin-left:-6px;border:0;border-radius:6px;background:transparent;color:{{ col.fg }};font-weight:700;font-size:0.875rem;cursor:pointer">{{ col.label }}<nb-icon name="{{ col.icon }}" size="16"></nb-icon></button></sc-if>
+                        <sc-if value="{{ col.plain }}" hint-placeholder-val="{{ true }}"><span>{{ col.label }}</span></sc-if>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <sc-for list="{{ pageRows }}" as="r" hint-placeholder-count="8">
+                    <div role="row" style="display:grid;grid-template-columns:96px minmax(150px,1.1fr) minmax(170px,1.3fr) 104px 156px minmax(140px,1fr) 84px 150px 80px;align-items:center;border-bottom:1px solid var(--border);background:{{ r.rowBg }}" style-hover="background:var(--surface-2)">
+                      <div role="cell" style="padding:10px 14px;font-family:var(--mono);font-size:0.875rem;white-space:nowrap">{{ r.id }}</div>
+                      <div role="cell" style="padding:10px 14px;display:flex;flex-direction:column;line-height:1.3"><span style="font-weight:700">{{ r.name }}</span><sc-if value="{{ r.isNew }}" hint-placeholder-val="{{ false }}"><span style="font-size:0.8125rem;color:var(--primary);font-weight:700">New since you last looked</span></sc-if></div>
+                      <div role="cell" style="padding:10px 14px;font-size:0.9375rem">{{ r.faculty }}</div>
+                      <div role="cell" style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:6px;font-size:0.9375rem;color:{{ r.urgFg }};font-weight:{{ r.urgW }}"><nb-icon name="{{ r.urgIcon }}" size="16"></nb-icon>{{ r.urgency }}</span></div>
+                      <div role="cell" style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:{{ r.sBg }};color:{{ r.sFg }};border:1px solid {{ r.sBd }};font-size:0.8125rem;font-weight:700;white-space:nowrap"><nb-icon name="{{ r.sIcon }}" size="14"></nb-icon>{{ r.status }}</span></div>
+                      <div role="cell" style="padding:10px 14px;font-size:0.9375rem;color:{{ r.asgFg }}">{{ r.assignedLabel }}</div>
+                      <div role="cell" style="padding:10px 14px;font-size:0.9375rem;white-space:nowrap">{{ r.receivedLabel }}</div>
+                      <div role="cell" style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:6px;font-size:0.9375rem;color:{{ r.slaFg }};font-weight:{{ r.slaW }};white-space:nowrap"><nb-icon name="{{ r.slaIcon }}" size="16"></nb-icon>{{ r.slaLabel }}</span></div>
+                      <div role="cell" style="padding:6px 14px 6px 0;text-align:right"><button type="button" onClick="{{ r.onOpen }}" aria-label="{{ r.openLabel }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)">Open</button></div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+              <sc-if value="{{ queueEmpty }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:40px 24px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+                  <span style="width:56px;height:56px;border-radius:50%;background:var(--surface-2);color:var(--text-muted);display:flex;align-items:center;justify-content:center"><nb-icon name="search-x" size="28"></nb-icon></span>
+                  <h3 style="margin:0;font-size:1.125rem">No cases match</h3>
+                  <p style="margin:0;color:var(--text-muted);max-width:52ch">{{ emptyHint }}</p>
+                  <button type="button" onClick="{{ clearFilters }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Clear filters</button>
+                </div>
+              </sc-if>
+              <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:12px 20px">
+                <span style="font-size:0.9375rem;color:var(--text-muted)">{{ pageSummary }}</span>
+                <nav aria-label="Pagination" style="display:flex;gap:6px">
+                  <button type="button" onClick="{{ prevPage }}" disabled="{{ prevDisabled }}" style="display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;cursor:pointer"><nb-icon name="chevron-left" size="18"></nb-icon>Previous</button>
+                  <button type="button" onClick="{{ nextPage }}" disabled="{{ nextDisabled }}" style="display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;cursor:pointer">Next<nb-icon name="chevron-right" size="18"></nb-icon></button>
+                </nav>
+              </div>
+            </section>
+          </sc-if>
+        </sc-if>
+
+        <!-- CASE DETAIL -->
+        <sc-if value="{{ sCase }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ caseDenied }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:40px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+              <span style="width:64px;height:64px;border-radius:50%;background:var(--privacy-bg);color:var(--privacy);display:flex;align-items:center;justify-content:center"><nb-icon name="shield" size="32"></nb-icon></span>
+              <h1 style="margin:0;font-size:1.5rem">This case is outside your caseload</h1>
+              <p style="margin:0;color:var(--text-muted);max-width:52ch;text-wrap:pretty">Support officers only see students in their own faculties. If this student should move to you, ask the case lead to reassign them. Nothing about the case was shown or recorded.</p>
+              <button type="button" onClick="{{ goDash }}" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Back to caseload</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ caseAllowed }}" hint-placeholder-val="{{ true }}">
+            <div role="note" style="display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);font-size:0.9375rem"><nb-icon name="scroll-text" size="18"></nb-icon><span>Access to this record is logged. Opened by Mariam Ojo at {{ openedAt }}.</span></div>
+            <div style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-start;justify-content:space-between">
+              <div style="display:flex;gap:16px;align-items:center">
+                <span aria-hidden="true" style="width:56px;height:56px;flex:none;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.125rem">{{ c.initials }}</span>
+                <div style="display:flex;flex-direction:column;gap:4px">
+                  <h1 style="margin:0;font-size:1.75rem;line-height:1.2">{{ c.name }}</h1>
+                  <span style="color:var(--text-muted)">{{ c.id }} · {{ c.programme }} · {{ c.level }}</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:{{ c.sBg }};color:{{ c.sFg }};border:1px solid {{ c.sBd }};font-size:0.875rem;font-weight:700"><nb-icon name="{{ c.sIcon }}" size="16"></nb-icon>{{ c.status }}</span>
+                <span style="display:inline-flex;align-items:center;gap:6px;font-size:0.9375rem;color:{{ c.slaFg }};font-weight:{{ c.slaW }}"><nb-icon name="{{ c.slaIcon }}" size="16"></nb-icon>{{ c.slaLabel }}</span>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+              <div style="flex:3 1 520px;min-width:0;display:flex;flex-direction:column;gap:16px">
+                <section aria-labelledby="h-sum" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px">
+                  <h2 id="h-sum" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Student summary</h2>
+                  <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:0.875rem;color:var(--text-muted)">Programme</span><span style="font-weight:700">{{ c.programme }}</span></div>
+                  <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:0.875rem;color:var(--text-muted)">Level</span><span style="font-weight:700">{{ c.level }}</span></div>
+                  <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:0.875rem;color:var(--text-muted)">Prefers contact by</span><span style="font-weight:700">{{ c.contact }}</span></div>
+                  <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:0.875rem;color:var(--text-muted)">Sharing with lecturers</span><span style="font-weight:700">{{ c.sharing }}</span></div>
+                </section>
+
+                <section aria-labelledby="h-req" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px">
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center">
+                    <h2 id="h-req" style="margin:0;font-size:1.25rem">Request</h2>
+                    <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--privacy-bg);color:var(--privacy);font-size:0.8125rem;font-weight:700"><nb-icon name="lock" size="14"></nb-icon>Visible to: student and support officers on this case</span>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:0.875rem;font-weight:700;color:var(--text-muted)">What's getting in the way</span>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ c.barriers }}" as="b" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);font-size:0.9375rem">{{ b }}</span></sc-for></div>
+                  </div>
+                  <blockquote style="margin:0;padding:12px 16px;border-radius:8px;background:var(--surface-2);max-width:70ch;text-wrap:pretty">"{{ c.text }}"</blockquote>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
+                    <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:0.875rem;color:var(--text-muted)">Courses</span><span style="font-weight:700">{{ c.courses }}</span></div>
+                    <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:0.875rem;color:var(--text-muted)">How soon</span><span style="display:inline-flex;align-items:center;gap:6px;font-weight:700;color:{{ c.urgFg }}"><nb-icon name="{{ c.urgIcon }}" size="16"></nb-icon>{{ c.urgencyLong }}</span></div>
+                    <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:0.875rem;color:var(--text-muted)">Sent</span><span style="font-weight:700">{{ c.receivedLong }}</span></div>
+                  </div>
+                </section>
+
+                <section aria-labelledby="h-ci" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px">
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center">
+                    <h2 id="h-ci" style="margin:0;font-size:1.25rem">Check-in answers</h2>
+                    <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;border:1px dashed var(--privacy);color:var(--privacy);font-size:0.8125rem;font-weight:700"><nb-icon name="eye-off" size="14"></nb-icon>Hidden by default</span>
+                  </div>
+                  <sc-if value="{{ ciHidden }}" hint-placeholder-val="{{ true }}">
+                    <p style="margin:0;color:var(--text-muted);max-width:66ch;text-wrap:pretty">The student completed the check-in. You usually don't need the answers: the request above is in their own words. Only reveal them if they help you plan support.</p>
+                    <sc-if value="{{ ciConfirm }}" hint-placeholder-val="{{ false }}">
+                      <div role="alertdialog" aria-labelledby="ci-c" style="padding:14px 16px;border-radius:8px;background:var(--privacy-bg);display:flex;flex-direction:column;gap:10px">
+                        <span id="ci-c" style="font-weight:700">Reveal check-in answers?</span>
+                        <span style="font-size:0.9375rem">Your name, the time and the reason are recorded in the audit log. The student can ask who viewed their answers.</span>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap">
+                          <button type="button" onClick="{{ doReveal }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--privacy);background:var(--privacy);color:#FFFFFF;font-weight:700;cursor:pointer">Reveal and log</button>
+                          <button type="button" onClick="{{ cancelReveal }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Keep hidden</button>
+                        </div>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ ciAsk }}" hint-placeholder-val="{{ true }}">
+                      <button type="button" onClick="{{ askReveal }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--privacy);background:transparent;color:var(--privacy);font-weight:700;cursor:pointer"><nb-icon name="eye" size="18"></nb-icon>Reveal answers</button>
+                    </sc-if>
+                  </sc-if>
+                  <sc-if value="{{ ciShown }}" hint-placeholder-val="{{ false }}">
+                    <span style="display:inline-flex;align-items:center;gap:6px;font-size:0.875rem;color:var(--privacy);font-weight:700"><nb-icon name="scroll-text" size="16"></nb-icon>Revealed by you at {{ revealedAt }} · logged</span>
+                    <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column">
+                      <sc-for list="{{ c.answers }}" as="a" hint-placeholder-count="5">
+                        <li style="display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:space-between;padding:10px 0;border-top:1px solid var(--border)"><span style="flex:1 1 280px">{{ a.q }}</span><span style="font-weight:700;color:{{ a.fg }}">{{ a.a }}</span></li>
+                      </sc-for>
+                    </ul>
+                    <button type="button" onClick="{{ hideAnswers }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="eye-off" size="18"></nb-icon>Hide again</button>
+                  </sc-if>
+                </section>
+
+                <sc-if value="{{ hasPlan }}" hint-placeholder-val="{{ false }}">
+                  <section aria-labelledby="h-plan" style="background:var(--surface);border:1px solid var(--accent);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center"><h2 id="h-plan" style="margin:0;font-size:1.25rem">Support plan</h2><span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--accent-bg);color:var(--accent-ink);font-size:0.875rem;font-weight:700"><nb-icon name="circle-check" size="16"></nb-icon>Agreed · review {{ planReview }}</span></div>
+                    <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px">
+                      <sc-for list="{{ planSummary }}" as="ps" hint-placeholder-count="3"><li style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--accent-ink);display:flex;padding-top:2px"><nb-icon name="check" size="18"></nb-icon></span><span><strong>{{ ps.title }}</strong> · <span style="color:var(--text-muted)">{{ ps.scope }}</span></span></li></sc-for>
+                    </ul>
+                  </section>
+                </sc-if>
+              </div>
+
+              <aside aria-label="Actions" style="flex:2 1 340px;min-width:0;display:flex;flex-direction:column;gap:16px;position:sticky;top:0">
+                <section aria-labelledby="h-status" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px">
+                  <label id="h-status" for="c-status" style="font-weight:700;font-size:1.0625rem">Status</label>
+                  <select id="c-status" value="{{ c.status }}" onChange="{{ onStatus }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+                    <option>Submitted</option><option>Under review</option><option>Plan active</option><option>Follow-up due</option><option>Closed</option>
+                  </select>
+                  <span style="font-size:0.875rem;color:var(--text-muted)">The student sees the status change in their app.</span>
+                </section>
+
+                <section aria-labelledby="h-assign" style="background:var(--surface);border:{{ assignBd }};border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 id="h-assign" style="margin:0;font-size:1.0625rem">Assign a professional</h2><sc-if value="{{ assigned }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ changeAssign }}" style="min-height:44px;padding:0 10px;border-radius:8px;border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Change</button></sc-if></div>
+                  <sc-if value="{{ assigned }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:8px;background:var(--accent-bg)"><span aria-hidden="true" style="width:44px;height:44px;flex:none;border-radius:50%;background:var(--surface);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-weight:700">{{ asg.initials }}</span><span style="display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ asg.name }}</span><span style="font-size:0.9375rem">{{ asg.role }}</span><span style="display:inline-flex;align-items:center;gap:4px;font-size:0.875rem;color:var(--accent-ink);font-weight:700"><nb-icon name="calendar-check" size="14"></nb-icon>{{ asgSlot }}</span></span></div>
+                  </sc-if>
+                  <sc-if value="{{ assigning }}" hint-placeholder-val="{{ true }}">
+                    <div style="position:relative">
+                      <label for="pro-q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search professionals</label>
+                      <input id="pro-q" value="{{ proQ }}" onChange="{{ onProQ }}" placeholder="Search by name or role" style="width:100%;min-height:44px;padding:0 12px 0 40px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+                      <span style="position:absolute;left:12px;top:12px;color:var(--text-muted);display:flex"><nb-icon name="search" size="18"></nb-icon></span>
+                    </div>
+                    <div role="radiogroup" aria-label="Professionals" style="display:flex;flex-direction:column;gap:6px">
+                      <sc-for list="{{ proOpts }}" as="o" hint-placeholder-count="4">
+                        <button type="button" role="radio" aria-checked="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:flex;gap:10px;align-items:center;text-align:left;min-height:60px;padding:8px 12px;border-radius:8px;border:{{ o.bdW }} solid {{ o.bd }};background:{{ o.bg }};cursor:pointer">
+                          <span style="width:20px;height:20px;flex:none;border-radius:50%;border:2px solid {{ o.boxBd }};display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:{{ o.dot }}"></span></span>
+                          <span style="flex:1;display:flex;flex-direction:column;line-height:1.3;min-width:0"><span style="font-weight:700">{{ o.name }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ o.role }} · {{ o.load }} cases</span></span>
+                          <span style="display:inline-flex;align-items:center;gap:4px;font-size:0.8125rem;color:{{ o.availFg }};font-weight:700;text-align:right"><nb-icon name="{{ o.availIcon }}" size="14"></nb-icon>{{ o.availShort }}</span>
+                        </button>
+                      </sc-for>
+                      <sc-if value="{{ proEmpty }}" hint-placeholder-val="{{ false }}"><span style="color:var(--text-muted);padding:8px 0">No one matches. Try a role like "counsellor".</span></sc-if>
+                    </div>
+                    <sc-if value="{{ proPicked }}" hint-placeholder-val="{{ false }}">
+                      <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:6px">
+                        <legend style="font-size:0.9375rem;font-weight:700;padding:0;margin-bottom:6px">Book a first consultation <span style="font-weight:400;color:var(--text-muted)">(optional)</span></legend>
+                        <div style="display:flex;flex-wrap:wrap;gap:6px">
+                          <sc-for list="{{ proSlots }}" as="sl" hint-placeholder-count="3">
+                            <button type="button" aria-pressed="{{ sl.pressed }}" onClick="{{ sl.onClick }}" style="display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid {{ sl.bd }};background:{{ sl.bg }};color:{{ sl.fg }};font-weight:700;font-size:0.875rem;cursor:pointer"><sc-if value="{{ sl.on }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="14"></nb-icon></sc-if>{{ sl.label }}</button>
+                          </sc-for>
+                        </div>
+                      </fieldset>
+                    </sc-if>
+                    <button type="button" onClick="{{ doAssign }}" disabled="{{ assignDisabled }}" style="min-height:48px;padding:0 18px;border-radius:8px;border:1px {{ assignBtnStyle }} {{ assignBtnBd }};background:{{ assignBtnBg }};color:{{ assignBtnFg }};font-weight:700;cursor:{{ assignCursor }}">{{ assignLabel }}</button>
+                  </sc-if>
+                </section>
+
+                <section aria-labelledby="h-next" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px">
+                  <h2 id="h-next" style="margin:0;font-size:1.0625rem">Support plan and referrals</h2>
+                  <button type="button" onClick="{{ goBuilder }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border-radius:8px;border:1px solid {{ planBtnBd }};background:{{ planBtnBg }};color:{{ planBtnFg }};font-weight:700;cursor:pointer"><nb-icon name="clipboard-pen" size="20"></nb-icon>{{ planBtnLabel }}</button>
+                  <button type="button" onClick="{{ goReferral }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 18px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)"><nb-icon name="share-2" size="20"></nb-icon>Refer to another service</button>
+                </section>
+              </aside>
+            </div>
+
+            <section aria-labelledby="h-tl" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+              <h2 id="h-tl" style="margin:0;font-size:1.25rem">Activity</h2>
+              <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+                <sc-for list="{{ timeline }}" as="t" hint-placeholder-count="4">
+                  <li style="display:flex;gap:12px">
+                    <div style="display:flex;flex-direction:column;align-items:center"><span style="width:32px;height:32px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface-2);color:{{ t.fg }}"><nb-icon name="{{ t.icon }}" size="16"></nb-icon></span><span style="flex:1;width:2px;min-height:12px;background:var(--border)"></span></div>
+                    <div style="padding:4px 0 14px;display:flex;flex-direction:column;line-height:1.4"><span>{{ t.text }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ t.when }}</span></div>
+                  </li>
+                </sc-for>
+              </ol>
+            </section>
+          </sc-if>
+        </sc-if>
+
+        <!-- PLAN BUILDER -->
+        <sc-if value="{{ sBuilder }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <h1 style="margin:0;font-size:1.75rem;line-height:1.25">Support plan for {{ c.first }}</h1>
+              <p style="margin:0;color:var(--text-muted)">Choose functional support only. Describe what helps, never the reason.</p>
+            </div>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:0.9375rem;color:var(--text-muted)"><nb-icon name="save" size="18"></nb-icon>{{ draftNote }}</span>
+          </div>
+          <sc-if value="{{ planError }}" hint-placeholder-val="{{ false }}">
+            <div role="alert" style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;background:var(--danger-bg)"><span style="color:var(--danger);display:flex;padding-top:2px"><nb-icon name="circle-alert" size="20"></nb-icon></span><span>{{ planErrorText }}</span></div>
+          </sc-if>
+          <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+            <div style="flex:3 1 520px;min-width:0;display:flex;flex-direction:column;gap:16px">
+              <sc-for list="{{ catalogue }}" as="g" hint-placeholder-count="4">
+                <section aria-label="{{ g.label }}" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px">
+                  <h2 style="margin:0;font-size:1.125rem;display:flex;align-items:center;gap:8px"><nb-icon name="{{ g.icon }}" size="20"></nb-icon>{{ g.label }}</h2>
+                  <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="2">
+                    <div style="border-radius:8px;border:{{ it.bdW }} solid {{ it.bd }};background:{{ it.bg }};display:flex;flex-direction:column">
+                      <button type="button" role="checkbox" aria-checked="{{ it.pressed }}" onClick="{{ it.onToggle }}" style="display:flex;gap:12px;align-items:flex-start;text-align:left;min-height:56px;padding:12px 14px;border:0;background:transparent;cursor:pointer;border-radius:8px">
+                        <span style="width:24px;height:24px;flex:none;margin-top:1px;border-radius:6px;border:2px solid {{ it.boxBd }};background:{{ it.boxBg }};color:var(--on-primary);display:flex;align-items:center;justify-content:center"><sc-if value="{{ it.on }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="16"></nb-icon></sc-if></span>
+                        <span style="flex:1;display:flex;flex-direction:column;gap:2px;line-height:1.35"><span style="display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center"><span style="font-weight:700">{{ it.title }}</span><sc-if value="{{ it.suggested }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:999px;background:var(--primary-bg);color:var(--primary);font-size:0.75rem;font-weight:700"><nb-icon name="lightbulb" size="12"></nb-icon>Matches request</span></sc-if></span><span style="font-size:0.9375rem;color:var(--text-muted)">{{ it.desc }}</span></span>
+                      </button>
+                      <sc-if value="{{ it.on }}" hint-placeholder-val="{{ false }}">
+                        <div style="padding:0 14px 14px 50px;display:flex;flex-direction:column;gap:10px">
+                          <sc-if value="{{ it.hasParam }}" hint-placeholder-val="{{ false }}">
+                            <div role="radiogroup" aria-label="{{ it.paramLabel }}" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:0.875rem;font-weight:700;margin-right:4px">{{ it.paramLabel }}</span>
+                              <sc-for list="{{ it.params }}" as="pm" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{ pm.pressed }}" onClick="{{ pm.onClick }}" style="min-height:44px;padding:0 12px;border-radius:999px;border:1px solid {{ pm.bd }};background:{{ pm.bg }};color:{{ pm.fg }};font-weight:700;font-size:0.875rem;cursor:pointer">{{ pm.label }}</button></sc-for>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{ it.scoped }}" hint-placeholder-val="{{ true }}">
+                            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:0.875rem;font-weight:700;margin-right:4px">Applies to</span>
+                              <sc-for list="{{ it.scopes }}" as="sc" hint-placeholder-count="5"><button type="button" aria-pressed="{{ sc.pressed }}" onClick="{{ sc.onClick }}" style="display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 12px;border-radius:999px;border:1px solid {{ sc.bd }};background:{{ sc.bg }};color:{{ sc.fg }};font-weight:700;font-size:0.875rem;cursor:pointer"><sc-if value="{{ sc.on }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="14"></nb-icon></sc-if>{{ sc.label }}</button></sc-for>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{ it.fixedScope }}" hint-placeholder-val="{{ false }}"><span style="font-size:0.875rem;color:var(--text-muted)">Applies to: {{ it.scopeText }} · shared with the exams office</span></sc-if>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </section>
+              </sc-for>
+              <section aria-label="Review and notes" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:16px">
+                <div style="display:flex;flex-direction:column;gap:6px;max-width:280px">
+                  <label for="pb-review" style="font-weight:700">Review date</label>
+                  <span id="pb-review-h" style="font-size:0.875rem;color:var(--text-muted)">Usually 4–6 weeks from now</span>
+                  <input id="pb-review" type="date" aria-describedby="pb-review-h" value="{{ reviewDate }}" onChange="{{ onReview }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:{{ reviewBd }};background:var(--surface)">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label for="pb-note" style="font-weight:700">Note to {{ c.first }} <span style="font-weight:400;color:var(--text-muted)">(optional, student sees this)</span></label>
+                  <textarea id="pb-note" rows="2" value="{{ noteStudent }}" onChange="{{ onNoteStudent }}" style="padding:12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);resize:vertical;line-height:var(--lh)"></textarea>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <label for="pb-int" style="font-weight:700;display:flex;flex-wrap:wrap;gap:8px;align-items:center">Internal note <span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;border:1px dashed var(--privacy);color:var(--privacy);font-size:0.75rem;font-weight:700"><nb-icon name="shield" size="12"></nb-icon>Support officers only</span></label>
+                  <textarea id="pb-int" rows="2" value="{{ noteInternal }}" onChange="{{ onNoteInternal }}" style="padding:12px;border-radius:8px;border:1px dashed var(--privacy);background:var(--surface);resize:vertical;line-height:var(--lh)"></textarea>
+                </div>
+              </section>
+            </div>
+
+            <aside aria-label="Preview" style="flex:2 1 360px;min-width:0;position:sticky;top:0;display:flex;flex-direction:column;gap:12px">
+              <div role="tablist" aria-label="Preview as" style="display:flex;padding:4px;border-radius:10px;background:var(--surface-2);gap:4px">
+                <sc-for list="{{ previewTabs }}" as="t" hint-placeholder-count="2">
+                  <button type="button" role="tab" aria-selected="{{ t.selected }}" onClick="{{ t.onClick }}" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid {{ t.bd }};background:{{ t.bg }};font-weight:700;cursor:pointer;color:var(--text)"><nb-icon name="{{ t.icon }}" size="18"></nb-icon>{{ t.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ pvLecturer }}" hint-placeholder-val="{{ true }}">
+                <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+                  <div style="display:flex;flex-direction:column;gap:4px">
+                    <span id="pv-course-l" style="font-size:0.875rem;font-weight:700">Preview for</span>
+                    <div role="radiogroup" aria-labelledby="pv-course-l" style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ pvCourses }}" as="pc" hint-placeholder-count="5"><button type="button" role="radio" aria-checked="{{ pc.pressed }}" onClick="{{ pc.onClick }}" style="min-height:44px;padding:0 12px;border-radius:999px;border:1px solid {{ pc.bd }};background:{{ pc.bg }};color:{{ pc.fg }};font-weight:700;font-size:0.875rem;cursor:pointer">{{ pc.label }}</button></sc-for></div>
+                  </div>
+                  <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden">
+                    <div style="padding:10px 14px;background:var(--surface-2);font-size:0.8125rem;color:var(--text-muted);display:flex;gap:6px;align-items:center"><nb-icon name="monitor" size="14"></nb-icon>What {{ pvWho }} sees</div>
+                    <div style="padding:14px;display:flex;flex-direction:column;gap:10px">
+                      <div style="display:flex;gap:8px;align-items:center;padding:8px 10px;border-radius:8px;background:var(--privacy-bg);font-size:0.875rem;color:var(--text)"><span style="color:var(--privacy);display:flex"><nb-icon name="shield-check" size="16"></nb-icon></span>You see accommodations, not diagnoses.</div>
+                      <span style="font-weight:700">{{ pvStudentLabel }}</span>
+                      <sc-if value="{{ pvHasItems }}" hint-placeholder-val="{{ true }}">
+                        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px">
+                          <sc-for list="{{ pvItems }}" as="pi" hint-placeholder-count="2"><li style="display:flex;gap:8px;align-items:center"><span style="color:var(--accent-ink);display:flex"><nb-icon name="check" size="16"></nb-icon></span>{{ pi }}</li></sc-for>
+                        </ul>
+                      </sc-if>
+                      <sc-if value="{{ pvNoItems }}" hint-placeholder-val="{{ false }}"><span style="color:var(--text-muted);font-size:0.9375rem">{{ pvEmptyText }}</span></sc-if>
+                    </div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:6px;font-size:0.9375rem">
+                    <span style="font-weight:700">Never shown to lecturers</span>
+                    <span style="display:flex;gap:6px;align-items:center;color:var(--text-muted)"><nb-icon name="eye-off" size="16"></nb-icon>Request text, check-in answers, notes, referrals</span>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ pvStudent }}" hint-placeholder-val="{{ false }}">
+                <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+                  <div style="padding:10px 14px;background:var(--surface-2);font-size:0.8125rem;color:var(--text-muted);display:flex;gap:6px;align-items:center"><nb-icon name="smartphone" size="14"></nb-icon>What {{ c.first }} sees in their app</div>
+                  <div style="padding:16px;display:flex;flex-direction:column;gap:12px;font-size:1.0625rem">
+                    <span style="font-weight:700;font-size:1.25rem">My support plan</span>
+                    <span style="font-size:0.9375rem;color:var(--text-muted)">Agreed with Mariam Ojo · Review on {{ reviewLabel }}</span>
+                    <sc-if value="{{ pvHasPlan }}" hint-placeholder-val="{{ true }}">
+                      <sc-for list="{{ pvStudentItems }}" as="si" hint-placeholder-count="2">
+                        <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--border)"><span style="width:36px;height:36px;flex:none;border-radius:8px;background:var(--accent-bg);color:var(--accent-ink);display:flex;align-items:center;justify-content:center"><nb-icon name="{{ si.icon }}" size="18"></nb-icon></span><span style="display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700;font-size:1rem">{{ si.title }}</span><span style="font-size:0.875rem;color:var(--text-muted)">Applies to: {{ si.scope }}</span></span></div>
+                      </sc-for>
+                    </sc-if>
+                    <sc-if value="{{ pvNoPlan }}" hint-placeholder-val="{{ false }}"><span style="color:var(--text-muted);font-size:0.9375rem">Nothing selected yet.</span></sc-if>
+                    <sc-if value="{{ hasNoteStudent }}" hint-placeholder-val="{{ false }}"><div style="padding:10px 12px;border-radius:8px;background:var(--primary-bg);font-size:0.9375rem">"{{ noteStudent }}" · Mariam</div></sc-if>
+                  </div>
+                </div>
+              </sc-if>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <button type="button" onClick="{{ agreePlan }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)"><nb-icon name="circle-check" size="20"></nb-icon>Agree plan and tell {{ c.first }}</button>
+                <button type="button" onClick="{{ saveDraft }}" style="min-height:48px;padding:0 18px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Save draft</button>
+              </div>
+            </aside>
+          </div>
+        </sc-if>
+
+        <!-- REFERRAL -->
+        <sc-if value="{{ sReferral }}" hint-placeholder-val="{{ false }}">
+          <div style="width:100%;max-width:760px;display:flex;flex-direction:column;gap:24px">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <h1 style="margin:0;font-size:1.75rem;line-height:1.25">Refer {{ c.first }} to another service</h1>
+              <p style="margin:0;color:var(--text-muted)">The student is told which service, never your internal reason.</p>
+            </div>
+            <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+              <legend style="padding:0;margin-bottom:8px;font-weight:700;font-size:1.125rem">Service</legend>
+              <div role="radiogroup" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:8px">
+                <sc-for list="{{ services }}" as="sv" hint-placeholder-count="4">
+                  <button type="button" role="radio" aria-checked="{{ sv.pressed }}" onClick="{{ sv.onClick }}" style="display:flex;gap:12px;align-items:flex-start;text-align:left;min-height:64px;padding:12px 14px;border-radius:8px;border:{{ sv.bdW }} solid {{ sv.bd }};background:{{ sv.bg }};cursor:pointer">
+                    <span style="width:22px;height:22px;flex:none;margin-top:2px;border-radius:50%;border:2px solid {{ sv.boxBd }};display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:{{ sv.dot }}"></span></span>
+                    <span style="display:flex;flex-direction:column;gap:2px;line-height:1.35"><span style="display:flex;gap:8px;align-items:center;font-weight:700"><nb-icon name="{{ sv.icon }}" size="18"></nb-icon>{{ sv.label }}</span><span style="font-size:0.9375rem;color:var(--text-muted)">{{ sv.sub }}</span></span>
+                  </button>
+                </sc-for>
+              </div>
+            </fieldset>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label for="rf-reason" style="font-weight:700;font-size:1.125rem;display:flex;flex-wrap:wrap;gap:8px;align-items:center">Reason for referral <span style="display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:999px;border:1px dashed var(--privacy);color:var(--privacy);font-size:0.8125rem;font-weight:700"><nb-icon name="shield" size="14"></nb-icon>Internal only · never shown to student or lecturers</span></label>
+              <sc-if value="{{ rfError }}" hint-placeholder-val="{{ false }}"><span id="rf-err" style="display:flex;gap:6px;align-items:center;color:var(--danger);font-weight:700"><nb-icon name="circle-alert" size="18"></nb-icon>Add a short reason so the service knows how to help.</span></sc-if>
+              <textarea id="rf-reason" rows="3" aria-describedby="rf-err" value="{{ rfReason }}" onChange="{{ onRfReason }}" placeholder="What the service should know. Keep it factual and brief." style="padding:12px;border-radius:8px;border:{{ rfBd }};background:var(--surface);resize:vertical;line-height:var(--lh)"></textarea>
+            </div>
+            <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:12px">
+              <legend style="padding:0;margin-bottom:8px;font-weight:700;font-size:1.125rem">Schedule</legend>
+              <sc-for list="{{ rfDays }}" as="d" hint-placeholder-count="2">
+                <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:0.9375rem;font-weight:700;color:var(--text-muted)">{{ d.label }}</span>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ d.slots }}" as="sl" hint-placeholder-count="3"><button type="button" aria-pressed="{{ sl.pressed }}" onClick="{{ sl.onClick }}" style="display:inline-flex;align-items:center;gap:4px;min-height:44px;min-width:88px;justify-content:center;padding:0 12px;border-radius:8px;border:1px solid {{ sl.bd }};background:{{ sl.bg }};color:{{ sl.fg }};font-weight:700;cursor:pointer"><sc-if value="{{ sl.on }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="14"></nb-icon></sc-if>{{ sl.time }}</button></sc-for></div>
+                </div>
+              </sc-for>
+            </fieldset>
+            <div style="display:flex;gap:16px;align-items:flex-start;padding:16px;border-radius:10px;background:var(--surface);border:1px solid var(--border)">
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span id="rf-tell" style="font-weight:700">Tell {{ c.first }} about this referral</span><span style="font-size:0.9375rem;color:var(--text-muted)">{{ rfTellPreview }}</span></div>
+              <button type="button" role="switch" aria-checked="{{ rfTellOn }}" aria-labelledby="rf-tell" onClick="{{ toggleRfTell }}" style="flex:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;background:transparent;cursor:pointer"><span style="font-size:0.875rem;font-weight:700;width:28px;text-align:right">{{ rfTellLabel }}</span><span style="position:relative;width:52px;height:32px;border-radius:999px;background:{{ rfTrack }};border:2px solid {{ rfTrackBd }}"><span style="position:absolute;top:2px;left:{{ rfKnobLeft }};width:24px;height:24px;border-radius:50%;background:{{ rfKnob }};transition:left .15s"></span></span></button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button type="button" onClick="{{ sendReferral }}" style="display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:0 22px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)"><nb-icon name="send" size="20"></nb-icon>Send referral</button>
+              <button type="button" onClick="{{ backToCase }}" style="min-height:52px;padding:0 18px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Cancel</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- PROFESSIONALS -->
+        <sc-if value="{{ sPros }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between">
+            <div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:2rem;line-height:1.25">Professionals</h1><p style="margin:0;color:var(--text-muted)">Availability for the week of 12 October</p></div>
+            <div role="group" aria-label="Filter by role" style="display:flex;flex-wrap:wrap;gap:6px">
+              <sc-for list="{{ roleFilters }}" as="f" hint-placeholder-count="4"><button type="button" aria-pressed="{{ f.pressed }}" onClick="{{ f.onClick }}" style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ f.bd }};background:{{ f.bg }};color:{{ f.fg }};font-weight:700;font-size:0.9375rem;cursor:pointer">{{ f.label }}</button></sc-for>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px">
+            <sc-for list="{{ proCards }}" as="p" hint-placeholder-count="5">
+              <section aria-label="{{ p.name }}" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;gap:12px;align-items:center"><span aria-hidden="true" style="width:48px;height:48px;flex:none;border-radius:50%;background:var(--accent-bg);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-weight:700">{{ p.initials }}</span><span style="display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700;font-size:1.0625rem">{{ p.name }}</span><span style="color:var(--text-muted)">{{ p.role }}</span></span></div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ p.focus }}" as="f" hint-placeholder-count="2"><span style="padding:2px 10px;border-radius:999px;background:var(--surface-2);font-size:0.875rem">{{ f }}</span></sc-for></div>
+                <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px" aria-label="Free slots this week">
+                  <sc-for list="{{ p.week }}" as="w" hint-placeholder-count="5">
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border-radius:8px;background:{{ w.bg }};border:1px solid {{ w.bd }}"><span style="font-size:0.75rem;color:var(--text-muted);font-weight:700">{{ w.day }}</span><span style="font-weight:700;color:{{ w.fg }}">{{ w.count }}</span><span style="font-size:0.6875rem;color:var(--text-muted)">{{ w.unit }}</span></div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;font-size:0.9375rem"><span style="display:inline-flex;gap:6px;align-items:center;color:{{ p.availFg }};font-weight:700"><nb-icon name="{{ p.availIcon }}" size="16"></nb-icon>{{ p.avail }}</span><span style="color:var(--text-muted)">{{ p.load }} active cases</span></div>
+              </section>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- FOLLOW-UPS -->
+        <sc-if value="{{ sFollow }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between">
+            <div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:2rem;line-height:1.25">Follow-ups</h1><p style="margin:0;color:var(--text-muted)">Week of 12 October 2026</p></div>
+            <div role="tablist" aria-label="View" style="display:flex;padding:4px;border-radius:10px;background:var(--surface-2);gap:4px">
+              <sc-for list="{{ fuTabs }}" as="t" hint-placeholder-count="2"><button type="button" role="tab" aria-selected="{{ t.selected }}" onClick="{{ t.onClick }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid {{ t.bd }};background:{{ t.bg }};font-weight:700;cursor:pointer;color:var(--text)"><nb-icon name="{{ t.icon }}" size="18"></nb-icon>{{ t.label }}</button></sc-for>
+            </div>
+          </div>
+          <sc-if value="{{ hasOverdue }}" hint-placeholder-val="{{ true }}">
+            <section aria-labelledby="h-od" style="background:var(--surface);border:1px solid var(--danger);border-radius:10px;padding:16px 20px;display:flex;flex-direction:column;gap:10px">
+              <h2 id="h-od" style="margin:0;font-size:1.125rem;display:flex;gap:8px;align-items:center;color:var(--danger)"><nb-icon name="circle-alert" size="20"></nb-icon>{{ overdueTitle }}</h2>
+              <sc-for list="{{ overdue }}" as="o" hint-placeholder-count="2">
+                <div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:10px 0;border-top:1px solid var(--border)">
+                  <span style="flex:1 1 240px;display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ o.name }} · {{ o.type }}</span><span style="font-size:0.9375rem;color:var(--danger)">Was due {{ o.dueLabel }}</span></span>
+                  <button type="button" onClick="{{ o.onOpen }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Open case</button>
+                  <button type="button" onClick="{{ o.onDone }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="check" size="18"></nb-icon>Mark as done</button>
+                </div>
+              </sc-for>
+            </section>
+          </sc-if>
+          <sc-if value="{{ fuWeek }}" hint-placeholder-val="{{ true }}">
+            <div style="overflow-x:auto">
+              <div style="display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:10px;min-width:780px">
+                <sc-for list="{{ weekCols }}" as="wc" hint-placeholder-count="5">
+                  <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+                    <div style="padding:8px 10px;border-radius:8px;background:{{ wc.headBg }};color:{{ wc.headFg }};display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:0.875rem">{{ wc.day }}</span><span style="font-weight:700;font-size:1.25rem">{{ wc.num }}</span></div>
+                    <sc-for list="{{ wc.events }}" as="ev" hint-placeholder-count="1">
+                      <button type="button" onClick="{{ ev.onOpen }}" style="text-align:left;padding:10px;border-radius:8px;background:{{ ev.bg }};border:0;border-left:4px solid {{ ev.fg }};display:flex;flex-direction:column;gap:2px;cursor:pointer;min-width:0"><span style="display:flex;align-items:center;gap:4px;font-size:0.8125rem;color:{{ ev.fg }};font-weight:700"><nb-icon name="{{ ev.icon }}" size="14"></nb-icon>{{ ev.time }} · {{ ev.kindLabel }}</span><span style="font-size:0.9375rem;font-weight:700;color:var(--text)">{{ ev.name }}</span><span style="font-size:0.8125rem;color:var(--text-muted)">{{ ev.with }}</span></button>
+                    </sc-for>
+                    <sc-if value="{{ wc.empty }}" hint-placeholder-val="{{ false }}"><span style="padding:10px;font-size:0.875rem;color:var(--text-muted);border:1px dashed var(--border);border-radius:8px">Nothing booked</span></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ fuAgenda }}" hint-placeholder-val="{{ false }}">
+            <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;max-width:720px">
+              <sc-for list="{{ agenda }}" as="ag" hint-placeholder-count="5">
+                <li style="display:flex;gap:16px;align-items:center;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--surface)">
+                  <span style="width:56px;flex:none;display:flex;flex-direction:column;align-items:center;line-height:1.15"><span style="font-size:0.8125rem;color:var(--text-muted)">{{ ag.dow }}</span><span style="font-weight:700;font-size:1.375rem">{{ ag.num }}</span></span>
+                  <span style="flex:1;display:flex;flex-direction:column;line-height:1.35;min-width:0"><span style="font-weight:700">{{ ag.name }}</span><span style="display:inline-flex;align-items:center;gap:4px;font-size:0.875rem;color:{{ ag.fg }}"><nb-icon name="{{ ag.icon }}" size="14"></nb-icon>{{ ag.time }} · {{ ag.kindLabel }} · {{ ag.with }}</span></span>
+                  <button type="button" onClick="{{ ag.onOpen }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Open</button>
+                </li>
+              </sc-for>
+            </ul>
+          </sc-if>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:0.875rem">
+            <sc-for list="{{ eventKinds }}" as="ek" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:6px;color:{{ ek.fg }};font-weight:700"><nb-icon name="{{ ek.icon }}" size="16"></nb-icon>{{ ek.label }}</span></sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </main>
+  </div>
+
+  <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;z-index:40;background:rgba(20,22,26,.35)"></div>
+    <nav aria-label="Main" style="position:absolute;top:0;left:0;bottom:0;z-index:41;width:min(300px,86%);background:var(--surface);border-right:1px solid var(--border);box-shadow:var(--shadow-lg);padding:12px;display:flex;flex-direction:column;gap:4px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 4px 12px"><span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;background:var(--primary-bg);color:var(--primary);font-size:0.8125rem;font-weight:700"><nb-icon name="badge-check" size="16"></nb-icon>Support Officer</span><button type="button" onClick="{{ closeDrawer }}" aria-label="Close menu" style="width:44px;height:44px;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="22"></nb-icon></button></div>
+      <sc-for list="{{ drawerItems }}" as="si" hint-placeholder-count="3">
+        <button type="button" onClick="{{ si.onClick }}" aria-current="{{ si.current }}" style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px;border-radius:8px;border:0;background:{{ si.bg }};color:{{ si.fg }};font-weight:{{ si.weight }};text-align:left;cursor:pointer"><nb-icon name="{{ si.icon }}" size="22"></nb-icon>{{ si.label }}</button>
+      </sc-for>
+    </nav>
+  </sc-if>
+
+  <sc-if value="{{ notifOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ toggleNotif }}" style="position:absolute;inset:0;z-index:30"></div>
+    <div role="dialog" aria-label="Notifications" style="position:absolute;top:64px;right:8px;z-index:31;width:min(400px,calc(100% - 16px));background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);padding:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px"><h2 style="margin:0;font-size:1.125rem">Notifications</h2><button type="button" onClick="{{ markRead }}" style="min-height:44px;padding:0 10px;border-radius:8px;border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer;font-size:0.875rem">Mark all as read</button></div>
+      <sc-for list="{{ notifGroups }}" as="g" hint-placeholder-count="2">
+        <div style="display:flex;flex-direction:column;padding:4px 0"><span style="padding:6px 10px;font-size:0.8125rem;font-weight:700;color:var(--text-muted)">{{ g.label }}</span>
+          <sc-for list="{{ g.items }}" as="n" hint-placeholder-count="1">
+            <button type="button" onClick="{{ n.onClick }}" style="display:flex;gap:10px;align-items:flex-start;text-align:left;padding:10px;border:0;border-radius:8px;background:{{ n.bg }};cursor:pointer"><span style="color:{{ n.fg }};display:flex;padding-top:2px"><nb-icon name="{{ n.icon }}" size="20"></nb-icon></span><span style="flex:1;display:flex;flex-direction:column;line-height:1.4"><span style="font-weight:{{ n.weight }}">{{ n.text }}</span><span style="font-size:0.8125rem;color:var(--text-muted)">{{ n.when }}</span></span></button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ prefsOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePrefs }}" style="position:absolute;inset:0;z-index:40;background:rgba(20,22,26,.35)"></div>
+    <aside role="dialog" aria-modal="true" aria-labelledby="rp-title" style="position:absolute;top:0;right:0;bottom:0;z-index:41;width:min(440px,100%);background:var(--surface);border-left:1px solid var(--border);box-shadow:var(--shadow-lg);display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;flex-direction:column;line-height:1.3"><h2 id="rp-title" style="margin:0;font-size:1.25rem">Reading preferences</h2><span style="font-size:0.875rem;color:var(--text-muted)">Changes apply straight away and are saved for you.</span></div>
+        <button type="button" onClick="{{ closePrefs }}" aria-label="Close reading preferences" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="22"></nb-icon></button>
+      </div>
+      <div style="flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:24px">
+        <sc-for list="{{ prefGroups }}" as="g" hint-placeholder-count="5">
+          <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+            <legend style="font-weight:700;padding:0;margin-bottom:8px">{{ g.label }}</legend>
+            <div style="display:grid;grid-template-columns:repeat({{ g.cols }},minmax(0,1fr));gap:6px">
+              <sc-for list="{{ g.opts }}" as="o" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;padding:6px 8px;border-radius:8px;border:2px solid {{ o.bd }};background:{{ o.bg }};color:var(--text);font-family:{{ o.font }};cursor:pointer;line-height:1.2">
+                  <span style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:{{ o.size }}"><sc-if value="{{ o.hasSwatch }}" hint-placeholder-val="{{ false }}"><span style="width:16px;height:16px;border-radius:50%;background:{{ o.swatch }};border:1px solid var(--border-strong)"></span></sc-if>{{ o.label }}</span>
+                  <span style="font-size:0.75rem;color:var(--text-muted)">{{ o.sub }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </fieldset>
+        </sc-for>
+        <div style="display:flex;flex-direction:column;border-top:1px solid var(--border)">
+          <sc-for list="{{ prefToggles }}" as="t" hint-placeholder-count="2">
+            <div style="display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)">
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span id="{{ t.id }}" style="font-weight:700">{{ t.title }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ t.desc }}</span></div>
+              <button type="button" role="switch" aria-checked="{{ t.on }}" aria-labelledby="{{ t.id }}" onClick="{{ t.onClick }}" style="flex:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;background:transparent;cursor:pointer"><span style="font-size:0.875rem;font-weight:700;width:28px;text-align:right">{{ t.label }}</span><span style="position:relative;width:52px;height:32px;border-radius:999px;background:{{ t.track }};border:2px solid {{ t.trackBd }}"><span style="position:absolute;top:2px;left:{{ t.knobLeft }};width:24px;height:24px;border-radius:50%;background:{{ t.knob }};transition:left .15s"></span></span></button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;padding:16px 20px;border-top:1px solid var(--border);flex-wrap:wrap">
+        <button type="button" onClick="{{ toggleSpeak }}" style="flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer"><nb-icon name="{{ speakIcon }}" size="20"></nb-icon>{{ speakLabel }}</button>
+        <button type="button" onClick="{{ resetPrefs }}" style="min-height:48px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Reset</button>
+      </div>
+    </aside>
+  </sc-if>
+
+  <div role="status" aria-live="polite" style="position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;width:min(480px,calc(100% - 24px))">
+    <sc-for list="{{ toasts }}" as="t" hint-placeholder-count="0">
+      <div style="display:flex;gap:12px;align-items:center;padding:10px 8px 10px 16px;border-radius:10px;background:var(--text);color:var(--bg);box-shadow:var(--shadow-lg)">
+        <span style="color:{{ t.fg }};display:flex"><nb-icon name="{{ t.icon }}" size="20"></nb-icon></span>
+        <span style="flex:1;font-size:0.9375rem">{{ t.msg }}</span>
+        <button type="button" onClick="{{ t.onClose }}" aria-label="Dismiss" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="18"></nb-icon></button>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;dashState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ready&quot;,&quot;loading&quot;,&quot;error&quot;],&quot;default&quot;:&quot;ready&quot;,&quot;tsType&quot;:&quot;'ready'|'loading'|'error'&quot;,&quot;section&quot;:&quot;States&quot;},&quot;caseAccess&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;allowed&quot;,&quot;denied&quot;],&quot;default&quot;:&quot;allowed&quot;,&quot;tsType&quot;:&quot;'allowed'|'denied'&quot;,&quot;section&quot;:&quot;States&quot;}}">
+const PKEY = 'nb-reading-prefs-staff';
+const DEFAULT_PREFS = {size:'S',line:'1.6',letter:'0em',font:'default',theme:'light',motion:false,focus:false};
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const TODAY = '2026-10-15';
+const pd = iso => { const [y,m,d] = iso.split('-').map(Number); return new Date(y,m-1,d); };
+const fmt = iso => { const d = pd(iso); return DOW[d.getDay()]+' '+d.getDate()+' '+MON[d.getMonth()]; };
+const daysAgo = iso => Math.round((pd(TODAY)-pd(iso))/86400000);
+
+const STATUS = {
+  'Submitted':{icon:'send',fg:'var(--text)',bg:'var(--surface-2)',bd:'var(--border-strong)'},
+  'Under review':{icon:'eye',fg:'var(--primary)',bg:'var(--primary-bg)',bd:'transparent'},
+  'Plan active':{icon:'circle-check',fg:'var(--accent-ink)',bg:'var(--accent-bg)',bd:'transparent'},
+  'Follow-up due':{icon:'calendar-clock',fg:'var(--warning-ink)',bg:'var(--warning-bg)',bd:'transparent'},
+  'Closed':{icon:'archive',fg:'var(--text-muted)',bg:'transparent',bd:'var(--border)'},
+};
+const URG = [
+  {label:'Standard',long:'Within 2 weeks is fine',icon:'minus',fg:'var(--text-muted)',w:400},
+  {label:'Soon',long:'Within a week',icon:'clock',fg:'var(--warning-ink)',w:700},
+  {label:'Urgent',long:'It\'s urgent',icon:'triangle-alert',fg:'var(--danger)',w:700},
+];
+const PROS = [
+  {id:'ka',initials:'KA',name:'Dr. Kemi Adewale',role:'Learning support specialist',focus:['Reading strategies','Study planning'],load:11,week:[0,1,0,2,3],avail:'Free Fri 16 Oct',free:true,slots:[['2026-10-16','11:00'],['2026-10-16','14:00'],['2026-10-20','09:00']]},
+  {id:'ic',initials:'IC',name:'Mrs. Ifeoma Chukwu',role:'Academic skills tutor',focus:['Note-taking','Writing'],load:8,week:[2,1,0,1,2],avail:'Free today 15:00',free:true,slots:[['2026-10-15','15:00'],['2026-10-16','10:00'],['2026-10-19','13:00']]},
+  {id:'de',initials:'DE',name:'Mr. Daniel Etim',role:'Assistive technology adviser',focus:['Text-to-speech','Screen readers'],load:6,week:[1,0,2,0,1],avail:'Free Fri 16 Oct',free:true,slots:[['2026-10-16','14:00'],['2026-10-21','10:00']]},
+  {id:'sa',initials:'SA',name:'Mr. Segun Afolabi',role:'Counsellor',focus:['Exam stress','Wellbeing'],load:14,week:[0,0,1,0,0],avail:'Next slot Mon 19 Oct',free:true,slots:[['2026-10-19','10:00'],['2026-10-19','15:00']]},
+  {id:'hs',initials:'HS',name:'Dr. Halima Sani',role:'Disability services officer',focus:['Exam arrangements','Assistive equipment'],load:17,week:[0,0,0,0,0],avail:'Booked this week',free:false,slots:[['2026-10-20','09:00']]},
+];
+const CASES = [
+  ['NB-0144','Funmilayo Adeyemi','Management Sciences',1,'Submitted','2026-10-15',null],
+  ['NB-0142','Adaeze Okonkwo','Computing & Engineering Sciences',1,'Submitted','2026-10-13',null],
+  ['NB-0143','Tunde Bakare','Management Sciences',0,'Submitted','2026-10-14',null],
+  ['NB-0140','Zainab Bello','Basic & Applied Sciences',2,'Submitted','2026-10-08',null],
+  ['NB-0141','Bolaji Adesanya','Computing & Engineering Sciences',0,'Submitted','2026-10-13',null],
+  ['NB-0139','Chiamaka Eze','Basic & Applied Sciences',2,'Under review','2026-10-12','hs'],
+  ['NB-0137','Yusuf Abdullahi','Computing & Engineering Sciences',0,'Under review','2026-10-09','sa'],
+  ['NB-0135','Oluwaseun Adebayo','Management Sciences',0,'Plan active','2026-10-06','ka'],
+  ['NB-0133','Kelechi Ibe','Management Sciences',1,'Plan active','2026-10-04','ic'],
+  ['NB-0131','Ibrahim Musa','Computing & Engineering Sciences',0,'Plan active','2026-10-02','ka'],
+  ['NB-0129','Ngozi Obi','Basic & Applied Sciences',1,'Follow-up due','2026-09-29','ic'],
+  ['NB-0127','Emeka Nwosu','Computing & Engineering Sciences',0,'Follow-up due','2026-09-24','de'],
+  ['NB-0118','Amina Garba','Computing & Engineering Sciences',0,'Closed','2026-09-10','ka'],
+].map(r=>({id:r[0],name:r[1],faculty:r[2],urg:r[3],status:r[4],received:r[5],assigned:r[6]}));
+const PROG = {'Computing & Engineering Sciences':'BSc Computer Science','Management Sciences':'BSc Accounting','Basic & Applied Sciences':'BSc Microbiology'};
+const DETAIL = {
+  'NB-0142': { level:'300 level', contact:'Secure message', barriers:['Timed reading tasks','Note-taking in lectures','Noisy rooms or group work'],
+    text:'I lose my place when slides change quickly, and I run out of time in reading-heavy quizzes.', courses:['csc301','csc305','geds210','mth202'],
+    answers:[['Reading long texts in a set time is hard for me.','5 of 5'],['I find it hard to keep track of deadlines.','Skipped'],['Which of these make study harder?','Noisy rooms or group work'],['Lectures often move too fast for me to take notes.','4 of 5'],['Anything else?','"I lose my place when slides change quickly."']],
+    share:{csc301:true,csc305:false,geds210:true,mth202:false,exams:true} },
+};
+const COURSE_NAMES = {csc301:'CSC 301',csc305:'CSC 305',geds210:'GEDS 210',mth202:'MTH 202',acc201:'ACC 201',mgt203:'MGT 203',mcb205:'MCB 205',bch201:'BCH 201',exams:'Exams office'};
+const LECT = {csc301:'Dr. Ogunleye',csc305:'Mr. Okafor',geds210:'Mrs. Lawal',mth202:'Dr. Danjuma',acc201:'Mrs. Nkem Uba',mgt203:'Mr. Tayo Bello',mcb205:'Dr. Femi Ajayi',bch201:'Dr. Grace Oyelade',exams:'The exams office'};
+const GEN_COURSES = {'Computing & Engineering Sciences':['csc301','mth202'],'Management Sciences':['acc201','mgt203'],'Basic & Applied Sciences':['mcb205','bch201']};
+const CATALOGUE = [
+  {label:'Assessments',icon:'timer',items:[
+    {id:'time',title:'Extra time on timed assessments',desc:'For tests, quizzes and exams with a time limit.',icon:'timer',param:{label:'Amount',opts:['10%','25%','50%'],def:'25%'},suggest:'Timed reading tasks'},
+    {id:'quiet',title:'Quiet room for exams',desc:'A smaller room with fewer people.',icon:'volume-x',fixed:'End-of-semester exams',suggest:'Noisy rooms or group work'},
+    {id:'breaks',title:'Rest breaks in exams',desc:'Up to 10 minutes per hour, clock stopped.',icon:'coffee',fixed:'End-of-semester exams'},
+  ]},
+  {label:'Materials',icon:'file-text',items:[
+    {id:'slides',title:'Lecture slides at least 48 hours before class',desc:'So the student can read ahead.',icon:'presentation',suggest:'Note-taking in lectures'},
+    {id:'format',title:'Materials in an accessible format',desc:'The lecturer provides the chosen format.',icon:'file-type',param:{label:'Format',opts:['Screen-reader friendly','Large print','Audio'],def:'Screen-reader friendly'}},
+    {id:'recorded',title:'Recorded lectures where available',desc:'Access to recordings for review.',icon:'video'},
+  ]},
+  {label:'Learning',icon:'book-open',items:[
+    {id:'notes',title:'Note-taking support',desc:'Shared notes from a trained note-taker.',icon:'notebook-pen',suggest:'Note-taking in lectures'},
+    {id:'deadline',title:'Deadline extension of up to 5 days, on request',desc:'Student asks before the deadline. No reason needed.',icon:'calendar-range'},
+  ]},
+  {label:'Environment',icon:'armchair',items:[
+    {id:'seat',title:'Seat near the front or an exit',desc:'In lectures and labs.',icon:'armchair'},
+  ]},
+];
+const ALL_ITEMS = CATALOGUE.flatMap(g=>g.items);
+const SERVICES = [
+  {id:'counselling',label:'Counselling unit',sub:'Wellbeing and personal support',icon:'heart-handshake'},
+  {id:'disability',label:'Disability services office',sub:'Formal exam arrangements and equipment',icon:'accessibility'},
+  {id:'skills',label:'Academic skills centre',sub:'Study skills, writing and planning',icon:'graduation-cap'},
+  {id:'medical',label:'University health centre',sub:'Medical referral. Student must agree first.',icon:'stethoscope'},
+];
+const RF_SLOTS = [['2026-10-16','10:00'],['2026-10-16','13:30'],['2026-10-19','09:00'],['2026-10-19','14:00'],['2026-10-20','11:00']];
+const EVKIND = {
+  follow:{kindLabel:'Follow-up',icon:'calendar-check',fg:'var(--warning-ink)',bg:'var(--warning-bg)'},
+  consult:{kindLabel:'Consultation',icon:'messages-square',fg:'var(--primary)',bg:'var(--primary-bg)'},
+  review:{kindLabel:'Plan review',icon:'clipboard-check',fg:'var(--accent-ink)',bg:'var(--accent-bg)'},
+};
+const FOLLOWUPS = [
+  {id:'f1',case:'NB-0129',name:'Ngozi Obi',date:'2026-10-13',time:'10:00',kind:'follow',with:'Mrs. Ifeoma Chukwu'},
+  {id:'f2',case:'NB-0127',name:'Emeka Nwosu',date:'2026-10-14',time:'14:00',kind:'follow',with:'Mr. Daniel Etim'},
+  {id:'f3',case:'NB-0139',name:'Chiamaka Eze',date:'2026-10-15',time:'11:00',kind:'consult',with:'Dr. Halima Sani'},
+  {id:'f4',case:'NB-0131',name:'Ibrahim Musa',date:'2026-10-16',time:'15:00',kind:'review',with:'Dr. Kemi Adewale'},
+  {id:'f5',case:'NB-0133',name:'Kelechi Ibe',date:'2026-10-16',time:'09:30',kind:'follow',with:'Mrs. Ifeoma Chukwu'},
+  {id:'f6',case:'NB-0137',name:'Yusuf Abdullahi',date:'2026-10-12',time:'13:00',kind:'consult',with:'Mr. Segun Afolabi',done:true},
+  {id:'f7',case:'NB-0135',name:'Oluwaseun Adebayo',date:'2026-10-20',time:'10:00',kind:'follow',with:'Dr. Kemi Adewale'},
+];
+
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  mainRef = React.createRef();
+  state = {
+    prefs:{...DEFAULT_PREFS}, prefsOpen:false, notifOpen:false, drawerOpen:false, toasts:[], speaking:false, layout:'desktop', readAll:false, collapsed:false,
+    screen:'dash', caseId:null, dashRetry:null,
+    statusF:'All', facF:'all', urgF:'all', dateF:'all', query:'', sortKey:'received', sortDir:'desc', page:0,
+    overrides:{}, timelines:{}, revealed:{}, revealConfirm:false, seen:{},
+    proQ:'', proPick:null, slotPick:null, reassigning:false,
+    plans:{}, sel:{}, params:{}, scopes:{}, reviewDate:'2026-11-20', noteStudent:'', noteInternal:'', planError:null, pvTab:'lecturer', pvCourse:'csc301', draftSaved:false,
+    rfService:'skills', rfReason:'', rfSlot:null, rfTell:true, rfError:false,
+    roleF:'All', fuView:'week', fuDone:{},
+  };
+
+  componentDidMount() {
+    let saved = null; try { saved = JSON.parse(localStorage.getItem(PKEY)||'null'); } catch(e) {}
+    const init = {...DEFAULT_PREFS, ...(saved||{})}; this.apply(init); if (saved) this.setState({prefs:init});
+    const el = this.rootRef.current;
+    const measure = () => { const w = el ? el.clientWidth : window.innerWidth; const layout = w<768?'mobile':w<1024?'tablet':'desktop'; if (layout!==this.state.layout) this.setState({layout}); };
+    measure(); if (window.ResizeObserver && el) { this.ro = new ResizeObserver(measure); this.ro.observe(el); }
+    this.onKey = e => { if (e.key==='Escape') this.setState({prefsOpen:false, notifOpen:false, drawerOpen:false, revealConfirm:false}); };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); window.removeEventListener('keydown',this.onKey); if (window.speechSynthesis) speechSynthesis.cancel(); }
+  apply(p) {
+    const r = document.documentElement; r.dataset.theme = p.theme;
+    r.style.fontSize = {S:'16px',M:'18px',L:'20px',XL:'24px'}[p.size] || '16px';
+    r.style.setProperty('--lh', p.line); r.style.setProperty('--ls', p.letter);
+    r.style.setProperty('--font', p.font==='dyslexic' ? '"OpenDyslexic","Atkinson Hyperlegible",sans-serif' : '"Atkinson Hyperlegible",Lexend,system-ui,sans-serif');
+    if (p.motion) r.dataset.motion='reduce'; else delete r.dataset.motion;
+  }
+  setPrefs(next) { this.apply(next); try { localStorage.setItem(PKEY, JSON.stringify(next)); } catch(e) {} this.setState({prefs:next}); }
+  setPref(k,v) { this.setPrefs({...this.state.prefs,[k]:v}); }
+  go(screen, extra) { this.setState({screen, notifOpen:false, drawerOpen:false, ...(extra||{})}); const m = this.mainRef.current; if (m) m.scrollTop = 0; }
+  toast(msg, kind) { const id = Date.now()+Math.random(); const t = kind==='error'?{icon:'circle-alert',fg:'#E07A7A'}:{icon:'circle-check',fg:'#6BC1AE'}; this.setState(s=>({toasts:[...s.toasts,{id,msg,...t}]})); setTimeout(()=>this.setState(s=>({toasts:s.toasts.filter(x=>x.id!==id)})), 6000); }
+  now() { const d = new Date(); return 'Today, '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+  log(caseId, entry) { this.setState(s=>({timelines:{...s.timelines,[caseId]:[...(s.timelines[caseId]||[]), {...entry, when:this.now()}]}})); }
+  seg(key, opts) { const cur = this.state.prefs[key]; return opts.map(o => { const on = cur===o.v; return { label:o.label, sub:o.sub||'', size:o.size||'0.9375rem', font:o.font||'inherit', hasSwatch:!!o.swatch, swatch:o.swatch||'transparent', pressed:String(on), bg:on?'var(--primary-bg)':'var(--surface)', bd:on?'var(--primary)':'var(--border)', onClick:()=>this.setPref(key,o.v) }; }); }
+  sw(on) { return { on:String(on), isOn:on, label:on?'On':'Off', track:on?'var(--primary)':'var(--surface-2)', trackBd:on?'var(--primary)':'var(--border-strong)', knob:on?'var(--on-primary)':'var(--border-strong)', knobLeft:on?'22px':'2px' }; }
+  choice(on) { return { pressed:String(on), on, bd:on?'var(--primary)':'var(--border-strong)', bdW:on?'2px':'1px', bg:on?'var(--primary-bg)':'var(--surface)', boxBd:on?'var(--primary)':'var(--border-strong)', boxBg:on?'var(--primary)':'transparent', dot:on?'var(--primary)':'transparent' }; }
+  pill(on) { return { pressed:String(on), on, bg:on?'var(--primary)':'var(--surface)', fg:on?'var(--on-primary)':'var(--text)', bd:on?'var(--primary)':'var(--border-strong)' }; }
+
+  cases() { const o = this.state.overrides; return CASES.map(c => o[c.id] ? {...c, ...o[c.id]} : c); }
+  sla(c) {
+    if (c.status==='Plan active' || c.status==='Closed') return {slaLabel: c.status==='Closed'?'Closed':'On track', slaIcon:c.status==='Closed'?'archive':'circle-check', slaFg:'var(--text-muted)', slaW:400, left:99};
+    if (c.status==='Follow-up due') { const f = FOLLOWUPS.find(x=>x.case===c.id); const od = f && f.date<TODAY && !this.state.fuDone[f.id]; return od ? {slaLabel:'Follow-up overdue', slaIcon:'circle-alert', slaFg:'var(--danger)', slaW:700, left:-1} : {slaLabel:'Follow-up booked', slaIcon:'calendar-check', slaFg:'var(--text-muted)', slaW:400, left:9}; }
+    if (c.assigned && c.status==='Under review') return {slaLabel:'Contacted', slaIcon:'circle-check', slaFg:'var(--text-muted)', slaW:400, left:50};
+    const used = Math.max(0, daysAgo(c.received)); const work = Math.round(used*5/7); const left = 5-work;
+    if (left<0) return {slaLabel:Math.abs(left)+(left===-1?' day':' days')+' over target', slaIcon:'circle-alert', slaFg:'var(--danger)', slaW:700, left};
+    if (left===0) return {slaLabel:'Reply due today', slaIcon:'clock', slaFg:'var(--warning-ink)', slaW:700, left};
+    return {slaLabel:left+(left===1?' day':' days')+' to reply', slaIcon:'clock', slaFg:'var(--text-muted)', slaW:400, left};
+  }
+  detail(c) {
+    const d = DETAIL[c.id] || { level:'200 level', contact:'University email', barriers:['Keeping track of deadlines'], text:'I keep missing deadlines when several assignments are due in the same week.', courses:GEN_COURSES[c.faculty], answers:[['Check-in','Not completed']], share:{[GEN_COURSES[c.faculty][0]]:true} };
+    return d;
+  }
+
+  renderVals() {
+    const s = this.state, p = s.prefs, P = this.props;
+    const layout = s.layout, isMobile = layout==='mobile', isTablet = layout==='tablet' || (layout==='desktop' && s.collapsed), isDesktop = layout==='desktop';
+    const showSidebar = !isMobile && !p.focus;
+    const dashState = (s.dashRetry && s.dashRetry===P.dashState) ? 'ready' : (P.dashState||'ready');
+    const cases = this.cases();
+
+    const navDefs = [{id:'dash',label:'Caseload',short:'Caseload',icon:'inbox'},{id:'follow',label:'Follow-ups',short:'Follow-ups',icon:'calendar-check'},{id:'pros',label:'Professionals',short:'People',icon:'users'}];
+    const counts = { dash:String(cases.filter(c=>c.status==='Submitted').length), follow:String(FOLLOWUPS.filter(f=>f.date<=TODAY && !f.done && !s.fuDone[f.id]).length), pros:'' };
+    const navCur = ['case','builder','referral'].includes(s.screen) ? 'dash' : s.screen;
+    const sideItems = navDefs.map(n => { const on = navCur===n.id; return { label: isTablet?n.short:n.label, icon:n.icon, current:on?'page':'false', onClick:()=>this.go(n.id), count:counts[n.id], hasCount: !isTablet && !!counts[n.id],
+      fg:on?'var(--primary)':'var(--text)', bg:on?'var(--primary-bg)':'transparent', weight:on?700:400, bar:on?'var(--primary)':'transparent',
+      dir:isTablet?'column':'row', gap:isTablet?'2px':'12px', minH:isTablet?'60px':'48px', pad:isTablet?'6px 2px':'0 12px', fs:isTablet?'0.75rem':'1rem', align:isTablet?'center':'left' }; });
+    const drawerItems = navDefs.map(n => { const on = navCur===n.id; return {label:n.label, icon:n.icon, current:on?'page':'false', onClick:()=>this.go(n.id), fg:on?'var(--primary)':'var(--text)', bg:on?'var(--primary-bg)':'transparent', weight:on?700:400}; });
+
+    // queue
+    const q = s.query.trim().toLowerCase();
+    let rows = cases.filter(c => (s.statusF==='All' || c.status===s.statusF) && (s.facF==='all' || c.faculty===s.facF) && (s.urgF==='all' || String(c.urg)===s.urgF) && (s.dateF==='all' || daysAgo(c.received)<=Number(s.dateF)) && (!q || (c.name+' '+c.id).toLowerCase().includes(q)));
+    rows = rows.map(c => ({...c, ...this.sla(c)}));
+    const dir = s.sortDir==='asc'?1:-1;
+    rows.sort((a,b)=>{ const k=s.sortKey; const A = k==='sla'?a.left:a[k], B = k==='sla'?b.left:b[k]; return (A>B?1:A<B?-1:0)*dir; });
+    const per = 8, pages = Math.max(1,Math.ceil(rows.length/per)), page = Math.min(s.page,pages-1);
+    const pageRows = rows.slice(page*per, page*per+per).map(c => { const st = STATUS[c.status], u = URG[c.urg]; const pro = PROS.find(x=>x.id===c.assigned); const d = pd(c.received);
+      return {...c, urgency:u.label, urgIcon:u.icon, urgFg:u.fg, urgW:u.w, sIcon:st.icon, sFg:st.fg, sBg:st.bg, sBd:st.bd, isNew: c.id==='NB-0142' && !s.seen['NB-0142'],
+        rowBg: c.id==='NB-0142' && !s.seen['NB-0142'] ? 'var(--primary-bg)' : 'transparent',
+        assignedLabel: pro ? pro.name : 'Not assigned', asgFg: pro?'var(--text)':'var(--text-muted)', receivedLabel: d.getDate()+' '+MON[d.getMonth()],
+        openLabel:'Open case '+c.id+', '+c.name, onOpen:()=>this.openCase(c.id) }; });
+    const columns = [{label:'Case',key:'id'},{label:'Student',key:'name'},{label:'Faculty'},{label:'Urgency',key:'urg'},{label:'Status'},{label:'Assigned to'},{label:'Received',key:'received'},{label:'Target',key:'sla'},{label:''}]
+      .map(c => { const on = s.sortKey===c.key; return {...c, sortable:!!c.key, plain:!c.key, icon:on?(s.sortDir==='asc'?'arrow-up':'arrow-down'):'arrow-up-down', fg:on?'var(--text)':'var(--text-muted)', ariaSort:on?(s.sortDir==='asc'?'ascending':'descending'):'none', onSort:()=>this.setState(st=>({sortKey:c.key, sortDir:st.sortKey===c.key && st.sortDir==='asc'?'desc':'asc'}))}; });
+    const statusFilters = ['All','Submitted','Under review','Plan active','Follow-up due','Closed'].map(f => { const on = s.statusF===f; const n = f==='All'?cases.length:cases.filter(c=>c.status===f).length; return {label:f, count:String(n), ...this.pill(on), onClick:()=>this.setState({statusF:f,page:0})}; });
+    const withSla = cases.map(c=>({...c,...this.sla(c)}));
+    const kpi = (label,value,icon,note,opts) => ({label,value:String(value),icon,note,fg:(opts&&opts.danger)?'var(--danger)':'var(--text-muted)',bd:(opts&&opts.danger)?'var(--danger)':'var(--border)',noteColor:(opts&&opts.danger)?'var(--danger)':'var(--text-muted)',noteW:(opts&&opts.danger)?700:400,onClick:opts&&opts.onClick});
+    const newCount = cases.filter(c=>c.status==='Submitted').length, unassigned = cases.filter(c=>!c.assigned && c.status!=='Closed').length;
+    const fuWeek = FOLLOWUPS.filter(f=>f.date>='2026-10-12' && f.date<='2026-10-16' && !f.done).length;
+    const overdueN = withSla.filter(c=>c.left<0).length;
+    const kpis = [
+      kpi('New requests',newCount,'inbox','1 arrived today',{onClick:()=>this.setState({statusF:'Submitted',page:0})}),
+      kpi('Awaiting assignment',unassigned,'user-plus','Oldest: 7 days',{onClick:()=>this.setState({statusF:'Submitted',page:0})}),
+      kpi('Follow-ups this week',fuWeek,'calendar-check','2 today and tomorrow',{onClick:()=>this.go('follow')}),
+      kpi('Overdue',overdueN,'triangle-alert','Past target or follow-up date',{danger:overdueN>0,onClick:()=>this.setState({sortKey:'sla',sortDir:'asc',statusF:'All',page:0})}),
+    ];
+
+    // case
+    const cc = cases.find(x=>x.id===s.caseId) || cases[1];
+    const det = this.detail(cc); const st = STATUS[cc.status]; const u = URG[cc.urg]; const sl = this.sla(cc);
+    const asgPro = PROS.find(x=>x.id===cc.assigned);
+    const shareOn = Object.keys(det.share||{}).filter(k=>k!=='exams' && det.share[k]).map(k=>COURSE_NAMES[k]);
+    const cView = { id:cc.id, name:cc.name, first:cc.name.split(' ')[0], initials:cc.name.split(' ').map(x=>x[0]).join(''), programme:PROG[cc.faculty], level:det.level, contact:det.contact,
+      sharing: shareOn.length ? shareOn.join(', ') : 'Not sharing yet', barriers:det.barriers, text:det.text, courses:det.courses.map(k=>COURSE_NAMES[k]).join(', '),
+      urgencyLong:u.long, urgIcon:u.icon, urgFg:u.fg, receivedLong:fmt(cc.received), status:cc.status, sIcon:st.icon, sFg:st.fg, sBg:st.bg, sBd:st.bd, ...sl,
+      answers: det.answers.map(([q,a])=>({q,a,fg:a==='Skipped'||a==='Prefer not to say'?'var(--text-muted)':'var(--text)'})) };
+    const baseTl = cc.id==='NB-0142' ? [
+      {icon:'clipboard-list',fg:'var(--text)',text:'Student completed the check-in',when:'Tue 13 Oct, 09:05'},
+      {icon:'send',fg:'var(--text)',text:'Student sent a support request',when:'Tue 13 Oct, 09:12'},
+      {icon:'eye',fg:'var(--privacy)',text:'Student chose to share with CSC 301 and GEDS 210',when:'Tue 13 Oct, 09:14'},
+    ] : [{icon:'send',fg:'var(--text)',text:'Student sent a support request',when:fmt(cc.received)}];
+    const timeline = [...baseTl, ...(s.timelines[cc.id]||[])].slice().reverse();
+    const revealed = !!s.revealed[cc.id];
+    const assigning = !asgPro || s.reassigning;
+    const pq = s.proQ.trim().toLowerCase();
+    const proOpts = PROS.filter(x=>!pq || (x.name+' '+x.role).toLowerCase().includes(pq)).map(x => ({...x, ...this.choice(s.proPick===x.id), availShort:x.avail, availIcon:x.free?'circle-check':'circle-minus', availFg:x.free?'var(--accent-ink)':'var(--text-muted)', onClick:()=>this.setState({proPick:x.id, slotPick:null})}));
+    const picked = PROS.find(x=>x.id===s.proPick);
+    const proSlots = picked ? picked.slots.map(([d,t]) => { const on = s.slotPick===d+' '+t; return {label:fmt(d)+', '+t, ...this.pill(on), onClick:()=>this.setState({slotPick:on?null:d+' '+t})}; }) : [];
+    const plan = s.plans[cc.id];
+    const canAssign = !!picked;
+
+    // builder
+    const sel = s.sel, params = s.params, scopes = s.scopes;
+    const studentCourses = det.courses;
+    const catalogue = CATALOGUE.map(g => ({label:g.label, icon:g.icon, items:g.items.map(it => { const on = !!sel[it.id]; const sc = scopes[it.id] || 'all';
+      return { ...it, ...this.choice(on), onToggle:()=>this.setState(st2=>({planError:null, draftSaved:false, sel:{...st2.sel,[it.id]:!st2.sel[it.id]}})), suggested: !!(it.suggest && det.barriers.includes(it.suggest)),
+        hasParam:!!it.param, paramLabel: it.param?it.param.label:'', params: it.param ? it.param.opts.map(o => { const pon = (params[it.id]||it.param.def)===o; return {label:o, ...this.pill(pon), onClick:()=>this.setState(st2=>({params:{...st2.params,[it.id]:o}}))}; }) : [],
+        scoped: !it.fixed, fixedScope: !!it.fixed, scopeText: it.fixed||'',
+        scopes: [{id:'all',label:'All courses'}, ...studentCourses.map(k=>({id:k,label:COURSE_NAMES[k]}))].map(o => { const son = o.id==='all' ? sc==='all' : (Array.isArray(sc) && sc.includes(o.id)); return {label:o.label, ...this.pill(son), onClick:()=>this.setState(st2=>{ let cur = st2.scopes[it.id]||'all'; if (o.id==='all') cur='all'; else { cur = Array.isArray(cur)?cur:[]; cur = cur.includes(o.id)?cur.filter(x=>x!==o.id):[...cur,o.id]; if (!cur.length) cur='all'; } return {scopes:{...st2.scopes,[it.id]:cur}}; })}; }) }; })}));
+    const chosen = ALL_ITEMS.filter(it=>sel[it.id]).map(it => { const prm = it.param ? (params[it.id]||it.param.def) : null; const sc = it.fixed ? null : (scopes[it.id]||'all');
+      const title = it.id==='time' ? 'Extra time on timed assessments ('+prm+')' : it.id==='format' ? 'Materials in an accessible format ('+prm.toLowerCase()+')' : it.title;
+      const scopeText = it.fixed || (sc==='all' ? 'All courses' : sc.map(k=>COURSE_NAMES[k]).join(', '));
+      const appliesTo = k => it.fixed ? k==='exams' : (k!=='exams' && (sc==='all' || sc.includes(k)));
+      return {id:it.id, icon:it.icon, title, scope:scopeText, appliesTo}; });
+    const pvC = [...studentCourses,'exams'].includes(s.pvCourse) ? s.pvCourse : studentCourses[0]; const pvShared = !!(det.share||{})[pvC];
+    const pvItems = chosen.filter(x=>x.appliesTo(pvC)).map(x=>x.title);
+    const rv = s.reviewDate ? fmt(s.reviewDate)+' 2026' : 'not set';
+
+    // referral
+    const services = SERVICES.map(sv => ({...sv, ...this.choice(s.rfService===sv.id), onClick:()=>this.setState({rfService:sv.id})}));
+    const rfDaysList = [...new Set(RF_SLOTS.map(x=>x[0]))].map(d => ({label:fmt(d), slots:RF_SLOTS.filter(x=>x[0]===d).map(([dd,t]) => { const on = s.rfSlot===dd+' '+t; return {time:t, ...this.pill(on), onClick:()=>this.setState({rfSlot:on?null:dd+' '+t})}; })}));
+    const svc = SERVICES.find(x=>x.id===s.rfService);
+    const rfSw = this.sw(s.rfTell);
+
+    // pros
+    const roles = ['All','Learning support','Counselling','Disability services','Skills and technology'];
+    const roleMatch = (pr, r) => r==='All' || (r==='Learning support' && pr.role.includes('Learning')) || (r==='Counselling' && pr.role.includes('Counsell')) || (r==='Disability services' && pr.role.includes('Disability')) || (r==='Skills and technology' && (pr.role.includes('skills')||pr.role.includes('technology')));
+    const proCards = PROS.filter(pr=>roleMatch(pr,s.roleF)).map(pr => ({...pr, availIcon:pr.free?'circle-check':'circle-minus', availFg:pr.free?'var(--accent-ink)':'var(--text-muted)',
+      week: ['Mon 12','Tue 13','Wed 14','Thu 15','Fri 16'].map((d,i)=>{ const n = pr.week[i]; const past = i<3; return {day:d, count: past?'–':String(n), unit: past?'past':(n===1?'slot':'slots'), fg: past?'var(--text-muted)':n?'var(--accent-ink)':'var(--text-muted)', bg: !past && n ? 'var(--accent-bg)':'var(--surface-2)', bd: i===3?'var(--primary)':'transparent'}; }) }));
+
+    // follow-ups
+    const fus = FOLLOWUPS.map(f => ({...f, ...EVKIND[f.kind], done: f.done || !!s.fuDone[f.id], onOpen:()=>this.openCase(f.case)}));
+    const overdue = fus.filter(f=>f.date<TODAY && !f.done).map(f=>({...f, type:f.kindLabel, dueLabel:fmt(f.date)+' at '+f.time, onDone:()=>{ this.setState(st2=>({fuDone:{...st2.fuDone,[f.id]:true}})); this.toast('Marked as done. '+f.name+'\'s case moves back to plan active.'); }}));
+    const weekCols = ['2026-10-12','2026-10-13','2026-10-14','2026-10-15','2026-10-16'].map(d => { const evs = fus.filter(f=>f.date===d).sort((a,b)=>a.time.localeCompare(b.time)).map(f=>({...f, kindLabel: f.done?f.kindLabel+' · done':f.kindLabel})); const dt = pd(d); const today = d===TODAY; return {day:DOW[dt.getDay()], num:String(dt.getDate()), events:evs, empty:!evs.length, headBg:today?'var(--primary)':'var(--surface-2)', headFg:today?'var(--on-primary)':'var(--text)'}; });
+    const agenda = fus.filter(f=>f.date>=TODAY && !f.done).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).map(f=>{ const dt=pd(f.date); return {...f, dow:DOW[dt.getDay()], num:String(dt.getDate())}; });
+
+    const crumbs = s.screen==='case' ? [['dash','Caseload'],[null,cc.id+' · '+cc.name]] : s.screen==='builder' ? [['dash','Caseload'],['case',cc.id+' · '+cc.name],[null,'Support plan']] : s.screen==='referral' ? [['dash','Caseload'],['case',cc.id+' · '+cc.name],[null,'Referral']] : [];
+
+    const notifs = [
+      {g:'New requests',icon:'inbox',fg:'var(--primary)',text:'Funmilayo Adeyemi sent a support request.',when:'Today, 08:10',go:()=>this.openCase('NB-0144')},
+      {g:'New requests',icon:'inbox',fg:'var(--primary)',text:'Adaeze Okonkwo sent a support request.',when:'Tue 13 Oct',go:()=>this.openCase('NB-0142')},
+      {g:'Follow-ups',icon:'calendar-clock',fg:'var(--danger)',text:'2 follow-ups are past their date.',when:'Today',go:()=>this.go('follow')},
+    ];
+    const notifGroups = [...new Set(notifs.map(n=>n.g))].map(g=>({label:g, items:notifs.filter(n=>n.g===g).map(n=>({...n, bg:s.readAll?'transparent':'var(--primary-bg)', weight:s.readAll?400:700, onClick:()=>{ this.setState({readAll:true}); n.go(); }}))}));
+
+    const prefGroups = [
+      {label:'Text size', cols:4, opts:this.seg('size',[{v:'S',label:'S',sub:'16px',size:'0.875rem'},{v:'M',label:'M',sub:'18px',size:'1rem'},{v:'L',label:'L',sub:'20px',size:'1.125rem'},{v:'XL',label:'XL',sub:'24px',size:'1.25rem'}])},
+      {label:'Line spacing', cols:3, opts:this.seg('line',[{v:'1.6',label:'Default',sub:'1.6'},{v:'1.8',label:'Relaxed',sub:'1.8'},{v:'2',label:'Loose',sub:'2.0'}])},
+      {label:'Letter spacing', cols:3, opts:this.seg('letter',[{v:'0em',label:'Default'},{v:'0.04em',label:'Wide'},{v:'0.08em',label:'Wider'}])},
+      {label:'Font', cols:2, opts:this.seg('font',[{v:'default',label:'Default',sub:'Atkinson Hyperlegible',font:'"Atkinson Hyperlegible",sans-serif'},{v:'dyslexic',label:'Dyslexia-friendly',sub:'OpenDyslexic',font:'"OpenDyslexic",sans-serif',size:'0.8125rem'}])},
+      {label:'Theme', cols:2, opts:this.seg('theme',[{v:'light',label:'Light',swatch:'#FAF8F5'},{v:'dark',label:'Dark',swatch:'#14161A'},{v:'hc',label:'High contrast',swatch:'#0A0A0A'},{v:'soft',label:'Soft',sub:'Cream background',swatch:'#F4EEE2'}])},
+    ];
+    const prefToggles = [{id:'pt-motion',key:'motion',title:'Reduce motion',desc:'Stops pulsing and sliding effects.'},{id:'pt-focus',key:'focus',title:'Focus mode',desc:'Hides the side menu.'}].map(t=>({...t, ...this.sw(!!p[t.key]), onClick:()=>this.setPref(t.key,!p[t.key])}));
+
+    const primaryPlan = !!asgPro;
+    return {
+      rootRef:this.rootRef, mainRef:this.mainRef,
+      isMobile, notMobile:!isMobile, isDesktop, notDesktop:!isDesktop,
+      openDrawer:()=>this.setState({drawerOpen:true}), closeDrawer:()=>this.setState({drawerOpen:false}), drawerOpen:s.drawerOpen, drawerExpanded:String(s.drawerOpen), drawerItems,
+      query:s.query, onQuery:e=>this.setState({query:e.target.value, page:0, screen:'dash'}),
+      toggleNotif:()=>this.setState(st2=>({notifOpen:!st2.notifOpen})), notifOpen:s.notifOpen, notifExpanded:String(s.notifOpen), notifGroups, markRead:()=>this.setState({readAll:true}), hasUnread:!s.readAll, notifAria: s.readAll?'Notifications':'Notifications, 3 unread',
+      openPrefs:()=>this.setState({prefsOpen:true}), closePrefs:()=>this.setState({prefsOpen:false}), prefsOpen:s.prefsOpen, prefGroups, prefToggles, resetPrefs:()=>this.setPrefs({...DEFAULT_PREFS}),
+      speakLabel:s.speaking?'Stop reading':'Read page aloud', speakIcon:s.speaking?'square':'volume-2',
+      toggleSpeak:()=>{ if (!window.speechSynthesis) return; if (s.speaking) { speechSynthesis.cancel(); this.setState({speaking:false}); return; } const m=this.mainRef.current; const u2=new SpeechSynthesisUtterance((m?m.innerText:'').slice(0,2500)); u2.onend=()=>this.setState({speaking:false}); speechSynthesis.speak(u2); this.setState({speaking:true}); },
+      showSidebar, sideW:isTablet?'96px':'248px', sidePadX:isTablet?'8px':'12px', sideItems,
+      toggleCollapse:()=>this.setState(st2=>({collapsed:!st2.collapsed})), collapseIcon: isTablet?'panel-left-open':'panel-left-close', collapseLabel: isTablet?'Expand':'Collapse menu',
+      urgentDir:isTablet?'column':'row', urgentGap:isTablet?'2px':'12px', urgentPad:isTablet?'6px 2px':'0 12px', urgentFs:isTablet?'0.75rem':'1rem',
+      mainPad: isMobile?'20px 16px 48px':'28px 32px 64px',
+      hasCrumbs:crumbs.length>0, crumbs: crumbs.map(([id,label])=>({label, link:!!id, last:!id, onClick:id?()=>this.go(id):undefined})),
+      sDash:s.screen==='dash', sCase:s.screen==='case', sBuilder:s.screen==='builder', sReferral:s.screen==='referral', sPros:s.screen==='pros', sFollow:s.screen==='follow',
+      goDash:()=>this.go('dash'),
+      dashLoading:dashState==='loading', dashError:dashState==='error', dashReady:dashState==='ready', retryDash:()=>this.setState({dashRetry:P.dashState}),
+      kpis, statusFilters, columns, pageRows, queueEmpty: rows.length===0,
+      emptyHint: q ? 'No one in your caseload matches "'+s.query+'". Students outside your faculties aren\'t shown here.' : 'Try a different status or faculty.',
+      clearFilters:()=>this.setState({statusF:'All',facF:'all',urgF:'all',dateF:'all',query:'',page:0}),
+      facFilter:s.facF, onFac:e=>this.setState({facF:e.target.value,page:0}), urgFilter:s.urgF, onUrg:e=>this.setState({urgF:e.target.value,page:0}), dateFilter:s.dateF, onDate:e=>this.setState({dateF:e.target.value,page:0}),
+      pageSummary: rows.length ? 'Showing '+(page*per+1)+'–'+Math.min(rows.length,page*per+per)+' of '+rows.length+' cases' : 'No cases',
+      prevDisabled:page===0, nextDisabled:page>=pages-1, prevPage:()=>this.setState({page:Math.max(0,page-1)}), nextPage:()=>this.setState({page:Math.min(pages-1,page+1)}),
+
+      caseDenied: P.caseAccess==='denied', caseAllowed: P.caseAccess!=='denied', openedAt: s.openedAt||'just now', c:cView,
+      ciHidden:!revealed, ciShown:revealed, ciConfirm:s.revealConfirm, ciAsk:!s.revealConfirm, revealedAt: (s.revealed[cc.id]||''),
+      askReveal:()=>this.setState({revealConfirm:true}), cancelReveal:()=>this.setState({revealConfirm:false}),
+      doReveal:()=>{ const t = this.now().replace('Today, ',''); this.setState(st2=>({revealConfirm:false, revealed:{...st2.revealed,[cc.id]:t}})); this.log(cc.id,{icon:'eye',fg:'var(--privacy)',text:'Mariam Ojo revealed the check-in answers (logged)'}); },
+      hideAnswers:()=>this.setState(st2=>{ const r = {...st2.revealed}; delete r[cc.id]; return {revealed:r}; }),
+      onStatus:e=>{ const v=e.target.value; this.setState(st2=>({overrides:{...st2.overrides,[cc.id]:{...(st2.overrides[cc.id]||{}),status:v}}})); this.log(cc.id,{icon:STATUS[v].icon,fg:'var(--primary)',text:'Status changed to '+v}); this.toast('Status changed to '+v+'. '+cView.first+' will see this in their app.'); },
+      assigned: !!asgPro && !s.reassigning, assigning, asg: asgPro || {initials:'',name:'',role:''},
+      asgSlot: (s.overrides[cc.id]||{}).slotLabel || 'No consultation booked yet',
+      assignBd: assigning ? '2px solid var(--primary)' : '1px solid var(--border)',
+      changeAssign:()=>this.setState({reassigning:true, proPick:null, slotPick:null}),
+      proQ:s.proQ, onProQ:e=>this.setState({proQ:e.target.value}), proOpts, proEmpty:proOpts.length===0, proPicked:!!picked, proSlots,
+      assignDisabled:!canAssign, assignBtnBg:canAssign?'var(--primary)':'var(--surface-2)', assignBtnFg:canAssign?'var(--on-primary)':'var(--text-muted)', assignBtnBd:canAssign?'var(--primary)':'var(--border-strong)', assignBtnStyle:canAssign?'solid':'dashed', assignCursor:canAssign?'pointer':'not-allowed',
+      assignLabel: picked ? ('Assign '+picked.name+(s.slotPick?' and book':'')) : 'Choose someone first',
+      doAssign:()=>{ if(!picked) return; const [d,t] = (s.slotPick||'').split(' '); const slotLabel = s.slotPick ? 'Consultation '+fmt(d)+', '+t : null;
+        this.setState(st2=>({reassigning:false, proPick:null, slotPick:null, proQ:'', overrides:{...st2.overrides,[cc.id]:{...(st2.overrides[cc.id]||{}), assigned:picked.id, status: cc.status==='Submitted'?'Under review':cc.status, slotLabel}}}));
+        this.log(cc.id,{icon:'user-check',fg:'var(--primary)',text:'Assigned to '+picked.name+(slotLabel?'. '+slotLabel+' booked':'')});
+        if (cc.status==='Submitted') this.log(cc.id,{icon:'eye',fg:'var(--primary)',text:'Status changed to Under review'});
+        this.toast(picked.name+' assigned.'+(slotLabel?' '+cView.first+' has been sent the booking.':'')); },
+      planBtnBg: primaryPlan?'var(--primary)':'transparent', planBtnFg: primaryPlan?'var(--on-primary)':'var(--primary)', planBtnBd:'var(--primary)', planBtnLabel: plan?'Edit support plan':'Start support plan',
+      goBuilder:()=>{ const existing = s.plans[cc.id]; const sugg = {}; this.go('builder',{planError:null, draftSaved:false, sel: existing?existing.sel:(Object.keys(s.sel).length?s.sel:sugg)}); },
+      goReferral:()=>this.go('referral',{rfError:false}),
+      hasPlan:!!plan, planReview: plan?plan.review:'', planSummary: plan?plan.items:[],
+      timeline,
+
+      catalogue, reviewDate:s.reviewDate, onReview:e=>this.setState({reviewDate:e.target.value, planError:null}), reviewBd: s.planError==='date'?'2px solid var(--danger)':'1px solid var(--border-strong)',
+      noteStudent:s.noteStudent, onNoteStudent:e=>this.setState({noteStudent:e.target.value}), hasNoteStudent:!!s.noteStudent.trim(), noteInternal:s.noteInternal, onNoteInternal:e=>this.setState({noteInternal:e.target.value}),
+      planError:!!s.planError, planErrorText: s.planError==='date' ? 'Set a review date so everyone knows when the plan will be checked.' : 'Choose at least one support before agreeing the plan.',
+      draftNote: s.draftSaved ? 'Draft saved' : 'Not saved yet',
+      previewTabs:[{id:'lecturer',label:'Lecturer sees',icon:'presentation'},{id:'student',label:'Student sees',icon:'graduation-cap'}].map(t=>{ const on = s.pvTab===t.id; return {...t, selected:String(on), bg:on?'var(--surface)':'transparent', bd:on?'var(--border-strong)':'transparent', onClick:()=>this.setState({pvTab:t.id})}; }),
+      pvCourses:[...studentCourses,'exams'].map(k=>({label:COURSE_NAMES[k]+(k==='exams'?'':' · '+LECT[k]), ...this.pill(pvC===k), onClick:()=>this.setState({pvCourse:k})})),
+      pvLecturer:s.pvTab==='lecturer', pvStudent:s.pvTab==='student', pvCourse:pvC, onPvCourse:e=>this.setState({pvCourse:e.target.value}), pvWho:LECT[pvC],
+      pvStudentLabel: pvC==='exams' ? cc.name+' · exam arrangements' : pvShared ? cc.name+' (chose to share)' : 'Nothing shown for this student',
+      pvHasItems: (pvShared || pvC==='exams') && pvItems.length>0, pvNoItems: !((pvShared || pvC==='exams') && pvItems.length>0), pvItems,
+      pvEmptyText: !pvShared && pvC!=='exams' ? cView.first+' hasn\'t chosen to share with '+LECT[pvC]+', so they see nothing. Not even that support exists.' : 'No selected support applies here yet.',
+      pvStudentItems:chosen, pvHasPlan:chosen.length>0, pvNoPlan:chosen.length===0, reviewLabel:rv,
+      saveDraft:()=>{ this.setState({draftSaved:true}); this.toast('Draft saved. '+cView.first+' can\'t see it until you agree it.'); },
+      agreePlan:()=>{ if (!chosen.length) { this.setState({planError:'items'}); return; } if (!s.reviewDate) { this.setState({planError:'date'}); return; }
+        const items = chosen.map(x=>({title:x.title, scope:x.scope})); const nShare = Object.keys(det.share||{}).filter(k=>k!=='exams'&&det.share[k]).length;
+        this.setState(st2=>({plans:{...st2.plans,[cc.id]:{items, review:fmt(st2.reviewDate), sel:st2.sel}}, overrides:{...st2.overrides,[cc.id]:{...(st2.overrides[cc.id]||{}),status:'Plan active'}}}));
+        this.log(cc.id,{icon:'clipboard-check',fg:'var(--accent-ink)',text:'Support plan agreed with '+items.length+' supports. Review '+fmt(s.reviewDate)});
+        this.go('case'); this.toast('Plan agreed. '+cView.first+' has been told, and '+nShare+' lecturers will see their support.'); },
+
+      services, rfReason:s.rfReason, onRfReason:e=>this.setState({rfReason:e.target.value, rfError:false}), rfError:s.rfError, rfBd: s.rfError?'2px solid var(--danger)':'1px dashed var(--privacy)', rfDays:rfDaysList,
+      rfTellOn:rfSw.on, rfTellLabel:rfSw.label, rfTrack:rfSw.track, rfTrackBd:rfSw.trackBd, rfKnob:rfSw.knob, rfKnobLeft:rfSw.knobLeft, toggleRfTell:()=>this.setState(st2=>({rfTell:!st2.rfTell})),
+      rfTellPreview: s.rfTell ? cView.first+' will see: "Mariam has referred you to the '+svc.label.toLowerCase()+'"'+(s.rfSlot?' with the appointment time.':'.') : 'The student won\'t be told yet. Talk to them first.',
+      backToCase:()=>this.go('case'),
+      sendReferral:()=>{ if (!s.rfReason.trim()) { this.setState({rfError:true}); return; } const when = s.rfSlot ? ' for '+fmt(s.rfSlot.split(' ')[0])+', '+s.rfSlot.split(' ')[1] : '';
+        this.log(cc.id,{icon:'share-2',fg:'var(--primary)',text:'Referred to '+svc.label+when+' (reason kept internal)'}); this.setState({rfReason:'', rfSlot:null}); this.go('case'); this.toast('Referral sent to '+svc.label+'.'+(s.rfTell?' '+cView.first+' has been told.':'')); },
+
+      roleFilters: roles.map(r=>({label:r, ...this.pill(s.roleF===r), onClick:()=>this.setState({roleF:r})})), proCards,
+
+      fuTabs:[{id:'week',label:'Week',icon:'calendar-days'},{id:'agenda',label:'Agenda',icon:'list'}].map(t=>{ const on = s.fuView===t.id; return {...t, selected:String(on), bg:on?'var(--surface)':'transparent', bd:on?'var(--border-strong)':'transparent', onClick:()=>this.setState({fuView:t.id})}; }),
+      fuWeek:s.fuView==='week', fuAgenda:s.fuView==='agenda', weekCols, agenda, overdue, hasOverdue:overdue.length>0, overdueTitle: overdue.length+(overdue.length===1?' follow-up is':' follow-ups are')+' past their date',
+      eventKinds:Object.values(EVKIND).map(e=>({label:e.kindLabel, icon:e.icon, fg:e.fg})),
+      toasts: s.toasts.map(t=>({...t, onClose:()=>this.setState(st2=>({toasts:st2.toasts.filter(x=>x.id!==t.id)}))})),
+    };
+  }
+  openCase(id) {
+    const d = new Date(); const t = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+    this.go('case',{caseId:id, openedAt:t, seen:{...this.state.seen,[id]:true}, revealConfirm:false, reassigning:false, proPick:null, slotPick:null, proQ:'', sel:(this.state.plans[id]||{}).sel||{}, pvCourse:'', noteStudent:'', noteInternal:''});
+  }
+}
+</script>
+</body>
+</html>

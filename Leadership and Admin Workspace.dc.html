@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=Lexend:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
+<link href="nb-theme.css" rel="stylesheet">
+<script src="nb-icons.js"></script>
+</helmet>
+<div ref="{{ rootRef }}" style="position:relative;height:100vh;overflow:hidden;background:var(--bg);color:var(--text);display:flex;flex-direction:column">
+  <a href="#la-main" style="position:absolute;left:12px;top:-80px;z-index:100;background:var(--primary);color:var(--on-primary);padding:12px 16px;border-radius:8px;font-weight:700;text-decoration:none" style-focus="top:12px">Skip to content</a>
+
+  <header style="flex:none;display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border)">
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <button type="button" onClick="{{ openDrawer }}" aria-label="Open menu" style="width:44px;height:44px;flex:none;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="menu" size="22"></nb-icon></button>
+    </sc-if>
+    <img src="assets/babcock-logo.jpeg" alt="Babcock University" style="height:40px;width:auto;display:block;border-radius:2px">
+    <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0"><span style="font-weight:700">NeuroBridge</span><span style="font-size:0.8125rem;color:var(--text-muted)">{{ areaLabel }}</span></div>
+    <div style="flex:1 1 auto"></div>
+    <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+      <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;background:var(--primary-bg);color:var(--primary);font-size:0.8125rem;font-weight:700;white-space:nowrap"><nb-icon name="{{ roleIcon }}" size="16"></nb-icon>Signed in as {{ roleLabel }}</span>
+    </sc-if>
+    <button type="button" onClick="{{ openPrefs }}" aria-haspopup="dialog" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;font-size:0.875rem;cursor:pointer"><nb-icon name="type" size="20"></nb-icon>Reading</button>
+    <span aria-hidden="true" style="width:40px;height:40px;flex:none;border-radius:50%;background:var(--privacy-bg);color:var(--privacy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem">{{ initials }}</span>
+  </header>
+
+  <div style="flex:1 1 auto;min-height:0;display:flex">
+    <sc-if value="{{ showSidebar }}" hint-placeholder-val="{{ true }}">
+      <nav aria-label="Main" style="flex:none;width:{{ sideW }};border-right:1px solid var(--border);background:var(--surface);padding:16px {{ sidePadX }};display:flex;flex-direction:column;gap:2px;overflow:auto">
+        <sc-for list="{{ sideItems }}" as="si" hint-placeholder-count="4">
+          <button type="button" onClick="{{ si.onClick }}" aria-current="{{ si.current }}" style="display:flex;flex-direction:{{ si.dir }};align-items:center;gap:{{ si.gap }};min-height:{{ si.minH }};padding:{{ si.pad }};border-radius:8px;border:0;border-left:3px solid {{ si.bar }};background:{{ si.bg }};color:{{ si.fg }};font-weight:{{ si.weight }};font-size:{{ si.fs }};text-align:{{ si.align }};cursor:pointer;line-height:1.2" style-hover="background:var(--surface-2)"><nb-icon name="{{ si.icon }}" size="22"></nb-icon><span>{{ si.label }}</span></button>
+        </sc-for>
+      </nav>
+    </sc-if>
+
+    <main id="la-main" ref="{{ mainRef }}" tabindex="-1" style="flex:1 1 auto;min-width:0;overflow:auto;outline:none">
+      <div style="max-width:1200px;margin:0 auto;padding:{{ mainPad }};display:flex;flex-direction:column;gap:24px">
+
+        <div style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between">
+          <div style="display:flex;flex-direction:column;gap:4px;min-width:0"><h1 style="margin:0;font-size:2rem;line-height:1.25">{{ pageTitle }}</h1><p style="margin:0;color:var(--text-muted);text-wrap:pretty">{{ pageSub }}</p></div>
+          <sc-if value="{{ hasPageAction }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ pageAction }}" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)"><nb-icon name="{{ pageActionIcon }}" size="20"></nb-icon>{{ pageActionLabel }}</button></sc-if>
+        </div>
+
+        <sc-if value="{{ showFilters }}" hint-placeholder-val="{{ true }}">
+          <section aria-label="Filters" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px">
+            <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+              <div style="display:flex;flex-direction:column;gap:6px"><label for="{{ f.id }}" style="font-weight:700;font-size:0.9375rem">{{ f.label }}</label>
+                <select id="{{ f.id }}" value="{{ f.value }}" onChange="{{ f.onChange }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"><sc-for list="{{ f.opts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.label }}</option></sc-for></select></div>
+            </sc-for>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ showPrivacyNote }}" hint-placeholder-val="{{ true }}">
+          <div role="note" style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;background:var(--privacy-bg)"><span style="color:var(--privacy);display:flex;padding-top:2px"><nb-icon name="shield-check" size="22"></nb-icon></span><span style="text-wrap:pretty">{{ privacyNote }}</span></div>
+        </sc-if>
+
+        <!-- DASHBOARD -->
+        <sc-if value="{{ sDash }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ dashEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:40px 24px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+              <div aria-hidden="true" style="display:flex;gap:8px;align-items:flex-end;height:56px"><div style="width:16px;height:20px;border-radius:4px;background:var(--surface-2)"></div><div style="width:16px;height:36px;border-radius:4px;background:var(--primary-bg)"></div><div style="width:16px;height:28px;border-radius:4px;background:var(--surface-2)"></div><div style="width:16px;height:48px;border-radius:4px;background:var(--primary-bg)"></div></div>
+              <h2 style="margin:0;font-size:1.25rem">No data for this semester yet</h2>
+              <p style="margin:0;color:var(--text-muted);max-width:48ch">Second semester starts in February. Pick another period to see trends.</p>
+            </div>
+          </sc-if>
+          <sc-if value="{{ dashHas }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px">
+              <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="3">
+                <section aria-label="{{ k.label }}" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+                  <span style="font-size:0.9375rem;font-weight:700;color:var(--text-muted)">{{ k.label }}</span>
+                  <sc-if value="{{ k.shown }}" hint-placeholder-val="{{ true }}"><span style="font-size:2.25rem;font-weight:700;line-height:1.1">{{ k.value }}</span><span style="display:inline-flex;align-items:center;gap:6px;font-size:0.875rem;color:{{ k.deltaFg }}"><nb-icon name="{{ k.deltaIcon }}" size="16"></nb-icon>{{ k.delta }}</span></sc-if>
+                  <sc-if value="{{ k.hidden }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-self:flex-start;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;background:var(--privacy-bg);color:var(--privacy);font-weight:700"><nb-icon name="eye-off" size="18"></nb-icon>Suppressed for privacy</span><span style="font-size:0.875rem;color:var(--text-muted)">Fewer than {{ threshold }} students in this group</span></sc-if>
+                </section>
+              </sc-for>
+            </div>
+
+            <section aria-labelledby="h-trend" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;align-items:center">
+                <div style="display:flex;flex-direction:column"><h2 id="h-trend" style="margin:0;font-size:1.25rem">Support requests over time</h2><span style="font-size:0.9375rem;color:var(--text-muted)">{{ trendSub }}</span></div>
+                <button type="button" onClick="{{ toggleTable }}" aria-pressed="{{ tableOn }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="{{ tableIcon }}" size="18"></nb-icon>{{ tableLabel }}</button>
+              </div>
+              <sc-if value="{{ chartsOn }}" hint-placeholder-val="{{ true }}">{{ lineChart }}</sc-if>
+              <sc-if value="{{ tablesOn }}" hint-placeholder-val="{{ false }}">
+                <table style="width:100%;border-collapse:collapse;font-size:0.9375rem"><caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Support requests by month</caption>
+                  <thead><tr style="background:var(--surface-2)"><th scope="col" style="text-align:left;padding:10px 12px">Month</th><th scope="col" style="text-align:right;padding:10px 12px">Requests</th></tr></thead>
+                  <tbody><sc-for list="{{ months }}" as="m" hint-placeholder-count="5"><tr style="border-bottom:1px solid var(--border)"><th scope="row" style="text-align:left;padding:10px 12px;font-weight:400">{{ m.label }}</th><td style="text-align:right;padding:10px 12px;font-weight:700;color:{{ m.fg }}">{{ m.text }}</td></tr></sc-for></tbody>
+                </table>
+              </sc-if>
+            </section>
+
+            <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:stretch">
+              <section aria-labelledby="h-bar" style="flex:1 1 400px;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;flex-direction:column"><h2 id="h-bar" style="margin:0;font-size:1.25rem">{{ barTitle }}</h2><span style="font-size:0.9375rem;color:var(--text-muted)">Support requests</span></div>
+                <div role="list" style="display:flex;gap:10px;align-items:flex-end;height:220px;padding-top:24px;border-bottom:1px solid var(--border-strong)">
+                  <sc-for list="{{ bars }}" as="b" hint-placeholder-count="6">
+                    <div role="listitem" aria-label="{{ b.aria }}" style="flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px">
+                      <span style="font-size:0.875rem;font-weight:700;color:{{ b.valFg }};display:flex;align-items:center;gap:4px"><sc-if value="{{ b.sup }}" hint-placeholder-val="{{ false }}"><nb-icon name="eye-off" size="14"></nb-icon></sc-if>{{ b.text }}</span>
+                      <div style="width:100%;max-width:56px;height:{{ b.h }};border-radius:6px 6px 0 0;background:{{ b.bg }};border:{{ b.bd }};border-bottom:0"></div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;gap:10px"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="6"><span style="flex:1 1 0;min-width:0;text-align:center;font-size:0.8125rem;color:var(--text-muted);overflow-wrap:anywhere;line-height:1.3">{{ b.label }}</span></sc-for></div>
+              </section>
+
+              <section aria-labelledby="h-types" style="flex:1 1 400px;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;flex-direction:column"><h2 id="h-types" style="margin:0;font-size:1.25rem">Accommodations in use</h2><span style="font-size:0.9375rem;color:var(--text-muted)">Students with each approved support</span></div>
+                <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px">
+                  <sc-for list="{{ types }}" as="t" hint-placeholder-count="6">
+                    <li style="display:flex;flex-direction:column;gap:4px">
+                      <div style="display:flex;justify-content:space-between;gap:8px;font-size:0.9375rem"><span>{{ t.label }}</span><span style="font-weight:700;color:{{ t.valFg }};display:inline-flex;align-items:center;gap:4px;white-space:nowrap"><sc-if value="{{ t.sup }}" hint-placeholder-val="{{ false }}"><nb-icon name="eye-off" size="14"></nb-icon></sc-if>{{ t.text }}</span></div>
+                      <div style="height:12px;border-radius:999px;background:var(--surface-2);overflow:hidden"><div style="height:100%;width:{{ t.w }};border-radius:999px;background:{{ t.bg }}"></div></div>
+                    </li>
+                  </sc-for>
+                </ul>
+              </section>
+            </div>
+          </sc-if>
+        </sc-if>
+
+        <!-- READINESS -->
+        <sc-if value="{{ sReady }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px">
+            <sc-for list="{{ readyTiles }}" as="k" hint-placeholder-count="3"><section aria-label="{{ k.label }}" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;gap:4px"><span style="font-size:0.9375rem;font-weight:700;color:var(--text-muted)">{{ k.label }}</span><span style="font-size:2.25rem;font-weight:700;line-height:1.1">{{ k.value }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ k.sub }}</span></section></sc-for>
+          </div>
+          <section aria-labelledby="h-rt" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+            <h2 id="h-rt" style="margin:0;padding:16px 20px;font-size:1.125rem;border-bottom:1px solid var(--border)">Courses</h2>
+            <div role="table" aria-labelledby="h-rt">
+              <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+                <div role="row" style="display:grid;grid-template-columns:minmax(220px,2fr) minmax(160px,1.3fr) minmax(140px,1fr) minmax(120px,1fr) minmax(150px,1fr);background:var(--surface-2);border-bottom:1px solid var(--border);font-size:0.875rem;font-weight:700;color:var(--text-muted)">
+                  <span role="columnheader" style="padding:10px 16px">Course</span><span role="columnheader" style="padding:10px 16px">Lecturer</span><span role="columnheader" style="padding:10px 16px">Students with supports</span><span role="columnheader" style="padding:10px 16px">Accessible lessons</span><span role="columnheader" style="padding:10px 16px">Status</span>
+                </div>
+              </sc-if>
+              <sc-for list="{{ readyRows }}" as="r" hint-placeholder-count="6">
+                <div role="row" style="display:grid;grid-template-columns:{{ readyCols }};border-bottom:1px solid var(--border);align-items:center">
+                  <span role="cell" style="padding:12px 16px;display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ r.code }} · {{ r.name }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ r.faculty }} · {{ r.level }} level</span></span>
+                  <span role="cell" style="padding:12px 16px">{{ r.lecturer }}</span>
+                  <span role="cell" style="padding:12px 16px;font-weight:700;color:{{ r.nFg }};display:flex;align-items:center;gap:6px"><sc-if value="{{ r.sup }}" hint-placeholder-val="{{ false }}"><nb-icon name="eye-off" size="16"></nb-icon></sc-if>{{ r.nText }}</span>
+                  <span role="cell" style="padding:12px 16px">{{ r.lessonsText }}</span>
+                  <span role="cell" style="padding:12px 16px"><span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:{{ r.sBg }};color:{{ r.sFg }};font-size:0.8125rem;font-weight:700"><nb-icon name="{{ r.sIcon }}" size="14"></nb-icon>{{ r.status }}</span></span>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+        </sc-if>
+
+        <!-- REPORTS -->
+        <sc-if value="{{ sReports }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+            <section aria-labelledby="h-rep" style="flex:1 1 340px;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+              <h2 id="h-rep" style="margin:0;font-size:1.125rem">What to include</h2>
+              <sc-for list="{{ repOpts }}" as="o" hint-placeholder-count="5">
+                <button type="button" role="checkbox" aria-checked="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:flex;gap:12px;align-items:flex-start;text-align:left;min-height:52px;padding:10px 12px;border-radius:8px;border:{{ o.bdW }} solid {{ o.bd }};background:{{ o.bg }};cursor:pointer">
+                  <span style="width:24px;height:24px;flex:none;border-radius:6px;border:2px solid {{ o.boxBd }};background:{{ o.boxBg }};color:var(--on-primary);display:flex;align-items:center;justify-content:center"><sc-if value="{{ o.on }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="16"></nb-icon></sc-if></span>
+                  <span style="display:flex;flex-direction:column;line-height:1.4"><span style="font-weight:700">{{ o.label }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ o.sub }}</span></span>
+                </button>
+              </sc-for>
+              <div style="display:flex;flex-direction:column;gap:6px"><label for="r-title" style="font-weight:700">Report title</label><input id="r-title" value="{{ repTitle }}" onChange="{{ onRepTitle }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"></div>
+              <sc-if value="{{ repIdle }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ genReport }}" disabled="{{ repNone }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer;opacity:{{ repOpacity }}"><nb-icon name="file-text" size="20"></nb-icon>Create PDF report</button></sc-if>
+              <sc-if value="{{ repBusy }}" hint-placeholder-val="{{ false }}"><div role="status" style="display:flex;flex-direction:column;gap:8px"><span style="font-weight:700">Building your report…</span><div role="progressbar" aria-label="Report progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ repPctNum }}" style="height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden"><div style="height:100%;width:{{ repPct }};background:var(--primary);transition:width .3s"></div></div></div></sc-if>
+              <sc-if value="{{ repDone }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:10px;background:var(--accent-bg)">
+                  <span style="display:flex;gap:8px;align-items:center;font-weight:700;color:var(--accent-ink)"><nb-icon name="circle-check" size="20"></nb-icon>Report ready</span>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" onClick="{{ dlReport }}" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer"><nb-icon name="download" size="18"></nb-icon>Download PDF</button><button type="button" onClick="{{ resetReport }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Change and rebuild</button></div>
+                </div>
+              </sc-if>
+            </section>
+            <div style="flex:1.4 1 420px;min-width:0;background:var(--surface-2);border-radius:10px;padding:20px;display:flex;justify-content:center">
+              <article aria-label="Report preview" style="width:100%;max-width:560px;background:#FFFFFF;color:#1F2328;border:1px solid #E3DED6;box-shadow:var(--shadow-md);padding:32px 36px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><img src="assets/babcock-logo.jpeg" alt="" style="height:36px;width:auto"><span style="font-size:0.75rem;color:#5B6470;text-align:right">Inclusion Committee · {{ periodLabel }}</span></div>
+                <h2 style="margin:0;font-size:1.375rem;color:#1F2328">{{ repTitle }}</h2>
+                <span style="font-size:0.8125rem;color:#5B6470">Aggregate figures only. Groups under {{ threshold }} students are suppressed.</span>
+                <sc-for list="{{ repPreview }}" as="rp" hint-placeholder-count="4">
+                  <div style="display:flex;flex-direction:column;gap:6px;padding-top:10px;border-top:1px solid #E3DED6">
+                    <span style="font-weight:700;font-size:0.9375rem;color:#1F2328">{{ rp.label }}</span>
+                    <div style="display:flex;gap:6px;align-items:flex-end;height:{{ rp.h }}"><sc-for list="{{ rp.bars }}" as="pb" hint-placeholder-count="5"><div style="flex:1 1 0;height:{{ pb.h }};background:{{ pb.bg }};border-radius:3px 3px 0 0"></div></sc-for></div>
+                    <span style="font-size:0.8125rem;color:#5B6470">{{ rp.note }}</span>
+                  </div>
+                </sc-for>
+                <span style="font-size:0.75rem;color:#5B6470;padding-top:10px;border-top:1px solid #E3DED6">Prepared by {{ userName }} · generated {{ today }} · NeuroBridge</span>
+              </article>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- USERS -->
+        <sc-if value="{{ sUsers }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ inviteOpen }}" hint-placeholder-val="{{ false }}">
+            <form onSubmit="{{ sendInvite }}" aria-labelledby="h-inv" style="background:var(--surface);border:2px solid var(--primary);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px">
+              <h2 id="h-inv" style="margin:0;font-size:1.125rem">Invite someone</h2>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px">
+                <div style="display:flex;flex-direction:column;gap:6px"><label for="i-name" style="font-weight:700">Full name</label><input id="i-name" value="{{ invName }}" onChange="{{ onInvName }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"></div>
+                <div style="display:flex;flex-direction:column;gap:6px"><label for="i-email" style="font-weight:700">University email</label><input id="i-email" type="email" value="{{ invEmail }}" onChange="{{ onInvEmail }}" aria-invalid="{{ invEmailBad }}" aria-describedby="i-email-err" placeholder="name@babcock.edu.ng" style="min-height:48px;padding:0 12px;border-radius:8px;border:{{ invEmailBd }};background:var(--surface)"></div>
+                <div style="display:flex;flex-direction:column;gap:6px"><label for="i-role" style="font-weight:700">Role</label><select id="i-role" value="{{ invRole }}" onChange="{{ onInvRole }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"><sc-for list="{{ roleOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></div>
+              </div>
+              <sc-if value="{{ invErr }}" hint-placeholder-val="{{ false }}"><span id="i-email-err" role="alert" style="display:flex;gap:6px;align-items:center;color:var(--danger);font-weight:700"><nb-icon name="circle-alert" size="18"></nb-icon>Use a babcock.edu.ng email address.</span></sc-if>
+              <span style="font-size:0.9375rem;color:var(--text-muted)">{{ invRoleHelp }}</span>
+              <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="submit" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">Send invite</button><button type="button" onClick="{{ closeInvite }}" style="min-height:48px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Cancel</button></div>
+            </form>
+          </sc-if>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+            <div style="flex:1 1 260px;display:flex;flex-direction:column;gap:6px"><label for="u-q" style="font-weight:700">Search people</label><input id="u-q" type="search" value="{{ uq }}" onChange="{{ onUq }}" placeholder="Name or email" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"></div>
+            <div role="group" aria-label="Filter by role" style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ roleFilters }}" as="f" hint-placeholder-count="4"><button type="button" aria-pressed="{{ f.pressed }}" onClick="{{ f.onClick }}" style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ f.bd }};background:{{ f.bg }};color:{{ f.fg }};font-weight:700;cursor:pointer">{{ f.label }}</button></sc-for></div>
+          </div>
+          <section aria-label="People" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+            <sc-for list="{{ userRows }}" as="u" hint-placeholder-count="6">
+              <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);opacity:{{ u.op }}">
+                <span style="flex:2 1 240px;display:flex;gap:12px;align-items:center;min-width:0"><span aria-hidden="true" style="width:40px;height:40px;flex:none;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem">{{ u.initials }}</span><span style="display:flex;flex-direction:column;line-height:1.35;min-width:0"><span style="font-weight:700">{{ u.name }}</span><span style="font-size:0.875rem;color:var(--text-muted);overflow-wrap:anywhere">{{ u.email }}</span></span></span>
+                <div style="flex:1 1 200px;display:flex;flex-direction:column;gap:4px"><label for="{{ u.selId }}" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Role for {{ u.name }}</label><select id="{{ u.selId }}" value="{{ u.role }}" onChange="{{ u.onRole }}" disabled="{{ u.inactive }}" style="min-height:44px;padding:0 10px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"><sc-for list="{{ roleOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></div>
+                <span style="flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:{{ u.sBg }};color:{{ u.sFg }};font-size:0.8125rem;font-weight:700"><nb-icon name="{{ u.sIcon }}" size="14"></nb-icon>{{ u.status }}</span>
+                <span style="flex:0 1 140px;font-size:0.875rem;color:var(--text-muted)">{{ u.last }}</span>
+                <sc-if value="{{ u.confirming }}" hint-placeholder-val="{{ false }}">
+                  <div role="alert" style="flex:1 1 100%;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:12px;border-radius:8px;background:var(--danger-bg)"><span style="flex:1 1 260px"><strong>Deactivate {{ u.name }}?</strong> They lose access straight away. Their records stay, and you can reactivate them later.</span><button type="button" onClick="{{ u.onConfirm }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--danger);background:var(--danger);color:#FFFFFF;font-weight:700;cursor:pointer">Deactivate</button><button type="button" onClick="{{ u.onCancel }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;cursor:pointer">Keep active</button></div>
+                </sc-if>
+                <sc-if value="{{ u.notConfirming }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ u.onToggle }}" style="flex:0 0 auto;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid {{ u.tBd }};background:transparent;color:{{ u.tFg }};font-weight:700;cursor:pointer">{{ u.tLabel }}</button></sc-if>
+              </div>
+            </sc-for>
+            <sc-if value="{{ usersEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:24px;text-align:center;color:var(--text-muted)">No one matches. Check the spelling or clear the filter.</p></sc-if>
+          </section>
+        </sc-if>
+
+        <!-- COURSES -->
+        <sc-if value="{{ sCourses }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+            <section aria-labelledby="h-crs" style="flex:3 1 480px;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+              <h2 id="h-crs" style="margin:0;padding:16px 20px;font-size:1.125rem;border-bottom:1px solid var(--border)">Courses and their curriculum</h2>
+              <sc-for list="{{ courseRows }}" as="c" hint-placeholder-count="6">
+                <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border)">
+                  <span style="flex:2 1 220px;display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ c.code }} · {{ c.name }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ c.faculty }} · {{ c.lecturer }}</span></span>
+                  <div style="flex:2 1 240px;display:flex;flex-direction:column;gap:4px"><label for="{{ c.selId }}" style="font-size:0.8125rem;font-weight:700;color:var(--text-muted)">Curriculum document</label><select id="{{ c.selId }}" value="{{ c.doc }}" onChange="{{ c.onDoc }}" style="min-height:44px;padding:0 10px;border-radius:8px;border:{{ c.selBd }};background:var(--surface)"><option value="">Not mapped yet</option><sc-for list="{{ docOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></div>
+                  <sc-if value="{{ c.unmapped }}" hint-placeholder-val="{{ false }}"><span style="flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;font-size:0.875rem;font-weight:700;color:var(--warning-ink)"><nb-icon name="triangle-alert" size="16"></nb-icon>Teaching Studio can't draft for this course yet</span></sc-if>
+                </div>
+              </sc-for>
+            </section>
+            <section aria-labelledby="h-docs" style="flex:2 1 320px;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+              <h2 id="h-docs" style="margin:0;font-size:1.125rem">Approved curriculum documents</h2>
+              <span style="font-size:0.9375rem;color:var(--text-muted);margin-top:-4px">Lecturers' AI drafts follow the document mapped to their course.</span>
+              <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+                <sc-for list="{{ docRows }}" as="d" hint-placeholder-count="3"><li style="display:flex;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--border);border-radius:10px"><span style="width:36px;height:36px;flex:none;border-radius:8px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--text-muted)"><nb-icon name="file-text" size="18"></nb-icon></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700;font-size:0.9375rem;overflow-wrap:anywhere">{{ d.name }}</span><span style="font-size:0.8125rem;color:var(--text-muted)">Approved {{ d.approved }} · {{ d.used }}</span></span></li></sc-for>
+              </ul>
+              <div style="border:2px dashed var(--border-strong);border-radius:10px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;background:var(--surface-2)">
+                <span style="color:var(--primary);display:flex"><nb-icon name="upload" size="26"></nb-icon></span><span style="font-weight:700">Upload an approved curriculum</span><span style="font-size:0.875rem;color:var(--text-muted)">PDF or DOCX</span>
+                <input id="la-doc" type="file" accept=".pdf,.docx" onChange="{{ onDocFile }}" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none">
+                <label for="la-doc" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);color:var(--primary);background:var(--surface);font-weight:700;cursor:pointer">Choose file</label>
+              </div>
+            </section>
+          </div>
+        </sc-if>
+
+        <!-- CATALOGUE -->
+        <sc-if value="{{ sCat }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ catFormOpen }}" hint-placeholder-val="{{ false }}">
+            <form onSubmit="{{ saveCat }}" aria-labelledby="h-catf" style="background:var(--surface);border:2px solid var(--primary);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+              <h2 id="h-catf" style="margin:0;font-size:1.125rem">{{ catFormTitle }}</h2>
+              <div style="display:flex;flex-direction:column;gap:6px"><label for="c-name" style="font-weight:700">Name students and lecturers see</label><input id="c-name" value="{{ catName }}" onChange="{{ onCatName }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"></div>
+              <div style="display:flex;flex-direction:column;gap:6px"><label for="c-todo" style="font-weight:700">What the lecturer needs to do</label><span style="font-size:0.875rem;color:var(--text-muted);margin-top:-4px">Plain words. Never mention a condition.</span><textarea id="c-todo" rows="3" value="{{ catTodo }}" onChange="{{ onCatTodo }}" style="padding:12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);resize:vertical;line-height:var(--lh)"></textarea></div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="submit" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">Save</button><button type="button" onClick="{{ closeCat }}" style="min-height:48px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Cancel</button></div>
+            </form>
+          </sc-if>
+          <section aria-label="Accommodation catalogue" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:12px">
+            <sc-for list="{{ catRows }}" as="c" hint-placeholder-count="6">
+              <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;opacity:{{ c.op }}">
+                <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--accent-ink);display:flex;padding-top:2px"><nb-icon name="{{ c.icon }}" size="22"></nb-icon></span><span style="flex:1;display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ c.name }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ c.usedText }}</span></span><span style="display:inline-flex;align-items:center;padding:2px 10px;border-radius:999px;background:{{ c.sBg }};color:{{ c.sFg }};font-size:0.8125rem;font-weight:700">{{ c.status }}</span></div>
+                <p style="margin:0;font-size:0.9375rem;text-wrap:pretty">{{ c.todo }}</p>
+                <div style="display:flex;gap:6px;margin-top:auto"><button type="button" onClick="{{ c.onEdit }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="pencil" size="16"></nb-icon>Edit</button><button type="button" onClick="{{ c.onArchive }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:var(--text-muted);font-weight:700;cursor:pointer"><nb-icon name="{{ c.archIcon }}" size="16"></nb-icon>{{ c.archLabel }}</button></div>
+              </div>
+            </sc-for>
+          </section>
+        </sc-if>
+
+        <!-- AUDIT -->
+        <sc-if value="{{ sAudit }}" hint-placeholder-val="{{ false }}">
+          <section aria-label="Audit filters" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px">
+            <div style="display:flex;flex-direction:column;gap:6px"><label for="a-q" style="font-weight:700;font-size:0.9375rem">Person</label><input id="a-q" type="search" value="{{ aq }}" onChange="{{ onAq }}" placeholder="Name" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"></div>
+            <sc-for list="{{ auditFilters }}" as="f" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;gap:6px"><label for="{{ f.id }}" style="font-weight:700;font-size:0.9375rem">{{ f.label }}</label><select id="{{ f.id }}" value="{{ f.value }}" onChange="{{ f.onChange }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"><sc-for list="{{ f.opts }}" as="o" hint-placeholder-count="4"><option value="{{ o }}">{{ o }}</option></sc-for></select></div>
+            </sc-for>
+          </section>
+          <section aria-labelledby="h-aud" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--border)"><h2 id="h-aud" style="margin:0;font-size:1.125rem">{{ auditCount }}</h2><button type="button" onClick="{{ exportAudit }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="download" size="18"></nb-icon>Export CSV</button></div>
+            <div style="overflow-x:auto">
+              <table style="width:100%;min-width:760px;border-collapse:collapse;font-size:0.9375rem">
+                <caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Audit log</caption>
+                <thead><tr style="background:var(--surface-2);color:var(--text-muted);font-size:0.875rem"><th scope="col" style="text-align:left;padding:10px 16px">When</th><th scope="col" style="text-align:left;padding:10px 16px">Who</th><th scope="col" style="text-align:left;padding:10px 16px">Record type</th><th scope="col" style="text-align:left;padding:10px 16px">Record</th><th scope="col" style="text-align:left;padding:10px 16px">Action</th><th scope="col" style="text-align:left;padding:10px 16px">IP address</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ auditRows }}" as="a" hint-placeholder-count="8">
+                    <tr style="border-bottom:1px solid var(--border)">
+                      <td style="padding:10px 16px;white-space:nowrap">{{ a.when }}</td>
+                      <td style="padding:10px 16px"><span style="display:flex;flex-direction:column;line-height:1.3"><span style="font-weight:700">{{ a.who }}</span><span style="font-size:0.8125rem;color:var(--text-muted)">{{ a.role }}</span></span></td>
+                      <td style="padding:10px 16px">{{ a.type }}</td>
+                      <td style="padding:10px 16px;font-family:var(--mono);font-size:0.875rem">{{ a.rec }}</td>
+                      <td style="padding:10px 16px"><span style="display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;background:{{ a.aBg }};color:{{ a.aFg }};font-size:0.8125rem;font-weight:700"><nb-icon name="{{ a.aIcon }}" size="14"></nb-icon>{{ a.action }}</span></td>
+                      <td style="padding:10px 16px;font-family:var(--mono);font-size:0.875rem">{{ a.ip }}</td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+            <sc-if value="{{ auditEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:24px;text-align:center;color:var(--text-muted)">Nothing matches these filters.</p></sc-if>
+          </section>
+        </sc-if>
+
+        <!-- SETTINGS -->
+        <sc-if value="{{ sSettings }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:16px;max-width:820px">
+            <section aria-labelledby="h-ret" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px">
+              <h2 id="h-ret" style="margin:0;font-size:1.125rem">Privacy and data</h2>
+              <div style="display:flex;flex-direction:column;gap:6px"><label for="st-ret" style="font-weight:700">Keep case records for</label><span style="font-size:0.875rem;color:var(--text-muted);margin-top:-4px">Counted from when the student leaves the university. Then records are deleted.</span>
+                <select id="st-ret" value="{{ retention }}" onChange="{{ onRetention }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);max-width:360px"><option value="3">3 years</option><option value="5">5 years</option><option value="7">7 years</option></select></div>
+              <div style="display:flex;flex-direction:column;gap:6px"><label for="st-thr" style="font-weight:700">Hide groups smaller than</label><span id="st-thr-help" style="font-size:0.875rem;color:var(--text-muted);margin-top:-4px">Department Heads see "Suppressed for privacy" instead of a number. 5 is the lowest allowed.</span>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <button type="button" onClick="{{ thrDown }}" aria-label="Decrease" style="width:48px;height:48px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="minus" size="18"></nb-icon></button>
+                  <input id="st-thr" type="number" min="5" max="20" value="{{ thrInput }}" onChange="{{ onThr }}" aria-invalid="{{ thrBad }}" aria-describedby="st-thr-help" style="width:88px;min-height:48px;padding:0 12px;border-radius:8px;border:{{ thrBd }};background:var(--surface);text-align:center;font-weight:700">
+                  <button type="button" onClick="{{ thrUp }}" aria-label="Increase" style="width:48px;height:48px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="plus" size="18"></nb-icon></button>
+                  <span style="color:var(--text-muted)">students</span>
+                </div>
+                <sc-if value="{{ thrErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="display:flex;gap:6px;align-items:center;color:var(--danger);font-weight:700"><nb-icon name="circle-alert" size="18"></nb-icon>Can't be lower than 5. Small groups could identify a student.</span></sc-if>
+              </div>
+            </section>
+            <section aria-labelledby="h-ai" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:6px">
+              <h2 id="h-ai" style="margin:0 0 8px;font-size:1.125rem">AI drafting</h2>
+              <div style="display:flex;flex-direction:column;gap:6px;padding-bottom:12px"><label for="st-model" style="font-weight:700">Model</label><select id="st-model" value="{{ model }}" onChange="{{ onModel }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);max-width:420px"><option value="standard">Standard (recommended)</option><option value="fast">Fast, shorter drafts</option><option value="local">On-campus model, no data leaves the university</option></select></div>
+              <sc-for list="{{ aiToggles }}" as="t" hint-placeholder-count="3">
+                <div style="display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-top:1px solid var(--border)">
+                  <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span id="{{ t.id }}" style="font-weight:700">{{ t.title }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ t.desc }}</span></div>
+                  <button type="button" role="switch" aria-checked="{{ t.on }}" aria-labelledby="{{ t.id }}" onClick="{{ t.onClick }}" style="flex:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;background:transparent;cursor:pointer"><span style="font-size:0.875rem;font-weight:700;width:28px;text-align:right">{{ t.label }}</span><span style="position:relative;width:52px;height:32px;border-radius:999px;background:{{ t.track }};border:2px solid {{ t.trackBd }}"><span style="position:absolute;top:2px;left:{{ t.knobLeft }};width:24px;height:24px;border-radius:50%;background:{{ t.knob }};transition:left .15s"></span></span></button>
+                </div>
+              </sc-for>
+            </section>
+            <section aria-labelledby="h-consent" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline"><h2 id="h-consent" style="margin:0;font-size:1.125rem">Student consent text</h2><span style="font-size:0.875rem;color:var(--text-muted)">{{ consentVer }}</span></div>
+              <label for="st-consent" style="font-weight:700">Shown before a student's first check-in</label>
+              <textarea id="st-consent" rows="6" value="{{ consent }}" onChange="{{ onConsent }}" style="padding:12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);resize:vertical;line-height:var(--lh)"></textarea>
+              <sc-if value="{{ consentChanged }}" hint-placeholder-val="{{ false }}"><div role="note" style="display:flex;gap:8px;align-items:flex-start;padding:12px 14px;border-radius:8px;background:var(--warning-bg)"><span style="color:var(--warning-ink);display:flex;padding-top:2px"><nb-icon name="triangle-alert" size="18"></nb-icon></span><span style="font-size:0.9375rem">Saving publishes a new version. Every student will be asked to read and agree again.</span></div></sc-if>
+            </section>
+          </div>
+          <sc-if value="{{ dirty }}" hint-placeholder-val="{{ false }}">
+            <div style="position:sticky;bottom:0;display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-radius:10px;background:var(--surface);border:1px solid var(--border-strong);box-shadow:var(--shadow-lg);max-width:820px">
+              <span style="flex:1 1 220px;font-weight:700">You have unsaved changes</span>
+              <button type="button" onClick="{{ discard }}" style="min-height:48px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Discard</button>
+              <button type="button" onClick="{{ saveSettings }}" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">Save changes</button>
+            </div>
+          </sc-if>
+        </sc-if>
+      </div>
+    </main>
+  </div>
+
+  <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;z-index:40;background:rgba(20,22,26,.35)"></div>
+    <nav aria-label="Main" style="position:absolute;top:0;left:0;bottom:0;z-index:41;width:min(300px,86%);background:var(--surface);box-shadow:var(--shadow-lg);padding:12px;display:flex;flex-direction:column;gap:4px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 4px 12px"><span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;background:var(--primary-bg);color:var(--primary);font-size:0.8125rem;font-weight:700"><nb-icon name="{{ roleIcon }}" size="16"></nb-icon>{{ roleLabel }}</span><button type="button" onClick="{{ closeDrawer }}" aria-label="Close menu" style="width:44px;height:44px;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="22"></nb-icon></button></div>
+      <sc-for list="{{ drawerItems }}" as="si" hint-placeholder-count="4"><button type="button" onClick="{{ si.onClick }}" aria-current="{{ si.current }}" style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px;border-radius:8px;border:0;background:{{ si.bg }};color:{{ si.fg }};font-weight:{{ si.weight }};text-align:left;cursor:pointer"><nb-icon name="{{ si.icon }}" size="22"></nb-icon>{{ si.label }}</button></sc-for>
+    </nav>
+  </sc-if>
+
+  <sc-if value="{{ prefsOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePrefs }}" style="position:absolute;inset:0;z-index:40;background:rgba(20,22,26,.35)"></div>
+    <aside role="dialog" aria-modal="true" aria-labelledby="rp-title" style="position:absolute;top:0;right:0;bottom:0;z-index:41;width:min(440px,100%);background:var(--surface);border-left:1px solid var(--border);box-shadow:var(--shadow-lg);display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;flex-direction:column;line-height:1.3"><h2 id="rp-title" style="margin:0;font-size:1.25rem">Reading preferences</h2><span style="font-size:0.875rem;color:var(--text-muted)">Changes apply straight away and are saved for you.</span></div>
+        <button type="button" onClick="{{ closePrefs }}" aria-label="Close reading preferences" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="22"></nb-icon></button>
+      </div>
+      <div style="flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:24px">
+        <sc-for list="{{ prefGroups }}" as="g" hint-placeholder-count="5">
+          <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+            <legend style="font-weight:700;padding:0;margin-bottom:8px">{{ g.label }}</legend>
+            <div style="display:grid;grid-template-columns:repeat({{ g.cols }},minmax(0,1fr));gap:6px">
+              <sc-for list="{{ g.opts }}" as="o" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;padding:6px 8px;border-radius:8px;border:2px solid {{ o.bd }};background:{{ o.bg }};color:var(--text);font-family:{{ o.font }};cursor:pointer;line-height:1.2"><span style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:{{ o.size }}"><sc-if value="{{ o.hasSwatch }}" hint-placeholder-val="{{ false }}"><span style="width:16px;height:16px;border-radius:50%;background:{{ o.swatch }};border:1px solid var(--border-strong)"></span></sc-if>{{ o.label }}</span><span style="font-size:0.75rem;color:var(--text-muted)">{{ o.sub }}</span></button>
+              </sc-for>
+            </div>
+          </fieldset>
+        </sc-for>
+        <div style="display:flex;flex-direction:column;border-top:1px solid var(--border)">
+          <sc-for list="{{ prefToggles }}" as="t" hint-placeholder-count="2">
+            <div style="display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)">
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span id="{{ t.id }}" style="font-weight:700">{{ t.title }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ t.desc }}</span></div>
+              <button type="button" role="switch" aria-checked="{{ t.on }}" aria-labelledby="{{ t.id }}" onClick="{{ t.onClick }}" style="flex:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;background:transparent;cursor:pointer"><span style="font-size:0.875rem;font-weight:700;width:28px;text-align:right">{{ t.label }}</span><span style="position:relative;width:52px;height:32px;border-radius:999px;background:{{ t.track }};border:2px solid {{ t.trackBd }}"><span style="position:absolute;top:2px;left:{{ t.knobLeft }};width:24px;height:24px;border-radius:50%;background:{{ t.knob }};transition:left .15s"></span></span></button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;padding:16px 20px;border-top:1px solid var(--border);flex-wrap:wrap">
+        <button type="button" onClick="{{ toggleSpeak }}" style="flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer"><nb-icon name="{{ speakIcon }}" size="20"></nb-icon>{{ speakLabel }}</button>
+        <button type="button" onClick="{{ resetPrefs }}" style="min-height:48px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Reset</button>
+      </div>
+    </aside>
+  </sc-if>
+
+  <div role="status" aria-live="polite" style="position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;width:min(480px,calc(100% - 24px))">
+    <sc-for list="{{ toasts }}" as="t" hint-placeholder-count="0">
+      <div style="display:flex;gap:12px;align-items:center;padding:10px 8px 10px 16px;border-radius:10px;background:var(--text);color:var(--bg);box-shadow:var(--shadow-lg)"><span style="color:{{ t.fg }};display:flex"><nb-icon name="{{ t.icon }}" size="20"></nb-icon></span><span style="flex:1;font-size:0.9375rem">{{ t.msg }}</span><button type="button" onClick="{{ t.onClose }}" aria-label="Dismiss" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="18"></nb-icon></button></div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dashboard&quot;,&quot;readiness&quot;,&quot;reports&quot;,&quot;users&quot;,&quot;courses&quot;,&quot;catalogue&quot;,&quot;audit&quot;,&quot;settings&quot;],&quot;default&quot;:&quot;dashboard&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Start at&quot;}}">
+const PKEY = 'nb-reading-prefs-staff';
+const DEFAULT_PREFS = {size:'S',line:'1.6',letter:'0em',font:'default',theme:'light',motion:false,focus:false};
+const FAC = [
+  {id:'comp',label:'Computing and Engineering Sciences',short:'Computing',base:64},
+  {id:'sci',label:'Science and Technology',short:'Science',base:41},
+  {id:'mgmt',label:'Management Sciences',short:'Management',base:33},
+  {id:'edu',label:'Education and Humanities',short:'Education',base:27},
+  {id:'law',label:'Law and Security Studies',short:'Law',base:12},
+  {id:'nur',label:'Nursing Sciences',short:'Nursing',base:6},
+];
+const LEVELS = [{v:'100',f:.3},{v:'200',f:.24},{v:'300',f:.2},{v:'400',f:.16},{v:'500',f:.1}];
+const MONTHS = ['Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul'];
+const MSHARE = [.07,.13,.11,.06,.08,.09,.12,.1,.08,.1,.06];
+const TYPES = [['Extra time on assessments',.42],['Deadline extension on request',.36],['Slides 48 hours before class',.3],['Separate exam room',.14],['Note-taking support',.1],['Screen-reader friendly materials',.08],['Rest breaks in exams',.06]];
+const COURSES = [
+  {code:'CSC 301',name:'Data Structures',fac:'comp',level:'300',lecturer:'Dr. Temitope Ogunleye',n:11,lessons:6,doc:'d1'},
+  {code:'CSC 401',name:'Software Engineering',fac:'comp',level:'400',lecturer:'Dr. Temitope Ogunleye',n:5,lessons:3,doc:'d1'},
+  {code:'COS 202',name:'Computer Programming II',fac:'comp',level:'200',lecturer:'Mr. Chidi Okafor',n:3,lessons:0,doc:'d2'},
+  {code:'SEN 312',name:'Human-Computer Interaction',fac:'comp',level:'300',lecturer:'Dr. Musa Danjuma',n:7,lessons:0,doc:''},
+  {code:'BIO 201',name:'Genetics',fac:'sci',level:'200',lecturer:'Dr. Ngozi Eze',n:9,lessons:4,doc:'d3'},
+  {code:'ACC 301',name:'Cost Accounting',fac:'mgmt',level:'300',lecturer:'Mrs. Bisi Lawal',n:6,lessons:1,doc:'d3'},
+  {code:'EDU 214',name:'Educational Psychology',fac:'edu',level:'200',lecturer:'Prof. Kemi Alade',n:8,lessons:5,doc:'d3'},
+  {code:'LAW 302',name:'Law of Contract',fac:'law',level:'300',lecturer:'Barr. Ifeoma Nwosu',n:2,lessons:1,doc:''},
+];
+const DOCS = [{id:'d1',name:'CSC course outlines 2026/27.pdf',approved:'2 Sep 2026'},{id:'d2',name:'NUC CCMAS Computer Science (2023).pdf',approved:'14 Jan 2025'},{id:'d3',name:'Faculty curriculum handbook 2026.docx',approved:'28 Aug 2026'}];
+const ROLES = ['Student','Support Officer','Lecturer','Department Head','System Admin'];
+const ROLE_HELP = {'Student':'Sees only their own records.','Support Officer':'Sees cases in their caseload and faculty. Every case they open is logged.','Lecturer':'Sees accommodations students share with them. Never diagnoses or case notes.','Department Head':'Sees totals only. Groups under the privacy threshold are hidden.','System Admin':'Manages people, courses and settings. Sees record metadata, never case content.'};
+const USERS = [
+  {id:1,name:'Mrs. Aisha Bello',email:'a.bello@babcock.edu.ng',role:'Support Officer',active:true,last:'Today, 09:14'},
+  {id:2,name:'Mr. Tunde Adebayo',email:'t.adebayo@babcock.edu.ng',role:'Support Officer',active:true,last:'Yesterday'},
+  {id:3,name:'Dr. Temitope Ogunleye',email:'t.ogunleye@babcock.edu.ng',role:'Lecturer',active:true,last:'Today, 08:02'},
+  {id:4,name:'Mr. Chidi Okafor',email:'c.okafor@babcock.edu.ng',role:'Lecturer',active:true,last:'12 Oct'},
+  {id:5,name:'Prof. Yetunde Adeyemi',email:'y.adeyemi@babcock.edu.ng',role:'Department Head',active:true,last:'Today, 10:40'},
+  {id:6,name:'Dr. Musa Danjuma',email:'m.danjuma@babcock.edu.ng',role:'Lecturer',active:true,last:'Invite sent 14 Oct',invited:true},
+  {id:7,name:'Mr. Segun Bakare',email:'s.bakare@babcock.edu.ng',role:'System Admin',active:true,last:'Now'},
+  {id:8,name:'Mrs. Grace Uche',email:'g.uche@babcock.edu.ng',role:'Support Officer',active:false,last:'Deactivated 30 Jun'},
+];
+const CAT = [
+  {id:'c1',icon:'timer',name:'Extra time on timed assessments (25%)',todo:'Add 25% to the time limit for quizzes and tests you set. The exams office handles final exams.',used:77,active:true},
+  {id:'c2',icon:'calendar-range',name:'Deadline extension of up to 5 days, on request',todo:'Agree a new date when a student asks before the deadline. No reason is needed.',used:66,active:true},
+  {id:'c3',icon:'presentation',name:'Lecture slides 48 hours before class',todo:'Post slides to the course page two days before the lecture.',used:55,active:true},
+  {id:'c4',icon:'door-closed',name:'Separate exam room',todo:'No action for you. The exams office arranges the room.',used:26,active:true},
+  {id:'c5',icon:'notebook-pen',name:'Note-taking support',todo:'A note-taker may attend lectures. Let them sit near the front.',used:18,active:true},
+  {id:'c6',icon:'file-type',name:'Materials in a screen-reader friendly format',todo:'Use real headings and describe images. Teaching Studio exports do this for you.',used:15,active:true},
+  {id:'c7',icon:'cassette-tape',name:'Audio recording of lectures',todo:'Allow the student to record. Recordings are for personal study only.',used:0,active:false},
+];
+const AUDIT = [
+  ['16 Oct 10:42','Mrs. Aisha Bello','Support Officer','Case record','NB-0142','Viewed','10.12.4.21'],
+  ['16 Oct 10:40','Prof. Yetunde Adeyemi','Department Head','Report','RPT-0031','Exported','10.12.7.3'],
+  ['16 Oct 10:15','Mrs. Aisha Bello','Support Officer','Support plan','PLAN-0098','Updated','10.12.4.21'],
+  ['16 Oct 09:58','Mr. Segun Bakare','System Admin','User account','USR-0006','Created','10.12.1.9'],
+  ['16 Oct 09:30','Mr. Tunde Adebayo','Support Officer','Case record','NB-0139','Viewed','10.12.4.33'],
+  ['16 Oct 08:47','Dr. Temitope Ogunleye','Lecturer','Accommodation list','CRS-CSC301','Viewed','10.14.2.88'],
+  ['15 Oct 17:12','Mr. Tunde Adebayo','Support Officer','Case record','NB-0139','Access denied','197.210.54.12'],
+  ['15 Oct 16:05','Mrs. Aisha Bello','Support Officer','Case notes','NB-0142','Updated','10.12.4.21'],
+  ['15 Oct 14:20','Mr. Segun Bakare','System Admin','Settings','CFG-PRIVACY','Updated','10.12.1.9'],
+  ['15 Oct 11:03','Dr. Temitope Ogunleye','Lecturer','Lesson','LSN-0211','Approved','10.14.2.88'],
+  ['14 Oct 15:44','Mrs. Aisha Bello','Support Officer','Check-in answers','CHK-0571','Viewed','10.12.4.21'],
+  ['14 Oct 09:12','Mr. Segun Bakare','System Admin','Curriculum','DOC-0003','Created','10.12.1.9'],
+];
+const ACT = {Viewed:{i:'eye',fg:'var(--primary)',bg:'var(--primary-bg)'},Updated:{i:'pencil',fg:'var(--accent-ink)',bg:'var(--accent-bg)'},Created:{i:'plus',fg:'var(--accent-ink)',bg:'var(--accent-bg)'},Exported:{i:'download',fg:'var(--privacy)',bg:'var(--privacy-bg)'},Approved:{i:'badge-check',fg:'var(--accent-ink)',bg:'var(--accent-bg)'},'Access denied':{i:'shield-alert',fg:'var(--danger)',bg:'var(--danger-bg)'}};
+const CONSENT = 'NeuroBridge helps you get learning support at Babcock University. What you tell us is private. Only the support office sees your answers. Lecturers only see the accommodations you choose to share with them, never the reasons. You can stop at any time, and you can ask us to delete your records.';
+const SET0 = {retention:'5', threshold:5, model:'standard', cite:true, industry:true, store:false, consent:CONSENT};
+const SCREENS = {dashboard:'head',readiness:'head',reports:'head',users:'admin',courses:'admin',catalogue:'admin',audit:'admin',settings:'admin'};
+const NAV = {
+  head:[{id:'dashboard',label:'Inclusion dashboard',short:'Dashboard',icon:'chart-column'},{id:'readiness',label:'Teaching readiness',short:'Readiness',icon:'graduation-cap'},{id:'reports',label:'Reports',icon:'file-text'}],
+  admin:[{id:'users',label:'Users and roles',short:'Users',icon:'users'},{id:'courses',label:'Courses and curriculum',short:'Courses',icon:'book-open'},{id:'catalogue',label:'Accommodation catalogue',short:'Catalogue',icon:'list-checks'},{id:'audit',label:'Audit log',short:'Audit',icon:'scroll-text'},{id:'settings',label:'Settings',icon:'settings'}],
+};
+
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  mainRef = React.createRef();
+  state = {
+    prefs:{...DEFAULT_PREFS}, prefsOpen:false, drawerOpen:false, toasts:[], speaking:false, layout:'desktop', nav:null,
+    session:'2025/26', semester:'all', faculty:'all', level:'all', tableView:false,
+    rep:{trend:true,faculty:true,types:true,kpi:true,ready:false}, repTitle:'Inclusion report, 2025/26 session', repState:'idle', repPct:0,
+    users:USERS, uq:'', uRole:'All', confirm:null, inviteOpen:false, invName:'', invEmail:'', invRole:'Lecturer', invErr:false,
+    courses:COURSES, docs:DOCS,
+    cat:CAT, catForm:null, catName:'', catTodo:'',
+    aq:'', aType:'All record types', aAction:'All actions', aRole:'All roles',
+    saved:{...SET0}, set:{...SET0}, thrInput:'5', consentVer:'Version 3 · published 1 Aug 2026',
+  };
+  componentDidMount() {
+    let saved = null; try { saved = JSON.parse(localStorage.getItem(PKEY)||'null'); } catch(e) {}
+    const init = {...DEFAULT_PREFS, ...(saved||{})}; this.apply(init); if (saved) this.setState({prefs:init});
+    const el = this.rootRef.current;
+    const measure = () => { const w = el ? el.clientWidth : window.innerWidth; const layout = w<768?'mobile':w<1024?'tablet':'desktop'; if (layout!==this.state.layout) this.setState({layout}); };
+    measure(); if (window.ResizeObserver && el) { this.ro = new ResizeObserver(measure); this.ro.observe(el); }
+    this.onKey = e => { if (e.key==='Escape') this.setState({prefsOpen:false, drawerOpen:false}); };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); window.removeEventListener('keydown',this.onKey); clearInterval(this.rt); if (window.speechSynthesis) speechSynthesis.cancel(); }
+  apply(p) {
+    const r = document.documentElement; r.dataset.theme = p.theme;
+    r.style.fontSize = {S:'16px',M:'18px',L:'20px',XL:'24px'}[p.size] || '16px';
+    r.style.setProperty('--lh', p.line); r.style.setProperty('--ls', p.letter);
+    r.style.setProperty('--font', p.font==='dyslexic' ? '"OpenDyslexic","Atkinson Hyperlegible",sans-serif' : '"Atkinson Hyperlegible",Lexend,system-ui,sans-serif');
+    if (p.motion) r.dataset.motion='reduce'; else delete r.dataset.motion;
+  }
+  setPrefs(next) { this.apply(next); try { localStorage.setItem(PKEY, JSON.stringify(next)); } catch(e) {} this.setState({prefs:next}); }
+  setPref(k,v) { this.setPrefs({...this.state.prefs,[k]:v}); }
+  toast(msg, kind) { const id = Date.now()+Math.random(); const t = kind==='error'?{icon:'circle-alert',fg:'#E07A7A'}:{icon:'circle-check',fg:'#6BC1AE'}; this.setState(s=>({toasts:[...s.toasts,{id,msg,...t}]})); setTimeout(()=>this.setState(s=>({toasts:s.toasts.filter(x=>x.id!==id)})), 6000); }
+  seg(key, opts) { const cur = this.state.prefs[key]; return opts.map(o => { const on = cur===o.v; return { label:o.label, sub:o.sub||'', size:o.size||'0.9375rem', font:o.font||'inherit', hasSwatch:!!o.swatch, swatch:o.swatch||'transparent', pressed:String(on), bg:on?'var(--primary-bg)':'var(--surface)', bd:on?'var(--primary)':'var(--border)', onClick:()=>this.setPref(key,o.v) }; }); }
+  sw(on) { return { on:String(on), label:on?'On':'Off', track:on?'var(--primary)':'var(--surface-2)', trackBd:on?'var(--primary)':'var(--border-strong)', knob:on?'var(--on-primary)':'var(--border-strong)', knobLeft:on?'22px':'2px' }; }
+  choice(on) { return { pressed:String(on), on, bd:on?'var(--primary)':'var(--border-strong)', bdW:on?'2px':'1px', bg:on?'var(--primary-bg)':'var(--surface)', boxBd:on?'var(--primary)':'var(--border-strong)', boxBg:on?'var(--primary)':'transparent' }; }
+  pill(on) { return { pressed:String(on), bg:on?'var(--primary)':'var(--surface)', fg:on?'var(--on-primary)':'var(--text)', bd:on?'var(--primary)':'var(--border-strong)' }; }
+  screen() { const sp = this.props.startScreen || 'dashboard'; const n = this.state.nav; return n && n.prop===sp ? n.screen : (SCREENS[sp]?sp:'dashboard'); }
+  go(id) { this.setState({nav:{prop:this.props.startScreen||'dashboard', screen:id}, drawerOpen:false}); const m = this.mainRef.current; if (m) m.scrollTop = 0; }
+  setS(k,v) { this.setState(s=>({set:{...s.set,[k]:v}})); }
+
+  data() {
+    const s = this.state;
+    const sessF = s.session==='2026/27' ? 1.12 : 1;
+    let mIdx = s.semester==='first' ? [0,1,2,3,4] : s.semester==='second' ? [5,6,7,8,9,10] : MONTHS.map((_,i)=>i);
+    if (s.session==='2026/27') mIdx = mIdx.filter(i=>i<2);
+    const lvlF = s.level==='all' ? 1 : LEVELS.find(l=>l.v===s.level).f;
+    const facs = s.faculty==='all' ? FAC : FAC.filter(f=>f.id===s.faculty);
+    const base = facs.reduce((a,f)=>a+f.base,0) * lvlF * sessF;
+    const months = mIdx.map(i=>({label:MONTHS[i], v:Math.round(base*MSHARE[i]*1.4)}));
+    const total = months.reduce((a,m)=>a+m.v,0);
+    const share = mIdx.reduce((a,i)=>a+MSHARE[i],0) || 1;
+    const bars = s.faculty==='all'
+      ? FAC.map(f=>({label:f.short, v:Math.round(f.base*lvlF*sessF*share*1.4)}))
+      : LEVELS.map(l=>({label:l.v+' level', v:Math.round(facs[0].base*l.f*sessF*share*1.4), sel:s.level===l.v}));
+    const types = TYPES.map(([label,f])=>({label, v:Math.round(total*f)}));
+    return {months, total, bars, types, empty: mIdx.length===0};
+  }
+  lineChart(months, thr, max) {
+    const e = React.createElement, W = 640, H = 220, pl = 36, pr = 12, pt = 16, pb = 28;
+    const n = months.length, x = i => n<2 ? pl+(W-pl-pr)/2 : pl + i*(W-pl-pr)/(n-1), y = v => pt + (H-pt-pb)*(1-v/max);
+    const ticks = [0, Math.round(max/2), max];
+    const pts = months.map((m,i)=>[x(i), y(m.v), m]);
+    const kids = [
+      ...ticks.map(t=>e('g',{key:'t'+t},e('line',{x1:pl,x2:W-pr,y1:y(t),y2:y(t),stroke:'var(--border)'}),e('text',{x:pl-8,y:y(t)+4,textAnchor:'end',fontSize:12,fill:'var(--text-muted)'},t))),
+      e('polyline',{key:'l',points:pts.map(p=>p[0]+','+p[1]).join(' '),fill:'none',stroke:'var(--primary)',strokeWidth:3,strokeLinejoin:'round'}),
+      ...pts.map((p,i)=>{ const sup = p[2].v<thr; return e('g',{key:'p'+i},
+        e('circle',{cx:p[0],cy:p[1],r:sup?6:5,fill:sup?'var(--surface)':'var(--primary)',stroke:sup?'var(--privacy)':'var(--primary)',strokeWidth:2,strokeDasharray:sup?'3 2':null}),
+        e('text',{x:p[0],y:p[1]-12,textAnchor:'middle',fontSize:12,fontWeight:700,fill:sup?'var(--privacy)':'var(--text)'},sup?'Hidden':p[2].v),
+        e('text',{x:p[0],y:H-8,textAnchor:'middle',fontSize:12,fill:'var(--text-muted)'},p[2].label)); }),
+    ];
+    const desc = months.map(m=>m.label+' '+(m.v<thr?'suppressed':m.v)).join(', ');
+    return e('svg',{viewBox:'0 0 '+W+' '+H,role:'img','aria-label':'Line chart of support requests by month: '+desc,style:{width:'100%',height:'auto',display:'block',fontFamily:'inherit'}},...kids);
+  }
+
+  renderVals() {
+    const s = this.state, p = s.prefs;
+    const screen = this.screen(), role = SCREENS[screen];
+    const isMobile = s.layout==='mobile', isTablet = s.layout==='tablet';
+    const thr = s.saved.threshold;
+    const sup = v => v < thr;
+    const nav = NAV[role];
+    const sideItems = nav.map(n => { const on = screen===n.id; return { label:isTablet?(n.short||n.label):n.label, icon:n.icon, current:on?'page':'false', onClick:()=>this.go(n.id), fg:on?'var(--primary)':'var(--text)', bg:on?'var(--primary-bg)':'transparent', weight:on?700:400, bar:on?'var(--primary)':'transparent', dir:isTablet?'column':'row', gap:isTablet?'2px':'12px', minH:isTablet?'60px':'48px', pad:isTablet?'6px 2px':'0 12px', fs:isTablet?'0.75rem':'1rem', align:isTablet?'center':'left' }; });
+    const drawerItems = nav.map(n => { const on = screen===n.id; return {label:n.label, icon:n.icon, current:on?'page':'false', onClick:()=>this.go(n.id), fg:on?'var(--primary)':'var(--text)', bg:on?'var(--primary-bg)':'transparent', weight:on?700:400}; });
+
+    const sel = (id,label,value,key,opts) => ({id,label,value,opts,onChange:e=>this.setState({[key]:e.target.value, repState:'idle'})});
+    const filters = [
+      sel('f-sess','Session',s.session,'session',[{v:'2025/26',label:'2025/26'},{v:'2026/27',label:'2026/27 (so far)'}]),
+      sel('f-sem','Semester',s.semester,'semester',[{v:'all',label:'Whole session'},{v:'first',label:'First semester'},{v:'second',label:'Second semester'}]),
+      sel('f-fac','Faculty',s.faculty,'faculty',[{v:'all',label:'All faculties'},...FAC.map(f=>({v:f.id,label:f.label}))]),
+      sel('f-lvl','Level',s.level,'level',[{v:'all',label:'All levels'},...LEVELS.map(l=>({v:l.v,label:l.v+' level'}))]),
+    ];
+    const d = this.data();
+    const facLabel = s.faculty==='all'?'All faculties':FAC.find(f=>f.id===s.faculty).short;
+    const periodLabel = s.session+' · '+(s.semester==='all'?'whole session':s.semester+' semester');
+    const totalSup = sup(d.total);
+    const prev = s.session==='2026/27';
+    const kpis = [
+      {label:'Support requests', v:String(d.total), delta:prev?'On track with last year':'Up 18% on 2024/25', up:true, n:d.total},
+      {label:'Median time to support plan', v:prev?'5 days':'6 days', delta:prev?'1 day faster than last session':'2 days faster than 2024/25', up:true, n:d.total},
+      {label:'Follow-ups completed', v:prev?'91%':'87%', delta:prev?'Up 4 points':'Up 6 points on 2024/25', up:true, n:d.total},
+    ].map(k=>({label:k.label, value:k.v, delta:k.delta, deltaIcon:'trending-up', deltaFg:'var(--accent-ink)', shown:!sup(k.n), hidden:sup(k.n)}));
+    const maxBar = Math.max(thr, ...d.bars.map(b=>b.v));
+    const bars = d.bars.map(b=>{ const x = sup(b.v); return {label:b.label, text:x?'Hidden':String(b.v), sup:x, aria:b.label+': '+(x?'suppressed for privacy':b.v+' requests'), h:x?'40%':Math.max(4,b.v/maxBar*100)+'%', bg:x?'repeating-linear-gradient(135deg,var(--privacy-bg) 0 6px,var(--surface) 6px 12px)':(b.sel?'var(--accent)':'var(--primary)'), bd:x?'2px dashed var(--privacy)':'0', valFg:x?'var(--privacy)':'var(--text)'}; });
+    const maxT = Math.max(thr, ...d.types.map(t=>t.v));
+    const types = d.types.map(t=>{ const x = sup(t.v); return {label:t.label, text:x?'Suppressed':String(t.v), sup:x, w:x?'100%':(t.v/maxT*100)+'%', bg:x?'repeating-linear-gradient(135deg,var(--privacy-bg) 0 6px,var(--surface) 6px 12px)':'var(--accent)', valFg:x?'var(--privacy)':'var(--text)'}; });
+    const maxM = Math.max(10, ...d.months.map(m=>m.v)); const niceMax = Math.ceil(maxM/10)*10;
+
+    const facCourses = s.courses.filter(c=>s.faculty==='all'||c.fac===s.faculty);
+    const readyRows = facCourses.map(c=>{ const x = sup(c.n); const ready = c.lessons>0; return {...c, faculty:FAC.find(f=>f.id===c.fac).short, sup:x, nText:x?'Suppressed':String(c.n), nFg:x?'var(--privacy)':'var(--text)', lessonsText:c.lessons+(c.lessons===1?' lesson':' lessons'), status:ready?'Lessons in place':'No accessible lessons yet', sIcon:ready?'circle-check':'circle-dashed', sBg:ready?'var(--accent-bg)':'var(--warning-bg)', sFg:ready?'var(--accent-ink)':'var(--warning-ink)'}; });
+    const lessonsTotal = facCourses.reduce((a,c)=>a+c.lessons,0);
+    const readyTiles = [
+      {label:'Courses with lessons in place', value:facCourses.filter(c=>c.lessons>0).length+' of '+facCourses.length, sub:facLabel},
+      {label:'Accessible lessons produced', value:String(lessonsTotal), sub:'Approved by lecturers this session'},
+      {label:'Courses needing lessons', value:String(facCourses.filter(c=>c.lessons===0).length), sub:'Where students have approved supports'},
+    ];
+
+    const repDefs = [{k:'kpi',label:'Headline figures',sub:'Requests, time to plan, follow-ups'},{k:'trend',label:'Requests over time',sub:'By month'},{k:'faculty',label:'Requests by faculty',sub:'Small groups hidden'},{k:'types',label:'Accommodations in use',sub:'By type'},{k:'ready',label:'Teaching readiness',sub:'Courses and accessible lessons'}];
+    const repOpts = repDefs.map(r=>({...r, ...this.choice(!!s.rep[r.k]), onClick:()=>this.setState(st=>({rep:{...st.rep,[r.k]:!st.rep[r.k]}, repState:'idle'}))}));
+    const pv = (vals, color) => { const mx = Math.max(...vals.map(v=>v.v), 1); return vals.map(v=>({h:sup(v.v)?'30%':Math.max(6,v.v/mx*100)+'%', bg:sup(v.v)?'repeating-linear-gradient(135deg,#EFEAF7 0 4px,#FFFFFF 4px 8px)':color})); };
+    const repPreview = [
+      s.rep.kpi && {label:'Headline figures', h:'0px', bars:[], note:totalSup?'Suppressed for privacy':d.total+' requests · median '+(prev?'5':'6')+' days to plan · '+(prev?'91%':'87%')+' follow-ups completed'},
+      s.rep.trend && {label:'Requests over time', h:'56px', bars:pv(d.months,'#2F5D8A'), note:d.months.map(m=>m.label).join(' · ')},
+      s.rep.faculty && {label:'Requests by faculty', h:'56px', bars:pv(d.bars,'#2F5D8A'), note:d.bars.filter(b=>sup(b.v)).length+' groups hidden for privacy'},
+      s.rep.types && {label:'Accommodations in use', h:'56px', bars:pv(d.types,'#3E8E7E'), note:d.types.length+' types'},
+      s.rep.ready && {label:'Teaching readiness', h:'0px', bars:[], note:facCourses.filter(c=>c.lessons>0).length+' of '+facCourses.length+' courses have accessible lessons'},
+    ].filter(Boolean);
+    const repNone = !Object.values(s.rep).some(Boolean);
+
+    const ulist = s.users.filter(u=>(s.uRole==='All'||u.role===s.uRole) && (!s.uq || (u.name+u.email).toLowerCase().includes(s.uq.toLowerCase())));
+    const userRows = ulist.map(u=>{ const st = !u.active?{status:'Deactivated',sIcon:'circle-off',sBg:'var(--surface-2)',sFg:'var(--text-muted)'}:u.invited?{status:'Invited',sIcon:'mail',sBg:'var(--primary-bg)',sFg:'var(--primary)'}:{status:'Active',sIcon:'circle-check',sBg:'var(--accent-bg)',sFg:'var(--accent-ink)'};
+      return {...u, ...st, initials:u.name.replace(/^(Mr|Mrs|Dr|Prof|Barr)\.\s*/,'').split(' ').map(x=>x[0]).join('').slice(0,2), selId:'ur-'+u.id, inactive:!u.active, op:u.active?1:.75,
+        confirming:s.confirm===u.id, notConfirming:s.confirm!==u.id,
+        tLabel:u.active?'Deactivate':'Reactivate', tBd:u.active?'var(--danger)':'var(--primary)', tFg:u.active?'var(--danger)':'var(--primary)',
+        onToggle:()=>{ if (u.active) this.setState({confirm:u.id}); else { this.setState(st=>({users:st.users.map(x=>x.id===u.id?{...x,active:true,last:'Reactivated today'}:x)})); this.toast(u.name+' can sign in again.'); } },
+        onConfirm:()=>{ this.setState(st=>({confirm:null, users:st.users.map(x=>x.id===u.id?{...x,active:false,last:'Deactivated today'}:x)})); this.toast(u.name+' deactivated. This is in the audit log.'); },
+        onCancel:()=>this.setState({confirm:null}),
+        onRole:e=>{ const r = e.target.value; this.setState(st=>({users:st.users.map(x=>x.id===u.id?{...x,role:r}:x)})); this.toast(u.name+' is now '+r+'. This is in the audit log.'); } }; });
+    const roleFilters = ['All','Support Officer','Lecturer','Department Head','System Admin'].map(r=>({label:r==='All'?'Everyone':r, ...this.pill(s.uRole===r), onClick:()=>this.setState({uRole:r})}));
+
+    const docUse = id => s.courses.filter(c=>c.doc===id).length;
+    const courseRows = s.courses.map((c,i)=>({...c, faculty:FAC.find(f=>f.id===c.fac).short, selId:'cd-'+i, unmapped:!c.doc, selBd:c.doc?'1px solid var(--border-strong)':'2px solid var(--warning)',
+      onDoc:e=>{ const v = e.target.value; this.setState(st=>({courses:st.courses.map(x=>x.code===c.code?{...x,doc:v}:x)})); this.toast(v?c.code+' now follows '+s.docs.find(x=>x.id===v).name+'.':c.code+' is no longer mapped.'); }}));
+    const docRows = s.docs.map(x=>({...x, used: docUse(x.id) ? docUse(x.id)+(docUse(x.id)===1?' course':' courses') : 'Not mapped to a course'}));
+
+    const catRows = s.cat.map(c=>({...c, usedText: c.active ? c.used+' students have this' : 'Archived · not offered to new plans', status:c.active?'Active':'Archived', sBg:c.active?'var(--accent-bg)':'var(--surface-2)', sFg:c.active?'var(--accent-ink)':'var(--text-muted)', op:c.active?1:.8,
+      archLabel:c.active?'Archive':'Restore', archIcon:c.active?'archive':'archive-restore',
+      onEdit:()=>{ this.setState({catForm:c.id, catName:c.name, catTodo:c.todo}); const m = this.mainRef.current; if (m) m.scrollTop = 0; },
+      onArchive:()=>{ this.setState(st=>({cat:st.cat.map(x=>x.id===c.id?{...x,active:!x.active}:x)})); this.toast(c.active?'Archived. Existing plans keep it until their next review.':'Restored to the catalogue.'); }}));
+
+    const aRows = AUDIT.map(a=>({when:a[0],who:a[1],role:a[2],type:a[3],rec:a[4],action:a[5],ip:a[6]})).filter(a=>(s.aType==='All record types'||a.type===s.aType)&&(s.aAction==='All actions'||a.action===s.aAction)&&(s.aRole==='All roles'||a.role===s.aRole)&&(!s.aq||a.who.toLowerCase().includes(s.aq.toLowerCase())));
+    const auditRows = aRows.map(a=>{ const t = ACT[a.action]; return {...a, aIcon:t.i, aFg:t.fg, aBg:t.bg}; });
+    const uniq = k => [...new Set(AUDIT.map(a=>a[k]))];
+    const auditFilters = [
+      {id:'a-role',label:'Role',value:s.aRole,opts:['All roles',...uniq(2)],onChange:e=>this.setState({aRole:e.target.value})},
+      {id:'a-type',label:'Record type',value:s.aType,opts:['All record types',...uniq(3)],onChange:e=>this.setState({aType:e.target.value})},
+      {id:'a-act',label:'Action',value:s.aAction,opts:['All actions',...uniq(5)],onChange:e=>this.setState({aAction:e.target.value})},
+    ];
+
+    const st = s.set, sv = s.saved;
+    const thrNum = Number(s.thrInput); const thrBad = !(thrNum>=5);
+    const dirty = JSON.stringify(st)!==JSON.stringify(sv) || String(st.threshold)!==s.thrInput;
+    const setThr = v => { const n = Math.max(5, Math.min(20, v)); this.setState(x=>({thrInput:String(n), set:{...x.set, threshold:n}})); };
+    const aiToggles = [
+      {id:'ai-cite',k:'cite',title:'Every paragraph must cite the lecturer\'s materials',desc:'Drafts without a source are blocked.'},
+      {id:'ai-ind',k:'industry',title:'Allow industry examples',desc:'These are marked "not from your materials" for the lecturer to check.'},
+      {id:'ai-store',k:'store',title:'Keep prompts for 30 days to improve drafts',desc:'No student data is ever included in prompts.'},
+    ].map(t=>({...t, ...this.sw(!!st[t.k]), onClick:()=>this.setS(t.k,!st[t.k])}));
+
+    const pages = {
+      dashboard:['Inclusion dashboard','Totals across the university. No one can be identified from these figures.'],
+      readiness:['Teaching readiness','How courses are set up for students with approved supports. Counts only.'],
+      reports:['Reports','Build a PDF for committee meetings. Aggregate figures only.'],
+      users:['Users and roles','Invite people, set what they can see, and remove access.'],
+      courses:['Courses and curriculum','Map each course to an approved curriculum document.'],
+      catalogue:['Accommodation catalogue','The supports Support Officers can add to a plan.'],
+      audit:['Audit log','Who opened or changed what, and when. Case content is never shown here.'],
+      settings:['Settings','Privacy, AI drafting and consent. Every change is logged.'],
+    };
+    const actions = {users:['Invite someone','user-plus',()=>this.setState({inviteOpen:true, invErr:false})], catalogue:['Add accommodation','plus',()=>this.setState({catForm:'new', catName:'', catTodo:''})]};
+    const act = actions[screen];
+    const privacy = {
+      dashboard:'Any group with fewer than '+thr+' students shows "Suppressed for privacy" instead of a number.',
+      readiness:'Student counts under '+thr+' are hidden. You never see names or what support a specific student has.',
+      reports:'Reports use the same privacy rules as the dashboard. Groups under '+thr+' are hidden in the PDF.',
+      audit:'You see who did what to which record, never what the record says.',
+    }[screen];
+
+    const prefGroups = [
+      {label:'Text size', cols:4, opts:this.seg('size',[{v:'S',label:'S',sub:'16px',size:'0.875rem'},{v:'M',label:'M',sub:'18px',size:'1rem'},{v:'L',label:'L',sub:'20px',size:'1.125rem'},{v:'XL',label:'XL',sub:'24px',size:'1.25rem'}])},
+      {label:'Line spacing', cols:3, opts:this.seg('line',[{v:'1.6',label:'Default',sub:'1.6'},{v:'1.8',label:'Relaxed',sub:'1.8'},{v:'2',label:'Loose',sub:'2.0'}])},
+      {label:'Letter spacing', cols:3, opts:this.seg('letter',[{v:'0em',label:'Default'},{v:'0.04em',label:'Wide'},{v:'0.08em',label:'Wider'}])},
+      {label:'Font', cols:2, opts:this.seg('font',[{v:'default',label:'Default',sub:'Atkinson Hyperlegible',font:'"Atkinson Hyperlegible",sans-serif'},{v:'dyslexic',label:'Dyslexia-friendly',sub:'OpenDyslexic',font:'"OpenDyslexic",sans-serif',size:'0.8125rem'}])},
+      {label:'Theme', cols:2, opts:this.seg('theme',[{v:'light',label:'Light',swatch:'#FAF8F5'},{v:'dark',label:'Dark',swatch:'#14161A'},{v:'hc',label:'High contrast',swatch:'#0A0A0A'},{v:'soft',label:'Soft',sub:'Cream background',swatch:'#F4EEE2'}])},
+    ];
+    const prefToggles = [{id:'pt-motion',key:'motion',title:'Reduce motion',desc:'Stops pulsing and sliding effects.'},{id:'pt-focus',key:'focus',title:'Focus mode',desc:'Hides the side menu.'}].map(t=>({...t, ...this.sw(!!p[t.key]), onClick:()=>this.setPref(t.key,!p[t.key])}));
+    const isHead = role==='head';
+    const userName = isHead ? 'Prof. Yetunde Adeyemi' : 'Mr. Segun Bakare';
+    const invEmailBad = s.invErr;
+
+    return {
+      rootRef:this.rootRef, mainRef:this.mainRef, isMobile, notMobile:!isMobile,
+      areaLabel: isHead?'Inclusion planning':'Administration', roleLabel: isHead?'Department Head':'System Admin', roleIcon: isHead?'chart-column':'settings', initials: isHead?'YA':'SB', userName, today:'16 Oct 2026',
+      openDrawer:()=>this.setState({drawerOpen:true}), closeDrawer:()=>this.setState({drawerOpen:false}), drawerOpen:s.drawerOpen, drawerItems,
+      openPrefs:()=>this.setState({prefsOpen:true}), closePrefs:()=>this.setState({prefsOpen:false}), prefsOpen:s.prefsOpen, prefGroups, prefToggles, resetPrefs:()=>this.setPrefs({...DEFAULT_PREFS}),
+      speakLabel:s.speaking?'Stop reading':'Read page aloud', speakIcon:s.speaking?'square':'volume-2',
+      toggleSpeak:()=>{ if (!window.speechSynthesis) return; if (s.speaking) { speechSynthesis.cancel(); this.setState({speaking:false}); return; } const m=this.mainRef.current; const u=new SpeechSynthesisUtterance((m?m.innerText:'').slice(0,2500)); u.onend=()=>this.setState({speaking:false}); speechSynthesis.speak(u); this.setState({speaking:true}); },
+      showSidebar: !isMobile && !p.focus, sideW:isTablet?'96px':'248px', sidePadX:isTablet?'8px':'12px', sideItems,
+      mainPad: isMobile?'20px 16px 48px':'28px 32px 64px',
+      pageTitle:pages[screen][0], pageSub:pages[screen][1], hasPageAction:!!act, pageActionLabel:act?act[0]:'', pageActionIcon:act?act[1]:'plus', pageAction:act?act[2]:undefined,
+      showFilters: isHead, filters, showPrivacyNote:!!privacy, privacyNote:privacy||'', threshold:String(thr),
+      sDash:screen==='dashboard', sReady:screen==='readiness', sReports:screen==='reports', sUsers:screen==='users', sCourses:screen==='courses', sCat:screen==='catalogue', sAudit:screen==='audit', sSettings:screen==='settings',
+      dashEmpty:d.empty, dashHas:!d.empty, kpis,
+      trendSub: facLabel+(s.level==='all'?'':' · '+s.level+' level')+' · '+periodLabel,
+      tableOn:String(s.tableView), chartsOn:!s.tableView, tablesOn:s.tableView, tableLabel:s.tableView?'Show as chart':'Show as table', tableIcon:s.tableView?'chart-line':'table', toggleTable:()=>this.setState(x=>({tableView:!x.tableView})),
+      lineChart: d.empty ? null : this.lineChart(d.months, thr, niceMax), months:d.months.map(m=>({label:m.label, text:sup(m.v)?'Suppressed for privacy':String(m.v), fg:sup(m.v)?'var(--privacy)':'var(--text)'})),
+      barTitle: s.faculty==='all'?'By faculty':'By level · '+facLabel, bars, types,
+      readyRows, readyTiles, readyCols: isMobile?'1fr':'minmax(220px,2fr) minmax(160px,1.3fr) minmax(140px,1fr) minmax(120px,1fr) minmax(150px,1fr)',
+      repOpts, repTitle:s.repTitle, onRepTitle:e=>this.setState({repTitle:e.target.value}), repPreview, periodLabel, repNone, repOpacity:repNone?.5:1,
+      repIdle:s.repState==='idle', repBusy:s.repState==='busy', repDone:s.repState==='done', repPct:s.repPct+'%', repPctNum:String(s.repPct),
+      genReport:()=>{ if (repNone) return; this.setState({repState:'busy', repPct:0}); clearInterval(this.rt); this.rt = setInterval(()=>{ const n = this.state.repPct+20; if (n>=100) { clearInterval(this.rt); this.setState({repState:'done', repPct:100}); this.toast('Report ready.'); } else this.setState({repPct:n}); }, 300); },
+      dlReport:()=>this.toast('Downloading '+s.repTitle.replace(/[^a-z0-9]+/gi,'_')+'.pdf. The export is logged.'), resetReport:()=>this.setState({repState:'idle'}),
+
+      inviteOpen:s.inviteOpen, closeInvite:()=>this.setState({inviteOpen:false}), invName:s.invName, invEmail:s.invEmail, invRole:s.invRole, roleOpts:ROLES, invRoleHelp:ROLE_HELP[s.invRole], invErr:s.invErr, invEmailBad:String(invEmailBad), invEmailBd:invEmailBad?'2px solid var(--danger)':'1px solid var(--border-strong)',
+      onInvName:e=>this.setState({invName:e.target.value}), onInvEmail:e=>this.setState({invEmail:e.target.value, invErr:false}), onInvRole:e=>this.setState({invRole:e.target.value}),
+      sendInvite:e=>{ e.preventDefault(); if (!/@babcock\.edu\.ng$/i.test(s.invEmail.trim())) return this.setState({invErr:true}); const name = s.invName.trim()||s.invEmail.split('@')[0]; this.setState(x=>({inviteOpen:false, invName:'', invEmail:'', users:[{id:Date.now(), name, email:s.invEmail.trim(), role:s.invRole, active:true, invited:true, last:'Invite sent today'}, ...x.users]})); this.toast('Invite sent to '+s.invEmail.trim()+'.'); },
+      uq:s.uq, onUq:e=>this.setState({uq:e.target.value}), roleFilters, userRows, usersEmpty:userRows.length===0,
+      courseRows, docRows, docOpts:s.docs, onDocFile:e=>{ const f = (e.target.files||[])[0]; if (!f) return; this.setState(x=>({docs:[...x.docs,{id:'d'+Date.now(), name:f.name, approved:'today'}]})); e.target.value=''; this.toast(f.name+' uploaded. Map it to a course to use it.'); },
+      catFormOpen:!!s.catForm, catFormTitle:s.catForm==='new'?'Add an accommodation':'Edit accommodation', catName:s.catName, catTodo:s.catTodo, onCatName:e=>this.setState({catName:e.target.value}), onCatTodo:e=>this.setState({catTodo:e.target.value}), closeCat:()=>this.setState({catForm:null}),
+      saveCat:e=>{ e.preventDefault(); if (!s.catName.trim()) return; if (s.catForm==='new') this.setState(x=>({catForm:null, cat:[{id:'c'+Date.now(), icon:'circle-plus', name:s.catName.trim(), todo:s.catTodo.trim(), used:0, active:true}, ...x.cat]})); else this.setState(x=>({catForm:null, cat:x.cat.map(c=>c.id===s.catForm?{...c,name:s.catName.trim(),todo:s.catTodo.trim()}:c)})); this.toast('Saved. Lecturers see the new wording straight away.'); },
+      catRows,
+      aq:s.aq, onAq:e=>this.setState({aq:e.target.value}), auditFilters, auditRows, auditEmpty:auditRows.length===0, auditCount:'Showing '+auditRows.length+' of 1,284 events', exportAudit:()=>this.toast('Exporting '+auditRows.length+' events as CSV. Metadata only.'),
+      retention:st.retention, onRetention:e=>this.setS('retention',e.target.value),
+      thrInput:s.thrInput, onThr:e=>{ const v = e.target.value; this.setState(x=>({thrInput:v, set:Number(v)>=5?{...x.set,threshold:Number(v)}:x.set})); }, thrBad:String(thrBad), thrErr:thrBad, thrBd:thrBad?'2px solid var(--danger)':'1px solid var(--border-strong)', thrDown:()=>setThr(st.threshold-1), thrUp:()=>setThr(st.threshold+1),
+      model:st.model, onModel:e=>this.setS('model',e.target.value), aiToggles,
+      consent:st.consent, onConsent:e=>this.setS('consent',e.target.value), consentChanged:st.consent!==sv.consent, consentVer:s.consentVer,
+      dirty, discard:()=>this.setState(x=>({set:{...x.saved}, thrInput:String(x.saved.threshold)})),
+      saveSettings:()=>{ if (thrBad) { this.toast('Fix the privacy threshold first.','error'); return; } const nv = st.consent!==sv.consent; this.setState(x=>({saved:{...x.set}, thrInput:String(x.set.threshold), consentVer: nv?'Version 4 · published today':x.consentVer})); this.toast(nv?'Saved. Students will be asked to agree to version 4.':'Settings saved. This is in the audit log.'); },
+      toasts: s.toasts.map(t=>({...t, onClose:()=>this.setState(x=>({toasts:x.toasts.filter(y=>y.id!==t.id)}))})),
+    };
+  }
+}
+</script>
+</body>
+</html>

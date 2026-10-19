@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=Lexend:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
+<link href="nb-theme.css" rel="stylesheet">
+<script src="nb-icons.js"></script>
+</helmet>
+<div ref="{{ rootRef }}" style="position:relative;height:100vh;overflow:hidden;background:var(--bg);color:var(--text);display:flex;flex-direction:column">
+  <a href="#lw-main" style="position:absolute;left:12px;top:-80px;z-index:100;background:var(--primary);color:var(--on-primary);padding:12px 16px;border-radius:8px;font-weight:700;text-decoration:none" style-focus="top:12px">Skip to content</a>
+
+  <header style="flex:none;display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border)">
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <button type="button" onClick="{{ openDrawer }}" aria-label="Open menu" style="width:44px;height:44px;flex:none;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="menu" size="22"></nb-icon></button>
+    </sc-if>
+    <img src="assets/babcock-logo.jpeg" alt="Babcock University" style="height:40px;width:auto;display:block;border-radius:2px">
+    <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0"><span style="font-weight:700">NeuroBridge</span><span style="font-size:0.8125rem;color:var(--text-muted)">Teaching</span></div>
+    <div style="flex:1 1 auto"></div>
+    <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+      <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;background:var(--primary-bg);color:var(--primary);font-size:0.8125rem;font-weight:700;white-space:nowrap"><nb-icon name="presentation" size="16"></nb-icon>Signed in as Lecturer</span>
+    </sc-if>
+    <button type="button" onClick="{{ toggleNotif }}" aria-expanded="{{ notifExpanded }}" aria-label="{{ notifAria }}" style="position:relative;width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--surface-2)"><nb-icon name="bell" size="22"></nb-icon><sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ true }}"><span style="position:absolute;top:5px;right:3px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:var(--danger);color:#FFFFFF;font-size:0.6875rem;font-weight:700;display:flex;align-items:center;justify-content:center">2</span></sc-if></button>
+    <button type="button" onClick="{{ openPrefs }}" aria-haspopup="dialog" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;font-size:0.875rem;cursor:pointer"><nb-icon name="type" size="20"></nb-icon>Reading</button>
+    <span aria-hidden="true" style="width:40px;height:40px;flex:none;border-radius:50%;background:var(--warning-bg);color:var(--warning-ink);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem">TO</span>
+  </header>
+
+  <div style="flex:1 1 auto;min-height:0;display:flex">
+    <sc-if value="{{ showSidebar }}" hint-placeholder-val="{{ true }}">
+      <nav aria-label="Main" style="flex:none;width:{{ sideW }};border-right:1px solid var(--border);background:var(--surface);padding:16px {{ sidePadX }};display:flex;flex-direction:column;gap:2px;overflow:auto">
+        <sc-for list="{{ sideItems }}" as="si" hint-placeholder-count="4">
+          <button type="button" onClick="{{ si.onClick }}" aria-current="{{ si.current }}" style="display:flex;flex-direction:{{ si.dir }};align-items:center;gap:{{ si.gap }};min-height:{{ si.minH }};padding:{{ si.pad }};border-radius:8px;border:0;border-left:3px solid {{ si.bar }};background:{{ si.bg }};color:{{ si.fg }};font-weight:{{ si.weight }};font-size:{{ si.fs }};text-align:{{ si.align }};cursor:pointer;line-height:1.2" style-hover="background:var(--surface-2)"><nb-icon name="{{ si.icon }}" size="22"></nb-icon><span>{{ si.label }}</span></button>
+        </sc-for>
+      </nav>
+    </sc-if>
+
+    <main id="lw-main" ref="{{ mainRef }}" tabindex="-1" style="flex:1 1 auto;min-width:0;overflow:auto;outline:none">
+      <div style="max-width:{{ mainMax }};margin:0 auto;padding:{{ mainPad }};display:flex;flex-direction:column;gap:24px">
+
+        <sc-if value="{{ hasCrumbs }}" hint-placeholder-val="{{ false }}">
+          <nav aria-label="Breadcrumb"><ol style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:0.9375rem">
+            <sc-for list="{{ crumbs }}" as="c" hint-placeholder-count="2">
+              <li style="display:flex;align-items:center;gap:6px"><sc-if value="{{ c.link }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ c.onClick }}" style="border:0;background:transparent;padding:0;color:var(--primary);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:44px">{{ c.label }}</button><span aria-hidden="true" style="color:var(--text-muted);display:flex"><nb-icon name="chevron-right" size="16"></nb-icon></span></sc-if><sc-if value="{{ c.last }}" hint-placeholder-val="{{ false }}"><span aria-current="page" style="font-weight:700">{{ c.label }}</span></sc-if></li>
+            </sc-for>
+          </ol></nav>
+        </sc-if>
+
+        <!-- HOME -->
+        <sc-if value="{{ sHome }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:2rem;line-height:1.25">Good morning, Dr. Ogunleye</h1><p style="margin:0;color:var(--text-muted)">First semester 2026/27 · 3 courses</p></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:16px">
+            <sc-for list="{{ courseCards }}" as="cc" hint-placeholder-count="3">
+              <section aria-labelledby="{{ cc.hid }}" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:0.875rem;font-weight:700;color:var(--text-muted)">{{ cc.code }} · {{ cc.level }}</span><h2 id="{{ cc.hid }}" style="margin:0;font-size:1.25rem">{{ cc.name }}</h2><span style="font-size:0.9375rem;color:var(--text-muted)">{{ cc.students }} students</span></div>
+                <div style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:8px;background:{{ cc.accBg }}">
+                  <span style="color:{{ cc.accFg }};display:flex"><nb-icon name="{{ cc.accIcon }}" size="24"></nb-icon></span>
+                  <span style="display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ cc.accTitle }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ cc.accSub }}</span></span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:auto">
+                  <button type="button" onClick="{{ cc.onStudio }}" style="flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)"><nb-icon name="sparkles" size="18"></nb-icon>Open Teaching Studio</button>
+                  <button type="button" onClick="{{ cc.onAccom }}" style="flex:1 1 auto;min-height:48px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">View accommodations</button>
+                </div>
+              </section>
+            </sc-for>
+          </div>
+          <section aria-labelledby="h-recent" style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><h2 id="h-recent" style="margin:0;font-size:1.25rem">Recent lessons</h2><button type="button" onClick="{{ goLibrary }}" style="min-height:44px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">See all</button></div>
+            <sc-for list="{{ recent }}" as="l" hint-placeholder-count="3">
+              <div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:12px 16px;border-radius:10px;background:var(--surface);border:1px solid var(--border)">
+                <span style="flex:1 1 240px;display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ l.title }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ l.course }} · {{ l.version }} · updated {{ l.updated }}</span></span>
+                <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:{{ l.sBg }};color:{{ l.sFg }};border:1px solid {{ l.sBd }};font-size:0.8125rem;font-weight:700"><nb-icon name="{{ l.sIcon }}" size="14"></nb-icon>{{ l.status }}</span>
+                <button type="button" onClick="{{ l.onOpen }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Open</button>
+              </div>
+            </sc-for>
+          </section>
+        </sc-if>
+
+        <!-- ACCOMMODATIONS -->
+        <sc-if value="{{ sAccom }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between">
+            <div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:1.75rem;line-height:1.25">Accommodations in {{ ac.code }}</h1><p style="margin:0;color:var(--text-muted)">{{ ac.name }} · {{ ac.students }} students</p></div>
+            <div role="group" aria-label="Course" style="display:flex;flex-wrap:wrap;gap:6px">
+              <sc-for list="{{ accTabs }}" as="t" hint-placeholder-count="3"><button type="button" aria-pressed="{{ t.pressed }}" onClick="{{ t.onClick }}" style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }};font-weight:700;cursor:pointer">{{ t.label }}</button></sc-for>
+            </div>
+          </div>
+          <div role="note" style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;background:var(--privacy-bg)"><span style="color:var(--privacy);display:flex;padding-top:2px"><nb-icon name="shield-check" size="22"></nb-icon></span><span><strong>You see accommodations, not diagnoses.</strong> Names appear only where a student chose to share them with you.</span></div>
+          <sc-if value="{{ acEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+              <div aria-hidden="true" style="position:relative;width:112px;height:56px"><div style="position:absolute;left:0;bottom:0;width:44px;height:44px;border-radius:50%;background:var(--primary-bg)"></div><div style="position:absolute;right:0;bottom:0;width:44px;height:44px;border-radius:50%;background:var(--accent-bg)"></div><div style="position:absolute;left:22px;bottom:18px;width:68px;height:8px;border-radius:999px;background:var(--primary)"></div></div>
+              <h2 style="margin:0;font-size:1.25rem">No approved accommodations yet</h2>
+              <p style="margin:0;color:var(--text-muted);max-width:48ch">When a student's support plan includes this course and they choose to share it, you'll see what to do here. Accessible lessons still help everyone.</p>
+              <button type="button" onClick="{{ acStudio }}" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">Open Teaching Studio</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ acHas }}" hint-placeholder-val="{{ true }}">
+            <section aria-labelledby="h-acc" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+              <h2 id="h-acc" style="margin:0;padding:16px 20px;font-size:1.125rem;border-bottom:1px solid var(--border)">What you need to do</h2>
+              <div role="table" aria-labelledby="h-acc">
+                <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+                  <div role="row" style="display:grid;grid-template-columns:minmax(200px,1.2fr) 110px minmax(160px,1fr) minmax(240px,1.6fr);background:var(--surface-2);border-bottom:1px solid var(--border);font-size:0.875rem;font-weight:700;color:var(--text-muted)">
+                    <span role="columnheader" style="padding:10px 16px">Support</span><span role="columnheader" style="padding:10px 16px">Students</span><span role="columnheader" style="padding:10px 16px">Shared by name</span><span role="columnheader" style="padding:10px 16px">What to do</span>
+                  </div>
+                </sc-if>
+                <sc-for list="{{ ac.rows }}" as="r" hint-placeholder-count="5">
+                  <div role="row" style="display:grid;grid-template-columns:{{ accCols }};border-bottom:1px solid var(--border);align-items:start">
+                    <span role="cell" style="padding:14px 16px;display:flex;gap:10px;align-items:flex-start;font-weight:700"><span style="color:var(--accent-ink);display:flex;padding-top:2px"><nb-icon name="{{ r.icon }}" size="20"></nb-icon></span>{{ r.label }}</span>
+                    <span role="cell" style="padding:14px 16px">{{ r.count }}</span>
+                    <span role="cell" style="padding:14px 16px;display:flex;flex-direction:column;gap:2px"><span style="font-weight:700">{{ r.named }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ r.unnamed }}</span></span>
+                    <span role="cell" style="padding:14px 16px;font-size:0.9375rem;text-wrap:pretty">{{ r.todo }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+            <section aria-labelledby="h-named" style="display:flex;flex-direction:column;gap:12px">
+              <h2 id="h-named" style="margin:0;font-size:1.125rem">Students who shared their name</h2>
+              <sc-for list="{{ ac.namedStudents }}" as="ns" hint-placeholder-count="1">
+                <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;flex-wrap:wrap;gap:12px 16px;align-items:flex-start">
+                  <span style="display:flex;gap:12px;align-items:center;flex:1 1 220px"><span aria-hidden="true" style="width:44px;height:44px;flex:none;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700">{{ ns.initials }}</span><span style="display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ ns.name }}</span><span style="font-size:0.875rem;color:var(--text-muted)">Shared on {{ ns.date }}</span></span></span>
+                  <ul style="flex:2 1 300px;margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px"><sc-for list="{{ ns.items }}" as="it" hint-placeholder-count="2"><li style="display:flex;gap:8px;align-items:center"><span style="color:var(--accent-ink);display:flex"><nb-icon name="check" size="18"></nb-icon></span>{{ it }}</li></sc-for></ul>
+                </div>
+              </sc-for>
+            </section>
+          </sc-if>
+          <details style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0 16px">
+            <summary style="min-height:52px;display:flex;align-items:center;gap:8px;font-weight:700;cursor:pointer"><nb-icon name="circle-help" size="20"></nb-icon>Why can't I see more?</summary>
+            <div style="padding:0 0 16px;display:flex;flex-direction:column;gap:8px;max-width:70ch"><p style="margin:0;text-wrap:pretty">Students get support without having to explain themselves to every lecturer. You see what to do, which is all you need to teach well. Reasons, check-in answers and case notes stay with the support office.</p><p style="margin:0;color:var(--text-muted)">Questions about a specific arrangement? Message the support office. They'll check with the student first.</p></div>
+          </details>
+        </sc-if>
+
+        <!-- STUDIO -->
+        <sc-if value="{{ sStudio }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between">
+            <div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:1.75rem;line-height:1.25">Teaching Studio</h1><p style="margin:0;color:var(--text-muted)">{{ studioSub }}</p></div>
+            <sc-if value="{{ showReadTime }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--surface-2);font-size:0.875rem"><nb-icon name="clock" size="16"></nb-icon>About {{ readMins }} min read</span></sc-if>
+          </div>
+          <ol aria-label="Studio steps" style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px">
+            <sc-for list="{{ stSteps }}" as="st" hint-placeholder-count="5">
+              <li aria-current="{{ st.current }}" style="display:flex;flex-direction:column;gap:8px;min-width:0">
+                <div style="height:6px;border-radius:999px;background:{{ st.bar }}"></div>
+                <button type="button" onClick="{{ st.onClick }}" disabled="{{ st.disabled }}" style="display:flex;gap:8px;align-items:center;text-align:left;min-height:44px;padding:0;border:0;background:transparent;cursor:{{ st.cursor }};min-width:0">
+                  <span style="width:28px;height:28px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:{{ st.dotBg }};color:{{ st.dotFg }};border:2px solid {{ st.dotBd }};font-weight:700;font-size:0.8125rem">{{ st.mark }}</span>
+                  <sc-if value="{{ showStepLabels }}" hint-placeholder-val="{{ true }}"><span style="display:flex;flex-direction:column;line-height:1.25;min-width:0"><span style="font-weight:700;font-size:0.9375rem;color:var(--text)">{{ st.label }}</span><span style="font-size:0.8125rem;color:{{ st.stateFg }}">{{ st.state }}</span></span></sc-if>
+                </button>
+              </li>
+            </sc-for>
+          </ol>
+          <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}"><span style="font-weight:700;margin-top:-12px">Step {{ stepNum }} of 5 · {{ stepName }}</span></sc-if>
+
+          <!-- STEP 1 -->
+          <sc-if value="{{ step1 }}" hint-placeholder-val="{{ true }}">
+            <sc-if value="{{ setupError }}" hint-placeholder-val="{{ false }}"><div role="alert" style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;background:var(--danger-bg)"><span style="color:var(--danger);display:flex;padding-top:2px"><nb-icon name="circle-alert" size="20"></nb-icon></span><span>{{ setupErrorText }}</span></div></sc-if>
+            <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+              <div style="flex:3 1 480px;min-width:0;display:flex;flex-direction:column;gap:16px">
+                <section aria-label="Course and topic" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+                  <div style="display:flex;flex-direction:column;gap:6px"><label for="s-course" style="font-weight:700">Course</label>
+                    <select id="s-course" value="{{ stCourse }}" onChange="{{ onStCourse }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"><option value="csc301">CSC 301 · Data Structures</option><option value="csc401">CSC 401 · Software Engineering</option><option value="cos202">COS 202 · Computer Programming II</option></select></div>
+                  <div style="display:flex;flex-direction:column;gap:6px"><label for="s-topic" style="font-weight:700">Topic</label><input id="s-topic" value="{{ topic }}" onChange="{{ onTopic }}" aria-invalid="{{ topicInvalid }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:{{ topicBd }};background:var(--surface)"></div>
+                  <div style="display:flex;flex-direction:column;gap:6px;grid-column:1/-1"><label for="s-curr" style="font-weight:700">Curriculum document</label><span style="font-size:0.875rem;color:var(--text-muted);margin-top:-4px">Approved by your department. The draft will follow it.</span>
+                    <select id="s-curr" value="{{ curr }}" onChange="{{ onCurr }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"><option value="outline">CSC 301 course outline 2026/27 (approved 2 Sep)</option><option value="ccmas">NUC CCMAS · Computer Science (2023)</option></select></div>
+                </section>
+                <section aria-labelledby="h-lo" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px">
+                  <h2 id="h-lo" style="margin:0;font-size:1.125rem">Learning outcomes</h2>
+                  <span style="font-size:0.9375rem;color:var(--text-muted);margin-top:-4px">From the course outline. Pick the ones this lesson covers.</span>
+                  <sc-for list="{{ loOpts }}" as="o" hint-placeholder-count="4">
+                    <button type="button" role="checkbox" aria-checked="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:flex;gap:12px;align-items:flex-start;text-align:left;min-height:52px;padding:10px 12px;border-radius:8px;border:{{ o.bdW }} solid {{ o.bd }};background:{{ o.bg }};cursor:pointer">
+                      <span style="width:24px;height:24px;flex:none;border-radius:6px;border:2px solid {{ o.boxBd }};background:{{ o.boxBg }};color:var(--on-primary);display:flex;align-items:center;justify-content:center"><sc-if value="{{ o.on }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="16"></nb-icon></sc-if></span>
+                      <span style="display:flex;flex-direction:column;line-height:1.4"><span style="font-size:0.8125rem;font-weight:700;color:var(--text-muted)">{{ o.code }}</span><span>{{ o.text }}</span></span>
+                    </button>
+                  </sc-for>
+                  <form onSubmit="{{ addLo }}" style="display:flex;gap:8px;flex-wrap:wrap">
+                    <label for="s-newlo" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Add your own learning outcome</label>
+                    <input id="s-newlo" value="{{ newLo }}" onChange="{{ onNewLo }}" placeholder="Add your own outcome" style="flex:1 1 240px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+                    <button type="submit" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Add</button>
+                  </form>
+                </section>
+              </div>
+              <section aria-labelledby="h-mat" style="flex:2 1 340px;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                <h2 id="h-mat" style="margin:0;font-size:1.125rem">Approved materials</h2>
+                <span style="font-size:0.9375rem;color:var(--text-muted);margin-top:-4px">The draft only uses what you upload, and cites the page for each paragraph.</span>
+                <div style="border:2px dashed var(--border-strong);border-radius:10px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;background:var(--surface-2)">
+                  <span style="color:var(--primary);display:flex"><nb-icon name="upload" size="28"></nb-icon></span>
+                  <span style="font-weight:700">Drag files here</span><span style="font-size:0.875rem;color:var(--text-muted)">PDF, DOCX or PPTX · up to 50 MB</span>
+                  <input id="lw-file" type="file" multiple="" accept=".pdf,.docx,.pptx" onChange="{{ onFiles }}" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none">
+                  <label for="lw-file" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);color:var(--primary);background:var(--surface);font-weight:700;cursor:pointer">Choose files</label>
+                </div>
+                <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+                  <sc-for list="{{ fileRows }}" as="f" hint-placeholder-count="3">
+                    <li style="display:flex;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--border);border-radius:10px">
+                      <span style="width:36px;height:36px;flex:none;border-radius:8px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--text-muted)"><nb-icon name="{{ f.typeIcon }}" size="18"></nb-icon></span>
+                      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                        <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span style="font-weight:700;font-size:0.9375rem;overflow-wrap:anywhere">{{ f.name }}</span><span style="display:inline-flex;align-items:center;gap:4px;font-size:0.8125rem;color:{{ f.stColor }}"><nb-icon name="{{ f.stIcon }}" size="14"></nb-icon>{{ f.stLabel }}</span></div>
+                        <div role="progressbar" aria-label="{{ f.name }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ f.progress }}" style="height:6px;border-radius:999px;background:var(--surface-2);overflow:hidden"><div style="height:100%;width:{{ f.width }};background:{{ f.barColor }};transition:width .3s"></div></div>
+                      </div>
+                      <button type="button" aria-label="{{ f.removeLabel }}" onClick="{{ f.onRemove }}" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="18"></nb-icon></button>
+                    </li>
+                  </sc-for>
+                </ul>
+              </section>
+            </div>
+            <div style="display:flex;justify-content:flex-end"><button type="button" onClick="{{ toConfigure }}" style="display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:0 24px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)">Continue to configure<nb-icon name="arrow-right" size="20"></nb-icon></button></div>
+          </sc-if>
+
+          <!-- STEP 2 -->
+          <sc-if value="{{ step2 }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+              <div style="flex:3 1 480px;min-width:0;display:flex;flex-direction:column;gap:16px">
+                <section aria-labelledby="h-depth" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap"><label id="h-depth" for="s-depth" style="font-weight:700;font-size:1.125rem">Explanation depth</label><span style="font-weight:700;color:var(--primary)">{{ depthLabel }}</span></div>
+                  <input id="s-depth" type="range" min="1" max="5" step="1" value="{{ depth }}" onChange="{{ onDepth }}" aria-valuetext="{{ depthLabel }}" style="width:100%;min-height:44px;accent-color:var(--primary)">
+                  <div style="display:flex;justify-content:space-between;font-size:0.875rem;color:var(--text-muted)"><span>Introductory</span><span>Intermediate</span><span>Advanced</span></div>
+                </section>
+                <section aria-labelledby="h-style" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                  <h2 id="h-style" style="margin:0;font-size:1.125rem">Presentation style</h2>
+                  <div role="radiogroup" aria-labelledby="h-style" style="display:flex;flex-wrap:wrap;gap:8px">
+                    <sc-for list="{{ styleOpts }}" as="o" hint-placeholder-count="4"><button type="button" role="radio" aria-checked="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:inline-flex;align-items:center;gap:6px;min-height:48px;padding:0 16px;border-radius:999px;border:1px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};font-weight:700;cursor:pointer"><nb-icon name="{{ o.icon }}" size="18"></nb-icon>{{ o.label }}</button></sc-for>
+                  </div>
+                </section>
+                <section aria-labelledby="h-supp" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px">
+                  <h2 id="h-supp" style="margin:0;font-size:1.125rem">Learning supports to include</h2>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px">
+                    <sc-for list="{{ supportOpts }}" as="o" hint-placeholder-count="7">
+                      <button type="button" role="checkbox" aria-checked="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:flex;gap:10px;align-items:center;text-align:left;min-height:52px;padding:8px 12px;border-radius:8px;border:{{ o.bdW }} solid {{ o.bd }};background:{{ o.bg }};cursor:pointer">
+                        <span style="width:22px;height:22px;flex:none;border-radius:6px;border:2px solid {{ o.boxBd }};background:{{ o.boxBg }};color:var(--on-primary);display:flex;align-items:center;justify-content:center"><sc-if value="{{ o.on }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="14"></nb-icon></sc-if></span>
+                        <span style="font-weight:700">{{ o.label }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </section>
+                <section aria-label="Industry focus" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:6px">
+                  <label for="s-ind" style="font-weight:700;font-size:1.125rem">Industry focus <span style="font-weight:400;color:var(--text-muted);font-size:1rem">(optional)</span></label>
+                  <span style="font-size:0.9375rem;color:var(--text-muted)">Examples will use this setting. They're marked as not from your materials.</span>
+                  <input id="s-ind" value="{{ industry }}" onChange="{{ onIndustry }}" placeholder="For example: fintech in Nigeria" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+                </section>
+              </div>
+              <aside aria-labelledby="h-fit" style="flex:2 1 300px;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                <h2 id="h-fit" style="margin:0;font-size:1.125rem;display:flex;gap:8px;align-items:center"><span style="color:var(--privacy);display:flex"><nb-icon name="shield-check" size="20"></nb-icon></span>Fits your class</h2>
+                <span style="font-size:0.9375rem;color:var(--text-muted)">Based on approved accommodations in {{ stCourseCode }}. No student details are used.</span>
+                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
+                  <sc-for list="{{ fitNotes }}" as="fn" hint-placeholder-count="3"><li style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--accent-ink);display:flex;padding-top:2px"><nb-icon name="circle-check" size="18"></nb-icon></span><span style="font-size:0.9375rem;text-wrap:pretty">{{ fn }}</span></li></sc-for>
+                </ul>
+              </aside>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+              <button type="button" onClick="{{ toSetup }}" style="min-height:52px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Back</button>
+              <button type="button" onClick="{{ startGen }}" style="display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:0 24px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)"><nb-icon name="sparkles" size="20"></nb-icon>Generate draft</button>
+            </div>
+          </sc-if>
+
+          <!-- STEP 3 -->
+          <sc-if value="{{ step3 }}" hint-placeholder-val="{{ false }}">
+            <section aria-labelledby="h-gen" style="width:100%;max-width:720px;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:28px;display:flex;flex-direction:column;gap:18px">
+              <div style="display:flex;flex-direction:column;gap:4px"><h2 id="h-gen" style="margin:0;font-size:1.375rem">{{ genTitle }}</h2><span style="color:var(--text-muted)">You can leave this page. We'll keep going and let you know.</span></div>
+              <div role="progressbar" aria-label="Draft progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ genPctNum }}" style="height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden"><div style="height:100%;width:{{ genPct }};background:var(--primary);border-radius:999px;transition:width .4s"></div></div>
+              <ol aria-live="polite" style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px">
+                <sc-for list="{{ genLog }}" as="g" hint-placeholder-count="4">
+                  <li style="display:flex;gap:10px;align-items:center;color:{{ g.fg }}"><span style="display:flex;color:{{ g.iconFg }}"><nb-icon name="{{ g.icon }}" size="20"></nb-icon></span><span style="font-weight:{{ g.weight }}">{{ g.text }}</span></li>
+                </sc-for>
+              </ol>
+              <sc-if value="{{ genFailed }}" hint-placeholder-val="{{ false }}">
+                <div role="alert" style="display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:10px;background:var(--danger-bg)">
+                  <span style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--danger);display:flex;padding-top:2px"><nb-icon name="circle-alert" size="20"></nb-icon></span><span><strong>We couldn't read Week5_Slides_Trees.pptx.</strong> It may be password-protected. Upload a PDF version, or carry on without it.</span></span>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" onClick="{{ genSkipFile }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">Continue without it</button><button type="button" onClick="{{ toSetup }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Replace the file</button></div>
+                </div>
+              </sc-if>
+              <div><button type="button" onClick="{{ cancelGen }}" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;cursor:pointer"><nb-icon name="square" size="18"></nb-icon>Cancel</button></div>
+            </section>
+          </sc-if>
+
+          <!-- STEP 4 -->
+          <sc-if value="{{ step4 }}" hint-placeholder-val="{{ false }}">
+            <div role="note" style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:12px 16px;border-radius:10px;background:var(--primary-bg)">
+              <span style="color:var(--primary);display:flex"><nb-icon name="sparkles" size="20"></nb-icon></span>
+              <span style="flex:1 1 280px"><strong>This draft was written with AI.</strong> Check it before sharing with students. {{ draftCount }}</span>
+              <button type="button" onClick="{{ acceptAll }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:var(--surface);color:var(--primary);font-weight:700;cursor:pointer">Accept all I've read</button>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+              <sc-if value="{{ showSecondary }}" hint-placeholder-val="{{ true }}">
+                <nav aria-label="Lesson outline" style="flex:1 1 220px;max-width:{{ outlineMax }};min-width:0;display:flex;flex-direction:column;gap:16px;position:sticky;top:0">
+                  <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:2px">
+                    <span style="font-size:0.875rem;font-weight:700;color:var(--text-muted);padding:4px 8px 8px">Sections</span>
+                    <sc-for list="{{ outline }}" as="o" hint-placeholder-count="5">
+                      <button type="button" onClick="{{ o.onClick }}" aria-current="{{ o.current }}" style="display:flex;gap:8px;align-items:center;text-align:left;min-height:48px;padding:6px 8px;border-radius:8px;border:0;border-left:3px solid {{ o.bar }};background:{{ o.bg }};cursor:pointer;color:var(--text)">
+                        <span style="flex:1;display:flex;flex-direction:column;line-height:1.3;min-width:0"><span style="font-weight:{{ o.weight }};font-size:0.9375rem">{{ o.n }}. {{ o.title }}</span><span style="display:inline-flex;align-items:center;gap:4px;font-size:0.8125rem;color:{{ o.stFg }}"><nb-icon name="{{ o.stIcon }}" size="12"></nb-icon>{{ o.st }}</span></span>
+                      </button>
+                    </sc-for>
+                  </div>
+                  <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px">
+                    <span style="font-size:0.875rem;font-weight:700;color:var(--text-muted)">Learning outcomes · {{ coverText }}</span>
+                    <sc-for list="{{ coverage }}" as="cv" hint-placeholder-count="4">
+                      <div style="display:flex;gap:8px;align-items:flex-start;padding:6px 8px;border-radius:6px;background:{{ cv.bg }}"><span style="color:{{ cv.fg }};display:flex;padding-top:2px"><nb-icon name="{{ cv.icon }}" size="16"></nb-icon></span><span style="display:flex;flex-direction:column;line-height:1.35"><span style="font-size:0.875rem">{{ cv.text }}</span><span style="font-size:0.75rem;font-weight:700;color:{{ cv.fg }}">{{ cv.state }}</span></span></div>
+                    </sc-for>
+                  </div>
+                </nav>
+              </sc-if>
+
+              <div style="flex:3 1 460px;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+                <div role="toolbar" aria-label="Formatting" style="display:flex;flex-wrap:wrap;gap:2px;padding:6px;border-bottom:1px solid var(--border);background:var(--surface-2)">
+                  <sc-for list="{{ toolbar }}" as="tb" hint-placeholder-count="8"><button type="button" aria-label="{{ tb.label }}" title="{{ tb.label }}" style="width:44px;height:44px;border-radius:8px;border:0;background:transparent;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--surface)"><nb-icon name="{{ tb.icon }}" size="20"></nb-icon></button></sc-for>
+                </div>
+                <article aria-label="Lesson draft" style="padding:24px;display:flex;flex-direction:column;gap:28px">
+                  <h2 style="margin:0;font-size:1.5rem">{{ topic }}</h2>
+                  <sc-for list="{{ sections }}" as="sec" hint-placeholder-count="5">
+                    <section id="{{ sec.anchor }}" aria-labelledby="{{ sec.hid }}" style="display:flex;flex-direction:column;gap:12px;scroll-margin-top:16px">
+                      <h3 id="{{ sec.hid }}" style="margin:0;font-size:1.25rem">{{ sec.n }}. {{ sec.title }}</h3>
+                      <sc-for list="{{ sec.blocks }}" as="b" hint-placeholder-count="2">
+                        <div style="padding:14px 16px;border-radius:8px;background:{{ b.bg }};border:1px {{ b.bdStyle }} {{ b.bd }};display:flex;flex-direction:column;gap:10px">
+                          <div style="display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center">
+                            <span style="display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;background:{{ b.tagBg }};color:{{ b.tagFg }};font-size:0.8125rem;font-weight:700"><nb-icon name="{{ b.tagIcon }}" size="14"></nb-icon>{{ b.tag }}</span>
+                            <sc-if value="{{ b.hasKind }}" hint-placeholder-val="{{ false }}"><span style="font-size:0.8125rem;font-weight:700;color:var(--text-muted)">{{ b.kindLabel }}</span></sc-if>
+                            <button type="button" onClick="{{ b.onSource }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:2px 12px;border-radius:999px;border:1px {{ b.srcStyle }} {{ b.srcBd }};background:var(--surface);color:{{ b.srcFg }};font-size:0.8125rem;cursor:pointer"><nb-icon name="{{ b.srcIcon }}" size="14"></nb-icon>{{ b.srcLabel }}</button>
+                          </div>
+                          <sc-if value="{{ b.editing }}" hint-placeholder-val="{{ false }}">
+                            <label for="{{ b.taId }}" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Edit paragraph</label>
+                            <textarea id="{{ b.taId }}" rows="4" value="{{ b.text }}" onChange="{{ b.onEdit }}" style="padding:12px;border-radius:8px;border:2px solid var(--primary);background:var(--surface);resize:vertical;line-height:var(--lh)"></textarea>
+                          </sc-if>
+                          <sc-if value="{{ b.notEditing }}" hint-placeholder-val="{{ true }}"><p style="margin:0;max-width:70ch;text-wrap:pretty;font-weight:{{ b.textW }}">{{ b.text }}</p></sc-if>
+                          <div style="display:flex;gap:6px;flex-wrap:wrap">
+                            <button type="button" onClick="{{ b.onAccept }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:{{ b.accBg }};color:{{ b.accFg }};font-weight:700;cursor:pointer;font-size:0.9375rem"><nb-icon name="{{ b.accIcon }}" size="16"></nb-icon>{{ b.accLabel }}</button>
+                            <button type="button" onClick="{{ b.onToggleEdit }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer;font-size:0.9375rem"><nb-icon name="{{ b.editIcon }}" size="16"></nb-icon>{{ b.editLabel }}</button>
+                            <button type="button" onClick="{{ b.onRemove }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--text-muted);font-weight:700;cursor:pointer;font-size:0.9375rem"><nb-icon name="trash-2" size="16"></nb-icon>Remove</button>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </section>
+                  </sc-for>
+                </article>
+              </div>
+
+              <aside aria-labelledby="h-assist" style="flex:1 1 260px;max-width:{{ assistMax }};min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;position:sticky;top:0">
+                <h2 id="h-assist" style="margin:0;font-size:1.125rem;display:flex;gap:8px;align-items:center"><span style="color:var(--primary);display:flex"><nb-icon name="sparkles" size="20"></nb-icon></span>AI assist</h2>
+                <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:0.8125rem;font-weight:700;color:var(--text-muted)">Working on</span><span style="font-weight:700">{{ assistTarget }}</span><span style="font-size:0.8125rem;color:var(--text-muted)">Pick a section in the outline to change this.</span></div>
+                <sc-if value="{{ assistBusy }}" hint-placeholder-val="{{ false }}"><div role="status" style="display:flex;gap:8px;align-items:center;padding:10px 12px;border-radius:8px;background:var(--primary-bg);font-size:0.9375rem"><span aria-hidden="true" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--primary);border-right-color:transparent;animation:nbSpin .8s linear infinite"></span>{{ assistBusyText }}</div></sc-if>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <sc-for list="{{ assistActions }}" as="aa" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ aa.onClick }}" disabled="{{ aa.disabled }}" style="display:flex;gap:10px;align-items:center;text-align:left;min-height:52px;padding:8px 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;color:var(--text)" style-hover="border-color:var(--primary);background:var(--primary-bg)"><span style="color:var(--primary);display:flex"><nb-icon name="{{ aa.icon }}" size="20"></nb-icon></span><span style="display:flex;flex-direction:column;line-height:1.3"><span style="font-weight:700">{{ aa.label }}</span><span style="font-size:0.8125rem;color:var(--text-muted)">{{ aa.sub }}</span></span></button>
+                  </sc-for>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px;padding-top:10px;border-top:1px solid var(--border)">
+                  <span style="font-weight:700;font-size:0.9375rem">Change depth for this section</span>
+                  <div style="display:flex;gap:6px;align-items:center">
+                    <button type="button" onClick="{{ depthDown }}" aria-label="Simpler" style="width:44px;height:44px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="minus" size="18"></nb-icon></button>
+                    <span style="flex:1;text-align:center;font-weight:700">{{ secDepthLabel }}</span>
+                    <button type="button" onClick="{{ depthUp }}" aria-label="More advanced" style="width:44px;height:44px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="plus" size="18"></nb-icon></button>
+                  </div>
+                </div>
+              </aside>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+              <button type="button" onClick="{{ toConfigure }}" style="min-height:52px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Back to settings</button>
+              <button type="button" onClick="{{ toExport }}" style="display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:0 24px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)">Continue to export<nb-icon name="arrow-right" size="20"></nb-icon></button>
+            </div>
+          </sc-if>
+
+          <!-- STEP 5 -->
+          <sc-if value="{{ step5 }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+              <div style="flex:3 1 480px;min-width:0;background:var(--surface-2);border-radius:10px;padding:20px;display:flex;justify-content:center">
+                <article aria-label="Print preview" style="width:100%;max-width:680px;background:#FFFFFF;color:#1F2328;border:1px solid #E3DED6;box-shadow:var(--shadow-md);padding:40px 44px;display:flex;flex-direction:column;gap:14px">
+                  <span style="font-size:0.8125rem;color:#5B6470">{{ stCourseCode }} · {{ stCourseName }} · Babcock University</span>
+                  <h2 style="margin:0;font-size:1.625rem;color:#1F2328">{{ topic }}</h2>
+                  <span style="font-size:0.875rem;color:#5B6470">About {{ readMins }} min read · {{ authorLine }}</span>
+                  <sc-for list="{{ exportSections }}" as="es" hint-placeholder-count="5">
+                    <div style="display:flex;flex-direction:column;gap:10px">
+                      <h3 style="margin:10px 0 0;font-size:1.1875rem;color:#1F2328">{{ es.n }}. {{ es.title }}</h3>
+                      <sc-for list="{{ es.blocks }}" as="eb" hint-placeholder-count="1">
+                        <p style="margin:0;padding:{{ eb.pad }};background:{{ eb.bg }};border-radius:6px;max-width:70ch;color:#1F2328;font-weight:{{ eb.w }};text-wrap:pretty">{{ eb.text }}</p>
+                      </sc-for>
+                    </div>
+                  </sc-for>
+                </article>
+              </div>
+              <aside aria-label="Export" style="flex:2 1 320px;min-width:0;display:flex;flex-direction:column;gap:16px;position:sticky;top:0">
+                <sc-if value="{{ hasDrafts }}" hint-placeholder-val="{{ false }}">
+                  <div role="alert" style="display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:10px;background:var(--warning-bg)">
+                    <span style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--warning-ink);display:flex;padding-top:2px"><nb-icon name="triangle-alert" size="20"></nb-icon></span><span><strong>{{ draftsLeft }}</strong> Only accepted paragraphs appear in the preview.</span></span>
+                    <button type="button" onClick="{{ toReview }}" style="align-self:flex-start;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--warning-ink);background:transparent;color:var(--warning-ink);font-weight:700;cursor:pointer">Review drafts</button>
+                  </div>
+                </sc-if>
+                <section aria-labelledby="h-fmt" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px">
+                  <h2 id="h-fmt" style="margin:0;font-size:1.125rem">Download</h2>
+                  <sc-for list="{{ formats }}" as="fm" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ fm.onClick }}" style="display:flex;gap:12px;align-items:center;text-align:left;min-height:56px;padding:8px 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;color:var(--text)" style-hover="border-color:var(--primary)"><span style="color:var(--primary);display:flex"><nb-icon name="{{ fm.icon }}" size="22"></nb-icon></span><span style="flex:1;display:flex;flex-direction:column;line-height:1.3"><span style="font-weight:700">{{ fm.label }}</span><span style="font-size:0.8125rem;color:var(--text-muted)">{{ fm.sub }}</span></span><nb-icon name="download" size="18"></nb-icon></button>
+                  </sc-for>
+                </section>
+                <section aria-labelledby="h-chk" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:8px">
+                  <h2 id="h-chk" style="margin:0;font-size:1.125rem">Accessibility checks</h2>
+                  <sc-for list="{{ checks }}" as="ck" hint-placeholder-count="4"><div style="display:flex;gap:8px;align-items:flex-start"><span style="color:{{ ck.fg }};display:flex;padding-top:2px"><nb-icon name="{{ ck.icon }}" size="18"></nb-icon></span><span style="font-size:0.9375rem">{{ ck.text }}</span></div></sc-for>
+                </section>
+                <section aria-labelledby="h-appr" style="background:var(--surface);border:{{ apprBd }};border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px">
+                  <h2 id="h-appr" style="margin:0;font-size:1.125rem">Approve this lesson</h2>
+                  <sc-if value="{{ approved }}" hint-placeholder-val="{{ false }}"><span style="display:flex;gap:8px;align-items:center;color:var(--accent-ink);font-weight:700"><nb-icon name="badge-check" size="20"></nb-icon>Approved by you · {{ versionLabel }}</span><span style="font-size:0.9375rem;color:var(--text-muted)">You're recorded as the author. Saved to your lesson library.</span></sc-if>
+                  <sc-if value="{{ notApproved }}" hint-placeholder-val="{{ true }}">
+                    <span style="font-size:0.9375rem;color:var(--text-muted);text-wrap:pretty">Approving records you as the author. Students will see "Prepared by Dr. Temitope Ogunleye".</span>
+                    <button type="button" onClick="{{ approve }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)"><nb-icon name="badge-check" size="20"></nb-icon>Mark as approved</button>
+                  </sc-if>
+                </section>
+              </aside>
+            </div>
+          </sc-if>
+        </sc-if>
+
+        <!-- LIBRARY -->
+        <sc-if value="{{ sLibrary }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between">
+            <div style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-size:2rem;line-height:1.25">Lesson library</h1><p style="margin:0;color:var(--text-muted)">Lessons you've made or that colleagues shared with you</p></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <div role="group" aria-label="Filter" style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ libFilters }}" as="f" hint-placeholder-count="3"><button type="button" aria-pressed="{{ f.pressed }}" onClick="{{ f.onClick }}" style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ f.bd }};background:{{ f.bg }};color:{{ f.fg }};font-weight:700;cursor:pointer">{{ f.label }} <span style="font-weight:400">{{ f.count }}</span></button></sc-for></div>
+              <button type="button" onClick="{{ newLesson }}" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer"><nb-icon name="plus" size="20"></nb-icon>New lesson</button>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ lessons }}" as="l" hint-placeholder-count="5">
+              <section aria-label="{{ l.title }}" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center">
+                  <span style="flex:1 1 260px;display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700;font-size:1.0625rem">{{ l.title }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ l.course }} · {{ l.version }} · updated {{ l.updated }} · {{ l.author }}</span></span>
+                  <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:{{ l.sBg }};color:{{ l.sFg }};border:1px solid {{ l.sBd }};font-size:0.8125rem;font-weight:700"><nb-icon name="{{ l.sIcon }}" size="14"></nb-icon>{{ l.status }}</span>
+                  <div style="display:flex;gap:4px;flex-wrap:wrap">
+                    <button type="button" onClick="{{ l.onOpen }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Open</button>
+                    <button type="button" onClick="{{ l.onHistory }}" aria-expanded="{{ l.histOpen }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="history" size="18"></nb-icon>History</button>
+                    <button type="button" onClick="{{ l.onDuplicate }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="copy" size="18"></nb-icon>Duplicate</button>
+                    <button type="button" onClick="{{ l.onShare }}" aria-expanded="{{ l.shareOpen }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="share-2" size="18"></nb-icon>Share</button>
+                  </div>
+                </div>
+                <sc-if value="{{ l.showHistory }}" hint-placeholder-val="{{ false }}">
+                  <ol style="list-style:none;margin:0;padding:12px 0 0;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px">
+                    <sc-for list="{{ l.versions }}" as="v" hint-placeholder-count="2"><li style="display:flex;flex-wrap:wrap;gap:4px 12px;font-size:0.9375rem"><span style="font-family:var(--mono);font-weight:700;width:48px">{{ v.v }}</span><span style="flex:1 1 200px">{{ v.note }}</span><span style="color:var(--text-muted)">{{ v.when }}</span></li></sc-for>
+                  </ol>
+                </sc-if>
+                <sc-if value="{{ l.showShare }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding-top:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px">
+                    <span style="font-weight:700">Share with co-lecturers</span>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ l.colleagues }}" as="co" hint-placeholder-count="3"><button type="button" aria-pressed="{{ co.pressed }}" onClick="{{ co.onClick }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ co.bd }};background:{{ co.bg }};color:{{ co.fg }};font-weight:700;cursor:pointer"><nb-icon name="{{ co.icon }}" size="16"></nb-icon>{{ co.label }}</button></sc-for></div>
+                    <span style="font-size:0.875rem;color:var(--text-muted)">They can view and duplicate it. Only you can approve changes.</span>
+                  </div>
+                </sc-if>
+              </section>
+            </sc-for>
+            <sc-if value="{{ libEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:24px;border-radius:10px;border:1px dashed var(--border-strong);color:var(--text-muted);text-align:center">No lessons here yet. Start one in the Teaching Studio.</p></sc-if>
+          </div>
+        </sc-if>
+
+        <!-- DENIED -->
+        <sc-if value="{{ sDenied }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:48px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+            <span style="width:64px;height:64px;border-radius:50%;background:var(--privacy-bg);color:var(--privacy);display:flex;align-items:center;justify-content:center"><nb-icon name="shield" size="32"></nb-icon></span>
+            <h1 style="margin:0;font-size:1.5rem">This page isn't part of your role</h1>
+            <p style="margin:0;color:var(--text-muted);max-width:52ch;text-wrap:pretty">Case records are only open to the support office. As a lecturer you see the accommodations students share with you, which tells you what to do.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button type="button" onClick="{{ goHome }}" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">Back to my courses</button><button type="button" onClick="{{ goAccom }}" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">See accommodations</button></div>
+          </div>
+        </sc-if>
+      </div>
+    </main>
+  </div>
+
+  <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;z-index:40;background:rgba(20,22,26,.35)"></div>
+    <nav aria-label="Main" style="position:absolute;top:0;left:0;bottom:0;z-index:41;width:min(300px,86%);background:var(--surface);box-shadow:var(--shadow-lg);padding:12px;display:flex;flex-direction:column;gap:4px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 4px 12px"><span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;background:var(--primary-bg);color:var(--primary);font-size:0.8125rem;font-weight:700"><nb-icon name="presentation" size="16"></nb-icon>Lecturer</span><button type="button" onClick="{{ closeDrawer }}" aria-label="Close menu" style="width:44px;height:44px;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="22"></nb-icon></button></div>
+      <sc-for list="{{ drawerItems }}" as="si" hint-placeholder-count="4"><button type="button" onClick="{{ si.onClick }}" aria-current="{{ si.current }}" style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px;border-radius:8px;border:0;background:{{ si.bg }};color:{{ si.fg }};font-weight:{{ si.weight }};text-align:left;cursor:pointer"><nb-icon name="{{ si.icon }}" size="22"></nb-icon>{{ si.label }}</button></sc-for>
+    </nav>
+  </sc-if>
+
+  <sc-if value="{{ notifOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ toggleNotif }}" style="position:absolute;inset:0;z-index:30"></div>
+    <div role="dialog" aria-label="Notifications" style="position:absolute;top:64px;right:8px;z-index:31;width:min(400px,calc(100% - 16px));background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);padding:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px"><h2 style="margin:0;font-size:1.125rem">Notifications</h2><button type="button" onClick="{{ markRead }}" style="min-height:44px;padding:0 10px;border-radius:8px;border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer;font-size:0.875rem">Mark all as read</button></div>
+      <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="2">
+        <button type="button" onClick="{{ n.onClick }}" style="width:100%;display:flex;gap:10px;align-items:flex-start;text-align:left;padding:10px;border:0;border-radius:8px;background:{{ n.bg }};cursor:pointer"><span style="color:var(--primary);display:flex;padding-top:2px"><nb-icon name="{{ n.icon }}" size="20"></nb-icon></span><span style="flex:1;display:flex;flex-direction:column;line-height:1.4"><span style="font-weight:{{ n.weight }}">{{ n.text }}</span><span style="font-size:0.8125rem;color:var(--text-muted)">{{ n.when }}</span></span></button>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ prefsOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePrefs }}" style="position:absolute;inset:0;z-index:40;background:rgba(20,22,26,.35)"></div>
+    <aside role="dialog" aria-modal="true" aria-labelledby="rp-title" style="position:absolute;top:0;right:0;bottom:0;z-index:41;width:min(440px,100%);background:var(--surface);border-left:1px solid var(--border);box-shadow:var(--shadow-lg);display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;flex-direction:column;line-height:1.3"><h2 id="rp-title" style="margin:0;font-size:1.25rem">Reading preferences</h2><span style="font-size:0.875rem;color:var(--text-muted)">Changes apply straight away and are saved for you.</span></div>
+        <button type="button" onClick="{{ closePrefs }}" aria-label="Close reading preferences" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="22"></nb-icon></button>
+      </div>
+      <div style="flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:24px">
+        <sc-for list="{{ prefGroups }}" as="g" hint-placeholder-count="5">
+          <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+            <legend style="font-weight:700;padding:0;margin-bottom:8px">{{ g.label }}</legend>
+            <div style="display:grid;grid-template-columns:repeat({{ g.cols }},minmax(0,1fr));gap:6px">
+              <sc-for list="{{ g.opts }}" as="o" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;padding:6px 8px;border-radius:8px;border:2px solid {{ o.bd }};background:{{ o.bg }};color:var(--text);font-family:{{ o.font }};cursor:pointer;line-height:1.2"><span style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:{{ o.size }}"><sc-if value="{{ o.hasSwatch }}" hint-placeholder-val="{{ false }}"><span style="width:16px;height:16px;border-radius:50%;background:{{ o.swatch }};border:1px solid var(--border-strong)"></span></sc-if>{{ o.label }}</span><span style="font-size:0.75rem;color:var(--text-muted)">{{ o.sub }}</span></button>
+              </sc-for>
+            </div>
+          </fieldset>
+        </sc-for>
+        <div style="display:flex;flex-direction:column;border-top:1px solid var(--border)">
+          <sc-for list="{{ prefToggles }}" as="t" hint-placeholder-count="2">
+            <div style="display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)">
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span id="{{ t.id }}" style="font-weight:700">{{ t.title }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ t.desc }}</span></div>
+              <button type="button" role="switch" aria-checked="{{ t.on }}" aria-labelledby="{{ t.id }}" onClick="{{ t.onClick }}" style="flex:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;background:transparent;cursor:pointer"><span style="font-size:0.875rem;font-weight:700;width:28px;text-align:right">{{ t.label }}</span><span style="position:relative;width:52px;height:32px;border-radius:999px;background:{{ t.track }};border:2px solid {{ t.trackBd }}"><span style="position:absolute;top:2px;left:{{ t.knobLeft }};width:24px;height:24px;border-radius:50%;background:{{ t.knob }};transition:left .15s"></span></span></button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;padding:16px 20px;border-top:1px solid var(--border);flex-wrap:wrap">
+        <button type="button" onClick="{{ toggleSpeak }}" style="flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer"><nb-icon name="{{ speakIcon }}" size="20"></nb-icon>{{ speakLabel }}</button>
+        <button type="button" onClick="{{ resetPrefs }}" style="min-height:48px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Reset</button>
+      </div>
+    </aside>
+  </sc-if>
+
+  <div role="status" aria-live="polite" style="position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;width:min(480px,calc(100% - 24px))">
+    <sc-for list="{{ toasts }}" as="t" hint-placeholder-count="0">
+      <div style="display:flex;gap:12px;align-items:center;padding:10px 8px 10px 16px;border-radius:10px;background:var(--text);color:var(--bg);box-shadow:var(--shadow-lg)"><span style="color:{{ t.fg }};display:flex"><nb-icon name="{{ t.icon }}" size="20"></nb-icon></span><span style="flex:1;font-size:0.9375rem">{{ t.msg }}</span><button type="button" onClick="{{ t.onClose }}" aria-label="Dismiss" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="18"></nb-icon></button></div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;accommodations&quot;,&quot;studio-setup&quot;,&quot;studio-review&quot;,&quot;studio-export&quot;,&quot;library&quot;,&quot;denied&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Start at&quot;},&quot;genError&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;States&quot;}}">
+const PKEY = 'nb-reading-prefs-staff';
+const DEFAULT_PREFS = {size:'S',line:'1.6',letter:'0em',font:'default',theme:'light',motion:false,focus:false};
+const COURSES = {
+  csc301:{code:'CSC 301',name:'Data Structures',level:'300 level',students:142,rows:[
+    {icon:'timer',label:'Extra time on timed assessments (25%)',n:3,named:['Adaeze Okonkwo'],todo:'Add 25% to the time limit for quizzes and tests you set. The exams office handles final exams.'},
+    {icon:'presentation',label:'Lecture slides 48 hours before class',n:2,named:['Adaeze Okonkwo'],todo:'Post slides to the course page by Tuesday for Thursday lectures.'},
+    {icon:'file-type',label:'Materials in a screen-reader friendly format',n:1,named:[],todo:'Use real headings and describe images. Teaching Studio exports do this for you.'},
+    {icon:'calendar-range',label:'Deadline extension of up to 5 days, on request',n:4,named:['Adaeze Okonkwo'],todo:'Agree a new date when a student asks before the deadline. No reason is needed.'},
+    {icon:'notebook-pen',label:'Note-taking support',n:1,named:[],todo:'A note-taker may attend lectures. Let them sit near the front.'},
+  ], namedStudents:[{name:'Adaeze Okonkwo',initials:'AO',date:'13 Oct 2026',items:['Extra time on assessments (25%)','Slides 48 hours before class','Deadline extension up to 5 days']}]},
+  csc401:{code:'CSC 401',name:'Software Engineering',level:'400 level',students:96,rows:[
+    {icon:'timer',label:'Extra time on timed assessments (25%)',n:2,named:[],todo:'Add 25% to the time limit for quizzes and tests you set.'},
+    {icon:'calendar-range',label:'Deadline extension of up to 5 days, on request',n:2,named:['Kelechi Ibe'],todo:'Agree a new date when a student asks before the deadline.'},
+    {icon:'armchair',label:'Seat near the front or an exit',n:1,named:[],todo:'Keep a seat free near the front in the lab.'},
+  ], namedStudents:[{name:'Kelechi Ibe',initials:'KI',date:'4 Oct 2026',items:['Deadline extension up to 5 days']}]},
+  cos202:{code:'COS 202',name:'Computer Programming II',level:'200 level',students:210,rows:[],namedStudents:[]},
+};
+const LOS = [
+  {id:'lo1',code:'LO 3.1',text:'Explain how a recursive function reaches its base case'},
+  {id:'lo2',code:'LO 3.2',text:'Trace the call stack for a recursive function'},
+  {id:'lo3',code:'LO 3.3',text:'Use recursion to traverse a tree'},
+  {id:'lo4',code:'LO 3.4',text:'Apply recursion to a real-world problem'},
+];
+const SUPPORTS = ['Key-term glossary','Worked examples','Chunked sections','Summary boxes','Practice questions with answers','Industry scenario','Reading-time estimate'];
+const STYLES = [{id:'step',label:'Step-by-step',icon:'list-ordered'},{id:'visual',label:'Visual-heavy',icon:'image'},{id:'concise',label:'Concise summary',icon:'align-left'},{id:'story',label:'Story or case-led',icon:'book-open'}];
+const DEPTHS = ['Introductory','Introductory+','Intermediate','Intermediate+','Advanced'];
+const SECTIONS = [{id:'s1',title:'What recursion is'},{id:'s2',title:'How the call stack works'},{id:'s3',title:'Recursion and trees'},{id:'s4',title:'When to use a loop instead'},{id:'s5',title:'Practice'}];
+const L4 = 'CSC301_Lecture4_Recursion.pdf', W5 = 'Week5_Slides_Trees.pptx';
+const GEN = [
+  {sec:'s1',kind:'p',lo:'lo1',src:[L4,3],text:'A recursive function solves a problem by calling itself on a smaller version of the same problem. Each call does a little work and hands the rest to the next call.',simple:'A recursive function calls itself. Each time, the problem gets a bit smaller.'},
+  {sec:'s1',kind:'terms',lo:'lo1',src:[L4,4],text:'Base case: the smallest version of the problem, solved directly. Recursive case: the step that calls the function again with a smaller input.'},
+  {sec:'s2',kind:'p',lo:'lo2',src:[L4,12],text:'Each call waits for the one below it to finish. When the base case returns, the answers pass back up the chain, one step at a time, like a stack of plates cleared from the top.',simple:'Each call waits. The last call finishes first. Then each answer goes back up, one at a time.'},
+  {sec:'s2',kind:'example',lo:'lo2',src:[L4,13],text:'factorial(3) calls factorial(2), which calls factorial(1). factorial(1) returns 1. Then factorial(2) returns 2 × 1 = 2, and factorial(3) returns 3 × 2 = 6.'},
+  {sec:'s3',kind:'p',lo:'lo3',src:[W5,8],text:'Trees are recursive by nature: every subtree is itself a tree. To visit every node, visit the root, then repeat the same steps on each child.',simple:'Every part of a tree is also a tree. So you can visit the top, then do the same for each branch.'},
+  {sec:'s4',kind:'p',lo:null,src:[L4,18],text:'Deep recursion can run out of stack space. If each step only needs the result of the step before, a loop is often clearer and safer.',simple:'Too many calls can crash a program. A loop is often safer for long, simple repeats.'},
+  {sec:'s5',kind:'question',lo:'lo1',src:[L4,20],text:'Q1. Write a recursive function sum_list(items) that returns the total of a list of numbers. Answer: if the list is empty, return 0. Otherwise return items[0] + sum_list(items[1:]).'},
+  {sec:'s5',kind:'summary',lo:null,src:[L4,21],text:'Summary: find the base case first, make sure every call gets smaller, and trace the stack by hand on a small input.'},
+];
+const KIND = {p:'',terms:'Key terms',example:'Worked example',question:'Practice question',summary:'Summary box',industry:'Industry scenario'};
+const GEN_STEPS = ['Reading your materials (3 files)','Matching content to 4 learning outcomes','Drafting section 1 of 5: What recursion is','Drafting section 2 of 5: How the call stack works','Drafting section 3 of 5: Recursion and trees','Drafting section 4 of 5: When to use a loop instead','Drafting section 5 of 5: Practice','Checking reading level and adding citations'];
+const LIB = [
+  {id:'l1',title:'Recursion and the call stack',course:'CSC 301',status:'Draft',updated:'today',version:'v0.3',author:'You',versions:[{v:'v0.3',note:'AI draft generated, 8 paragraphs',when:'Today'},{v:'v0.2',note:'Learning outcomes updated',when:'14 Oct'},{v:'v0.1',note:'Created',when:'14 Oct'}]},
+  {id:'l2',title:'Binary search trees',course:'CSC 301',status:'Approved',updated:'8 Oct',version:'v1.1',author:'You',versions:[{v:'v1.1',note:'Fixed an example',when:'8 Oct'},{v:'v1.0',note:'Approved by you',when:'1 Oct'}]},
+  {id:'l3',title:'Big-O notation in practice',course:'CSC 301',status:'Approved',updated:'24 Sep',version:'v2.0',author:'You',versions:[{v:'v2.0',note:'Rewritten for 2026/27',when:'24 Sep'},{v:'v1.0',note:'Approved by you',when:'12 Sep 2025'}]},
+  {id:'l4',title:'Requirements gathering',course:'CSC 401',status:'Draft',updated:'2 Oct',version:'v0.2',author:'You',versions:[{v:'v0.2',note:'Industry example added',when:'2 Oct'}]},
+  {id:'l5',title:'Unit testing basics',course:'CSC 401',status:'Approved',updated:'18 Sep',version:'v1.0',author:'Shared by Mr. Chidi Okafor',versions:[{v:'v1.0',note:'Approved by Mr. Okafor',when:'18 Sep'}]},
+];
+const COLLEAGUES = ['Mr. Chidi Okafor','Dr. Musa Danjuma','Mrs. Bisi Lawal'];
+const ST = { Draft:{icon:'pencil',fg:'var(--warning-ink)',bg:'var(--warning-bg)',bd:'transparent'}, Approved:{icon:'badge-check',fg:'var(--accent-ink)',bg:'var(--accent-bg)',bd:'transparent'} };
+const SCREENS = {home:['home',1],accommodations:['accom',1],'studio-setup':['studio',1],'studio-review':['studio',4],'studio-export':['studio',5],library:['library',1],denied:['denied',1]};
+
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  mainRef = React.createRef();
+  state = {
+    prefs:{...DEFAULT_PREFS}, prefsOpen:false, notifOpen:false, drawerOpen:false, toasts:[], speaking:false, layout:'desktop', readAll:false,
+    nav:null, accCourse:'csc301',
+    stCourse:'csc301', topic:'Recursion and the call stack', curr:'outline', los:['lo1','lo2','lo3','lo4'], extraLos:[], newLo:'', setupError:null,
+    files:[{id:1,name:L4,size:2.4,progress:100,status:'done'},{id:2,name:W5,size:8.1,progress:46,status:'uploading'},{id:3,name:'Reading_List_2026.docx',size:0.6,progress:100,status:'done'}],
+    depth:2, style:'step', supports:['Key-term glossary','Worked examples','Chunked sections','Summary boxes','Practice questions with answers','Reading-time estimate'], industry:'Fintech in Nigeria',
+    genIdx:0, genFailed:false, genSkipped:false,
+    blocks:null, editing:null, activeSec:'s1', secDepth:{}, busy:null,
+    approved:false, lib:LIB, libF:'All', histOpen:null, shareOpen:null, shared:{},
+  };
+
+  componentDidMount() {
+    let saved = null; try { saved = JSON.parse(localStorage.getItem(PKEY)||'null'); } catch(e) {}
+    const init = {...DEFAULT_PREFS, ...(saved||{})}; this.apply(init); if (saved) this.setState({prefs:init});
+    const el = this.rootRef.current;
+    const measure = () => { const w = el ? el.clientWidth : window.innerWidth; const layout = w<768?'mobile':w<1024?'tablet':'desktop'; if (layout!==this.state.layout) this.setState({layout}); };
+    measure(); if (window.ResizeObserver && el) { this.ro = new ResizeObserver(measure); this.ro.observe(el); }
+    this.onKey = e => { if (e.key==='Escape') this.setState({prefsOpen:false, notifOpen:false, drawerOpen:false}); };
+    window.addEventListener('keydown', this.onKey);
+    this.up = setInterval(() => { if (!this.state.files.some(f=>f.status==='uploading')) return; this.setState(s=>({files:s.files.map(f=>{ if (f.status!=='uploading') return f; const p = Math.min(100, f.progress+6); return {...f, progress:p, status:p>=100?'done':'uploading'}; })})); }, 400);
+  }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); window.removeEventListener('keydown',this.onKey); clearInterval(this.up); clearInterval(this.gen); if (window.speechSynthesis) speechSynthesis.cancel(); }
+  apply(p) {
+    const r = document.documentElement; r.dataset.theme = p.theme;
+    r.style.fontSize = {S:'16px',M:'18px',L:'20px',XL:'24px'}[p.size] || '16px';
+    r.style.setProperty('--lh', p.line); r.style.setProperty('--ls', p.letter);
+    r.style.setProperty('--font', p.font==='dyslexic' ? '"OpenDyslexic","Atkinson Hyperlegible",sans-serif' : '"Atkinson Hyperlegible",Lexend,system-ui,sans-serif');
+    if (p.motion) r.dataset.motion='reduce'; else delete r.dataset.motion;
+  }
+  setPrefs(next) { this.apply(next); try { localStorage.setItem(PKEY, JSON.stringify(next)); } catch(e) {} this.setState({prefs:next}); }
+  setPref(k,v) { this.setPrefs({...this.state.prefs,[k]:v}); }
+  toast(msg, kind) { const id = Date.now()+Math.random(); const t = kind==='error'?{icon:'circle-alert',fg:'#E07A7A'}:{icon:'circle-check',fg:'#6BC1AE'}; this.setState(s=>({toasts:[...s.toasts,{id,msg,...t}]})); setTimeout(()=>this.setState(s=>({toasts:s.toasts.filter(x=>x.id!==id)})), 6000); }
+  seg(key, opts) { const cur = this.state.prefs[key]; return opts.map(o => { const on = cur===o.v; return { label:o.label, sub:o.sub||'', size:o.size||'0.9375rem', font:o.font||'inherit', hasSwatch:!!o.swatch, swatch:o.swatch||'transparent', pressed:String(on), bg:on?'var(--primary-bg)':'var(--surface)', bd:on?'var(--primary)':'var(--border)', onClick:()=>this.setPref(key,o.v) }; }); }
+  sw(on) { return { on:String(on), label:on?'On':'Off', track:on?'var(--primary)':'var(--surface-2)', trackBd:on?'var(--primary)':'var(--border-strong)', knob:on?'var(--on-primary)':'var(--border-strong)', knobLeft:on?'22px':'2px' }; }
+  choice(on) { return { pressed:String(on), on, bd:on?'var(--primary)':'var(--border-strong)', bdW:on?'2px':'1px', bg:on?'var(--primary-bg)':'var(--surface)', boxBd:on?'var(--primary)':'var(--border-strong)', boxBg:on?'var(--primary)':'transparent' }; }
+  pill(on) { return { pressed:String(on), on, bg:on?'var(--primary)':'var(--surface)', fg:on?'var(--on-primary)':'var(--text)', bd:on?'var(--primary)':'var(--border-strong)' }; }
+
+  navState() {
+    const sp = this.props.startScreen || 'home'; const n = this.state.nav;
+    if (n && n.prop===sp) return n;
+    const [screen, step] = SCREENS[sp] || SCREENS.home; return {prop:sp, screen, step};
+  }
+  setNav(screen, step) { const cur = this.navState(); this.setState({nav:{prop:this.props.startScreen||'home', screen, step: step!=null?step:cur.step}, drawerOpen:false, notifOpen:false}); const m = this.mainRef.current; if (m) m.scrollTop = 0; }
+  freshBlocks() { return GEN.filter(g=>!(this.state.genSkipped && g.src[0]===W5)).map((g,i)=>({...g, id:'b'+i, draft:true, edited:false})); }
+  blocks() { return this.state.blocks || this.freshBlocks(); }
+  setBlocks(fn) { this.setState(s=>({blocks: fn(s.blocks || this.freshBlocks())})); }
+  runGen() {
+    clearInterval(this.gen);
+    this.setState({genIdx:0, genFailed:false});
+    this.gen = setInterval(() => {
+      const s = this.state;
+      if (s.genFailed) return;
+      if (s.genIdx===4 && this.props.genError && !s.genSkipped) { this.setState({genFailed:true}); return; }
+      if (s.genIdx>=GEN_STEPS.length) { clearInterval(this.gen); this.setState({blocks:this.freshBlocks(), approved:false, activeSec:'s1'}); this.setNav('studio',4); this.toast('Draft ready. Check each paragraph before sharing.'); return; }
+      this.setState({genIdx:s.genIdx+1});
+    }, 750);
+  }
+  assist(label, fn, msg) {
+    if (this.state.busy) return;
+    this.setState({busy:label});
+    setTimeout(() => { fn(); this.setState({busy:null}); this.toast(msg); }, 1000);
+  }
+
+  renderVals() {
+    const s = this.state, p = s.prefs, P = this.props;
+    const nv = this.navState(); const screen = nv.screen, step = nv.step;
+    const layout = s.layout, isMobile = layout==='mobile', isTablet = layout==='tablet', isDesktop = layout==='desktop';
+    const showSidebar = !isMobile && !p.focus;
+
+    const navDefs = [{id:'home',label:'Home',icon:'house'},{id:'accom',label:'Accommodations',short:'Supports',icon:'shield-check'},{id:'studio',label:'Teaching Studio',short:'Studio',icon:'sparkles'},{id:'library',label:'Lesson library',short:'Library',icon:'library'}];
+    const sideItems = navDefs.map(n => { const on = screen===n.id; return { label: isTablet?(n.short||n.label):n.label, icon:n.icon, current:on?'page':'false', onClick:()=>this.setNav(n.id),
+      fg:on?'var(--primary)':'var(--text)', bg:on?'var(--primary-bg)':'transparent', weight:on?700:400, bar:on?'var(--primary)':'transparent',
+      dir:isTablet?'column':'row', gap:isTablet?'2px':'12px', minH:isTablet?'60px':'48px', pad:isTablet?'6px 2px':'0 12px', fs:isTablet?'0.75rem':'1rem', align:isTablet?'center':'left' }; });
+    const drawerItems = navDefs.map(n => { const on = screen===n.id; return {label:n.label, icon:n.icon, current:on?'page':'false', onClick:()=>this.setNav(n.id), fg:on?'var(--primary)':'var(--text)', bg:on?'var(--primary-bg)':'transparent', weight:on?700:400}; });
+
+    const libStatus = l => ({...l, ...(()=>{ const t = ST[l.status]; return {sIcon:t.icon, sFg:t.fg, sBg:t.bg, sBd:t.bd}; })()});
+    const courseCards = Object.entries(COURSES).map(([id,c]) => { const total = c.rows.reduce((a,r)=>a+r.n,0); const has = total>0;
+      return { hid:'cc-'+id, code:c.code, name:c.name, level:c.level, students:String(c.students),
+        accTitle: has ? total+' approved accommodations' : 'No approved accommodations yet', accSub: has ? c.rows.length+' kinds of support · '+c.namedStudents.length+' shared by name' : 'You\'ll see them here when students share',
+        accIcon: has?'shield-check':'shield', accFg: has?'var(--accent-ink)':'var(--text-muted)', accBg: has?'var(--accent-bg)':'var(--surface-2)',
+        onStudio:()=>{ this.setState({stCourse:id}); this.setNav('studio',1); }, onAccom:()=>{ this.setState({accCourse:id}); this.setNav('accom'); } }; });
+
+    const acC = COURSES[s.accCourse];
+    const ac = {...acC, students:String(acC.students), rows: acC.rows.map(r => ({...r, count:r.n+(r.n===1?' student':' students'), named: r.named.length ? r.named.join(', ') : 'No names shared', unnamed: (r.n-r.named.length)>0 ? (r.n-r.named.length)+(r.n-r.named.length===1?' student':' students')+' chose not to share a name' : ''}))};
+
+    // studio
+    const stC = COURSES[s.stCourse];
+    const allLos = [...LOS, ...s.extraLos];
+    const loOpts = allLos.map(l => ({...l, ...this.choice(s.los.includes(l.id)), onClick:()=>this.setState(st=>({setupError:null, los: st.los.includes(l.id)?st.los.filter(x=>x!==l.id):[...st.los,l.id]}))}));
+    const fileRows = s.files.map(f => { const ext = f.name.split('.').pop(); const st = f.status==='done'?{stLabel:'Ready',stIcon:'circle-check',stColor:'var(--accent-ink)',barColor:'var(--accent)'}:{stLabel:f.progress+'%',stIcon:'loader',stColor:'var(--primary)',barColor:'var(--primary)'};
+      return {...f, ...st, typeIcon: ext==='pdf'?'file-text':ext==='pptx'?'presentation':'file-type', width:f.progress+'%', removeLabel:'Remove '+f.name, onRemove:()=>this.setState(x=>({files:x.files.filter(y=>y.id!==f.id)}))}; });
+    const stepNames = ['Setup','Configure','Generate','Review and edit','Export'];
+    const reached = s.blocks ? 5 : 2;
+    const stSteps = stepNames.map((label,i) => { const n = i+1, done = n<step, now = n===step; const canGo = n!==3 && n<=reached && !now;
+      return {label, mark: done?'✓':String(n), current: now?'step':'false', state: done?'Done':now?'Current':'Not started', stateFg: now?'var(--primary)':'var(--text-muted)',
+        bar: done?'var(--accent)':now?'var(--primary)':'var(--surface-2)', dotBg: done?'var(--accent)':'var(--surface)', dotFg: done?'#FFFFFF':now?'var(--primary)':'var(--text-muted)', dotBd: done?'var(--accent)':now?'var(--primary)':'var(--border-strong)',
+        disabled: !canGo, cursor: canGo?'pointer':'default', onClick: canGo ? ()=>this.setNav('studio',n) : undefined }; });
+
+    const styleOpts = STYLES.map(o => ({...o, ...this.pill(s.style===o.id), onClick:()=>this.setState({style:o.id})}));
+    const supportOpts = SUPPORTS.map(x => ({label:x, ...this.choice(s.supports.includes(x)), onClick:()=>this.setState(st=>({supports: st.supports.includes(x)?st.supports.filter(y=>y!==x):[...st.supports,x]}))}));
+    const fitNotes = s.stCourse==='cos202' ? ['No approved accommodations yet. Accessible structure is still applied: real headings, short sections, described images.'] : [
+      'Headings, lists and image descriptions are built in, so screen-reader friendly exports work straight away.',
+      'Sections stay short with a summary box, which helps students using extra time plan their reading.',
+      'Slides and the lesson can be shared 48 hours before class from the export step.'];
+
+    const genLog = GEN_STEPS.map((t,i) => { const done = i<s.genIdx, now = i===s.genIdx && !s.genFailed; const failed = s.genFailed && i===s.genIdx;
+      return {text: failed ? 'Couldn\'t read Week5_Slides_Trees.pptx' : (t + (now?'…':'')), icon: done?'circle-check':failed?'circle-alert':now?'loader':'circle', iconFg: done?'var(--accent-ink)':failed?'var(--danger)':now?'var(--primary)':'var(--border-strong)', fg: done||now||failed?'var(--text)':'var(--text-muted)', weight: now||failed?700:400}; }).slice(0, Math.min(GEN_STEPS.length, s.genIdx+2));
+    const genPctNum = Math.round(Math.min(s.genIdx,GEN_STEPS.length)/GEN_STEPS.length*100);
+
+    const blocks = this.blocks();
+    const words = blocks.reduce((a,b)=>a+b.text.split(/\s+/).length,0);
+    const readMins = Math.max(3, Math.round(words/120)+4);
+    const sections = SECTIONS.map((sec,i) => ({n:String(i+1), title:sec.title, anchor:'sec-'+sec.id, hid:'h-'+sec.id, blocks: blocks.filter(b=>b.sec===sec.id).map(b => {
+      const ind = b.kind==='industry'; const box = ['terms','summary','example'].includes(b.kind);
+      return { ...b, taId:'ta-'+b.id, editing:s.editing===b.id, notEditing:s.editing!==b.id, hasKind:!!KIND[b.kind], kindLabel:KIND[b.kind],
+        bg: b.draft ? 'var(--surface-2)' : (box?'var(--surface-2)':'var(--surface)'), bd: b.draft?'var(--primary)':'var(--border)', bdStyle: b.draft?'dashed':'solid',
+        tag: b.draft ? (b.edited?'Draft · edited by you':'AI draft') : 'Accepted by you', tagIcon: b.draft?'sparkles':'user-check', tagBg: b.draft?'var(--primary-bg)':'var(--accent-bg)', tagFg: b.draft?'var(--primary)':'var(--accent-ink)',
+        srcLabel: ind ? 'Not from your materials · check facts' : b.src[0]+' · p. '+b.src[1], srcIcon: ind?'triangle-alert':'file-text', srcFg: ind?'var(--warning-ink)':'var(--text)', srcBd: ind?'var(--warning)':'var(--border-strong)', srcStyle: ind?'dashed':'solid',
+        textW: b.kind==='question'?700:400,
+        accLabel: b.draft?'Accept':'Undo accept', accIcon: b.draft?'check':'undo-2', accBg: b.draft?'var(--primary)':'transparent', accFg: b.draft?'var(--on-primary)':'var(--primary)',
+        editLabel: s.editing===b.id?'Done':'Edit', editIcon: s.editing===b.id?'check':'pencil',
+        onAccept:()=>this.setBlocks(bs=>bs.map(x=>x.id===b.id?{...x,draft:!x.draft}:x)),
+        onToggleEdit:()=>this.setState(st=>({editing: st.editing===b.id?null:b.id})),
+        onEdit:e=>{ const v = e.target.value; this.setBlocks(bs=>bs.map(x=>x.id===b.id?{...x,text:v,edited:true}:x)); },
+        onRemove:()=>{ this.setBlocks(bs=>bs.filter(x=>x.id!==b.id)); this.toast('Paragraph removed.'); },
+        onSource:()=>this.toast(ind ? 'This example came from your industry focus, not your files. Check the details.' : 'Opening '+b.src[0]+' at page '+b.src[1]+'.') }; })}));
+    const drafts = blocks.filter(b=>b.draft).length;
+    const covered = id => blocks.some(b=>b.lo===id);
+    const selLos = allLos.filter(l=>s.los.includes(l.id));
+    const coverage = selLos.map(l => { const ok = covered(l.id); return {text:l.text, icon:ok?'circle-check':'triangle-alert', fg:ok?'var(--accent-ink)':'var(--warning-ink)', bg:ok?'transparent':'var(--warning-bg)', state:ok?'Covered':'Not covered yet'}; });
+    const outline = SECTIONS.map((sec,i) => { const bs = blocks.filter(b=>b.sec===sec.id); const d = bs.filter(b=>b.draft).length; const on = s.activeSec===sec.id;
+      return {n:String(i+1), title:sec.title, current:on?'true':'false', bg:on?'var(--primary-bg)':'transparent', bar:on?'var(--primary)':'transparent', weight:on?700:400,
+        st: d ? d+' to check' : 'All accepted', stIcon: d?'sparkles':'circle-check', stFg: d?'var(--primary)':'var(--accent-ink)',
+        onClick:()=>{ this.setState({activeSec:sec.id}); const el = document.getElementById('sec-'+sec.id); const m = this.mainRef.current; if (el && m) m.scrollTop += el.getBoundingClientRect().top - m.getBoundingClientRect().top - 16; } }; });
+    const secIdx = SECTIONS.findIndex(x=>x.id===s.activeSec); const secTitle = SECTIONS[secIdx].title;
+    const sd = s.secDepth[s.activeSec] ?? s.depth;
+    const sid = s.activeSec;
+    const hasIndustry = blocks.some(b=>b.kind==='industry');
+    const assistActions = [
+      {icon:'refresh-cw',label:'Regenerate section',sub:'Write a fresh draft from your materials',run:()=>this.assist('Regenerating section '+(secIdx+1)+'…',()=>this.setBlocks(bs=>bs.map(x=>x.sec===sid?{...x,draft:true,edited:false}:x)),'Section '+(secIdx+1)+' regenerated. Check it again.')},
+      {icon:'wand-sparkles',label:'Simplify',sub:'Shorter sentences, plainer words',run:()=>this.assist('Simplifying…',()=>this.setBlocks(bs=>bs.map(x=>x.sec===sid && x.simple?{...x,text:x.simple,simple:null,draft:true}:x)),'Simplified. The original is in version history.')},
+      {icon:'briefcase',label:hasIndustry?'Add another example':'Add industry example',sub:s.industry?('Uses your focus: '+s.industry):'Add an industry focus in settings',run:()=>this.assist('Writing an example…',()=>this.setBlocks(bs=>{ const nb = {id:'x'+Date.now(), sec:sid, kind:'industry', lo:'lo4', src:['industry',0], draft:true, edited:false, text:'Industry scenario: a mobile money app in Lagos splits a group bill where some friends cover others. A recursive function follows the chain of "who pays for whom" until it reaches someone paying only for themselves, then adds the amounts back up.'}; const idx = bs.map(x=>x.sec).lastIndexOf(sid); const out = [...bs]; out.splice(idx+1,0,nb); return out; }),'Example added. It\'s not from your materials, so check the details.')},
+      {icon:'circle-help',label:'Add question',sub:'A short check with the answer',run:()=>this.assist('Writing a question…',()=>this.setBlocks(bs=>{ const nb = {id:'q'+Date.now(), sec:sid, kind:'question', lo:null, src:[L4,12], draft:true, edited:false, text:'Check: what happens if a recursive function has no base case? Answer: it keeps calling itself until the program runs out of stack space.'}; const idx = bs.map(x=>x.sec).lastIndexOf(sid); const out = [...bs]; out.splice(idx+1,0,nb); return out; }),'Question added to section '+(secIdx+1)+'.')},
+    ].map(a=>({...a, disabled:!!s.busy, onClick:a.run}));
+    const changeDepth = d => { const nd = Math.max(0, Math.min(4, sd+d)); if (nd===sd) return; this.assist('Rewriting at '+DEPTHS[nd].replace('+','')+' level…', ()=>this.setState(st=>({secDepth:{...st.secDepth,[sid]:nd}, blocks:(st.blocks||this.freshBlocks()).map(x=>x.sec===sid?{...x,draft:true}:x)})), 'Section '+(secIdx+1)+' rewritten. Check it again.'); };
+
+    const exportSections = SECTIONS.map((sec,i)=>({n:String(i+1), title:sec.title, blocks: blocks.filter(b=>b.sec===sec.id && !b.draft).map(b=>({text:(KIND[b.kind]&&b.kind!=='question'?KIND[b.kind]+'. ':'')+b.text, bg:['terms','summary','example','industry'].includes(b.kind)?'#F3F0EA':'transparent', pad:['terms','summary','example','industry'].includes(b.kind)?'10px 12px':'0', w:b.kind==='question'?700:400}))})).filter(x=>x.blocks.length);
+    const fname = s.topic.replace(/[^a-z0-9]+/gi,'_').replace(/^_|_$/g,'');
+    const formats = [{icon:'file-text',label:'PDF',sub:'Tagged for screen readers, print-friendly',ext:'pdf'},{icon:'file-type',label:'Word document (DOCX)',sub:'Keeps headings so you can edit offline',ext:'docx'},{icon:'globe',label:'Accessible web page (HTML)',sub:'Works with Reading preferences on any device',ext:'html'}]
+      .map(f=>({...f, onClick:()=>this.toast(drafts?('Exporting '+(blocks.length-drafts)+' accepted paragraphs as '+fname+'.'+f.ext+'. Drafts are left out.'):('Downloading '+fname+'.'+f.ext+'.'))}));
+    const checks = [
+      {ok:true,text:'Headings are in order (H1, H2, H3)'},
+      {ok:true,text:'Reading level about secondary school'},
+      {ok:true,text:'Every source paragraph has a citation'},
+      {ok:!hasIndustry || !blocks.some(b=>b.kind==='industry'&&b.draft),text: hasIndustry?'Industry example checked by you':'No unsourced examples'},
+    ].map(c=>({text:c.text, icon:c.ok?'circle-check':'triangle-alert', fg:c.ok?'var(--accent-ink)':'var(--warning-ink)'}));
+
+    // library
+    const lib = s.lib.filter(l=>s.libF==='All' || l.status===s.libF);
+    const lessons = lib.map(l => ({...libStatus(l), histOpen:String(s.histOpen===l.id), shareOpen:String(s.shareOpen===l.id), showHistory:s.histOpen===l.id, showShare:s.shareOpen===l.id,
+      onOpen:()=>{ if (l.id==='l1') this.setNav('studio', s.blocks?4:1); else this.toast('Opening "'+l.title+'".'); },
+      onHistory:()=>this.setState(st=>({histOpen:st.histOpen===l.id?null:l.id, shareOpen:null})),
+      onShare:()=>this.setState(st=>({shareOpen:st.shareOpen===l.id?null:l.id, histOpen:null})),
+      onDuplicate:()=>{ this.setState(st=>({lib:[{...l, id:'d'+Date.now(), title:l.title+' (copy)', status:'Draft', version:'v0.1', updated:'today', author:'You', versions:[{v:'v0.1',note:'Duplicated from '+l.version,when:'Today'}]}, ...st.lib]})); this.toast('Duplicated. The copy is a draft until you approve it.'); },
+      colleagues: COLLEAGUES.map(c => { const on = !!(s.shared[l.id]||{})[c]; return {label:c, icon:on?'check':'plus', ...this.pill(on), onClick:()=>{ this.setState(st=>({shared:{...st.shared,[l.id]:{...(st.shared[l.id]||{}),[c]:!on}}})); if (!on) this.toast('Shared with '+c+'.'); }}; }) }));
+    const libFilters = ['All','Draft','Approved'].map(f=>({label:f==='Draft'?'Drafts':f, count:String(f==='All'?s.lib.length:s.lib.filter(l=>l.status===f).length), ...this.pill(s.libF===f), onClick:()=>this.setState({libF:f})}));
+
+    const crumbs = screen==='accom' ? [['home','Home'],[null,'Accommodations · '+acC.code]] : screen==='studio' ? [['home','Home'],[null,'Teaching Studio · '+s.topic]] : [];
+    const notifs = [
+      {icon:'shield-check',text:'A student shared approved accommodations with you for CSC 301.',when:'Tue 13 Oct',go:()=>{ this.setState({accCourse:'csc301'}); this.setNav('accom'); }},
+      {icon:'share-2',text:'Mr. Chidi Okafor shared "Unit testing basics" with you.',when:'18 Sep',go:()=>this.setNav('library')},
+    ].map(n=>({...n, bg:s.readAll?'transparent':'var(--primary-bg)', weight:s.readAll?400:700, onClick:()=>{ this.setState({readAll:true}); n.go(); }}));
+    const prefGroups = [
+      {label:'Text size', cols:4, opts:this.seg('size',[{v:'S',label:'S',sub:'16px',size:'0.875rem'},{v:'M',label:'M',sub:'18px',size:'1rem'},{v:'L',label:'L',sub:'20px',size:'1.125rem'},{v:'XL',label:'XL',sub:'24px',size:'1.25rem'}])},
+      {label:'Line spacing', cols:3, opts:this.seg('line',[{v:'1.6',label:'Default',sub:'1.6'},{v:'1.8',label:'Relaxed',sub:'1.8'},{v:'2',label:'Loose',sub:'2.0'}])},
+      {label:'Letter spacing', cols:3, opts:this.seg('letter',[{v:'0em',label:'Default'},{v:'0.04em',label:'Wide'},{v:'0.08em',label:'Wider'}])},
+      {label:'Font', cols:2, opts:this.seg('font',[{v:'default',label:'Default',sub:'Atkinson Hyperlegible',font:'"Atkinson Hyperlegible",sans-serif'},{v:'dyslexic',label:'Dyslexia-friendly',sub:'OpenDyslexic',font:'"OpenDyslexic",sans-serif',size:'0.8125rem'}])},
+      {label:'Theme', cols:2, opts:this.seg('theme',[{v:'light',label:'Light',swatch:'#FAF8F5'},{v:'dark',label:'Dark',swatch:'#14161A'},{v:'hc',label:'High contrast',swatch:'#0A0A0A'},{v:'soft',label:'Soft',sub:'Cream background',swatch:'#F4EEE2'}])},
+    ];
+    const prefToggles = [{id:'pt-motion',key:'motion',title:'Reduce motion',desc:'Stops pulsing and sliding effects.'},{id:'pt-focus',key:'focus',title:'Focus mode',desc:'Hides the side menu and the lesson outline.'}].map(t=>({...t, ...this.sw(!!p[t.key]), onClick:()=>this.setPref(t.key,!p[t.key])}));
+
+    const uploading = s.files.some(f=>f.status==='uploading');
+    return {
+      rootRef:this.rootRef, mainRef:this.mainRef, isMobile, notMobile:!isMobile,
+      openDrawer:()=>this.setState({drawerOpen:true}), closeDrawer:()=>this.setState({drawerOpen:false}), drawerOpen:s.drawerOpen, drawerItems,
+      toggleNotif:()=>this.setState(st=>({notifOpen:!st.notifOpen})), notifOpen:s.notifOpen, notifExpanded:String(s.notifOpen), notifs, markRead:()=>this.setState({readAll:true}), hasUnread:!s.readAll, notifAria:s.readAll?'Notifications':'Notifications, 2 unread',
+      openPrefs:()=>this.setState({prefsOpen:true}), closePrefs:()=>this.setState({prefsOpen:false}), prefsOpen:s.prefsOpen, prefGroups, prefToggles, resetPrefs:()=>this.setPrefs({...DEFAULT_PREFS}),
+      speakLabel:s.speaking?'Stop reading':'Read page aloud', speakIcon:s.speaking?'square':'volume-2',
+      toggleSpeak:()=>{ if (!window.speechSynthesis) return; if (s.speaking) { speechSynthesis.cancel(); this.setState({speaking:false}); return; } const m=this.mainRef.current; const u=new SpeechSynthesisUtterance((m?m.innerText:'').slice(0,2500)); u.onend=()=>this.setState({speaking:false}); speechSynthesis.speak(u); this.setState({speaking:true}); },
+      showSidebar, sideW:isTablet?'96px':'232px', sidePadX:isTablet?'8px':'12px', sideItems,
+      mainMax: screen==='studio' && step>=4 ? '1440px' : '1200px', mainPad: isMobile?'20px 16px 48px':'28px 32px 64px',
+      hasCrumbs: crumbs.length>0, crumbs: crumbs.map(([id,label])=>({label, link:!!id, last:!id, onClick:id?()=>this.setNav(id):undefined})),
+      sHome:screen==='home', sAccom:screen==='accom', sStudio:screen==='studio', sLibrary:screen==='library', sDenied:screen==='denied',
+      goHome:()=>this.setNav('home'), goAccom:()=>this.setNav('accom'), goLibrary:()=>this.setNav('library'),
+      courseCards, recent: s.lib.slice(0,3).map(l=>({...libStatus(l), onOpen:()=>{ if (l.id==='l1') this.setNav('studio', s.blocks?4:1); else this.setNav('library'); }})),
+      ac, acEmpty: acC.rows.length===0, acHas: acC.rows.length>0, accCols: isMobile?'1fr':'minmax(200px,1.2fr) 110px minmax(160px,1fr) minmax(240px,1.6fr)',
+      accTabs: Object.entries(COURSES).map(([id,c])=>({label:c.code, ...this.pill(s.accCourse===id), onClick:()=>this.setState({accCourse:id})})),
+      acStudio:()=>{ this.setState({stCourse:s.accCourse}); this.setNav('studio',1); },
+
+      studioSub: stC.code+' · '+stC.name, showReadTime: step>=4, readMins:String(readMins),
+      stSteps, showStepLabels: !isMobile, stepNum:String(step), stepName:stepNames[step-1],
+      step1:step===1, step2:step===2, step3:step===3, step4:step===4, step5:step===5,
+      stCourse:s.stCourse, onStCourse:e=>this.setState({stCourse:e.target.value}), stCourseCode:stC.code, stCourseName:stC.name,
+      topic:s.topic, onTopic:e=>this.setState({topic:e.target.value, setupError:null}), topicInvalid:String(s.setupError==='topic'), topicBd: s.setupError==='topic'?'2px solid var(--danger)':'1px solid var(--border-strong)',
+      curr:s.curr, onCurr:e=>this.setState({curr:e.target.value}),
+      loOpts, newLo:s.newLo, onNewLo:e=>this.setState({newLo:e.target.value}),
+      addLo:e=>{ e.preventDefault(); const t = s.newLo.trim(); if (!t) return; const id = 'lx'+Date.now(); this.setState(st=>({newLo:'', extraLos:[...st.extraLos,{id,code:'Your outcome',text:t}], los:[...st.los,id]})); },
+      fileRows, onFiles:e=>{ const fl = Array.from(e.target.files||[]); if (!fl.length) return; this.setState(st=>({files:[...st.files, ...fl.map((f,i)=>({id:Date.now()+i, name:f.name, size:f.size/1048576, progress:0, status:'uploading'}))]})); e.target.value=''; },
+      setupError:!!s.setupError, setupErrorText: s.setupError==='topic'?'Add a topic so the draft knows what to cover.':s.setupError==='lo'?'Pick at least one learning outcome.':s.setupError==='files'?'Upload at least one approved file. The draft only uses your materials.':'Wait for uploads to finish.',
+      toConfigure:()=>{ if (!s.topic.trim()) return this.setState({setupError:'topic'}); if (!s.los.length) return this.setState({setupError:'lo'}); if (!s.files.length) return this.setState({setupError:'files'}); if (uploading) return this.setState({setupError:'uploading'}); this.setState({setupError:null}); this.setNav('studio',2); },
+      toSetup:()=>{ clearInterval(this.gen); this.setNav('studio',1); },
+      depth:String(s.depth+1), depthLabel:DEPTHS[s.depth].replace('+',' (leaning '+(s.depth<2?'intermediate':'advanced')+')'), onDepth:e=>this.setState({depth:Number(e.target.value)-1}),
+      styleOpts, supportOpts, industry:s.industry, onIndustry:e=>this.setState({industry:e.target.value}), fitNotes,
+      startGen:()=>{ this.setNav('studio',3); this.runGen(); },
+      genTitle: s.genFailed ? 'Paused: one file needs attention' : 'Writing your draft', genLog, genPct:genPctNum+'%', genPctNum:String(genPctNum), genFailed:s.genFailed,
+      genSkipFile:()=>{ this.setState(st=>({genFailed:false, genSkipped:true, files:st.files.filter(f=>f.name!==W5)})); },
+      cancelGen:()=>{ clearInterval(this.gen); this.setState({genIdx:0, genFailed:false}); this.setNav('studio',2); this.toast('Stopped. Nothing was saved, and your settings are kept.'); },
+
+      draftCount: drafts ? drafts+' of '+blocks.length+' paragraphs still to check.' : 'Every paragraph has been checked.',
+      acceptAll:()=>{ this.setBlocks(bs=>bs.map(x=>({...x,draft:false}))); this.toast('All paragraphs marked as accepted by you.'); },
+      showSecondary:!p.focus, outlineMax: isDesktop?'260px':'100%', assistMax: isDesktop?'300px':'100%',
+      outline, coverage, coverText: coverage.filter(c=>c.state==='Covered').length+' of '+coverage.length+' covered',
+      toolbar:[{label:'Heading',icon:'heading-2'},{label:'Bold',icon:'bold'},{label:'Bulleted list',icon:'list'},{label:'Numbered list',icon:'list-ordered'},{label:'Link',icon:'link'},{label:'Summary box',icon:'square-dashed'},{label:'Undo',icon:'undo-2'},{label:'Redo',icon:'redo-2'}],
+      sections, assistTarget:'Section '+(secIdx+1)+': '+secTitle, assistBusy:!!s.busy, assistBusyText:s.busy||'', assistActions,
+      secDepthLabel:DEPTHS[sd].replace('+',''), depthDown:()=>changeDepth(-1), depthUp:()=>changeDepth(1),
+      toExport:()=>this.setNav('studio',5), toReview:()=>this.setNav('studio',4),
+
+      exportSections, formats, checks, hasDrafts: drafts>0, draftsLeft: drafts+(drafts===1?' paragraph is':' paragraphs are')+' still drafts.',
+      authorLine: s.approved ? 'Prepared by Dr. Temitope Ogunleye · approved 15 Oct 2026' : 'Draft · not yet approved',
+      approved:s.approved, notApproved:!s.approved, versionLabel:'v1.0, 15 Oct 2026', apprBd: s.approved?'1px solid var(--accent)':'1px solid var(--border)',
+      approve:()=>{ if (drafts) { this.toast(drafts+' paragraphs are still drafts. Accept or remove them first.','error'); return; } this.setState(st=>({approved:true, lib: st.lib.map(l=>l.id==='l1'?{...l,status:'Approved',version:'v1.0',updated:'today',versions:[{v:'v1.0',note:'Approved by you',when:'Today'}, ...l.versions]}:l)})); this.toast('Approved. You\'re recorded as the author.'); },
+
+      lessons, libFilters, libEmpty: lessons.length===0, newLesson:()=>this.setNav('studio',1),
+      toasts: s.toasts.map(t=>({...t, onClose:()=>this.setState(st=>({toasts:st.toasts.filter(x=>x.id!==t.id)}))})),
+    };
+  }
+}
+</script>
+</body>
+</html>

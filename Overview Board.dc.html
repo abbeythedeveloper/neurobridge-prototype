@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=Lexend:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
+<link href="nb-theme.css" rel="stylesheet">
+<script src="nb-icons.js"></script>
+</helmet>
+<div style="width:1680px;padding:64px;display:flex;flex-direction:column;gap:72px;background:var(--bg);color:var(--text);font-size:16px">
+
+  <header style="display:flex;align-items:center;gap:20px">
+    <img src="assets/babcock-logo.jpeg" alt="Babcock University" style="height:56px;width:auto;border-radius:2px">
+    <div style="display:flex;flex-direction:column;gap:2px"><h1 style="margin:0;font-size:2.5rem;line-height:1.15">NeuroBridge · design overview</h1><span style="color:var(--text-muted);font-size:1.125rem">Privacy board, Reading preferences applied, and every screen in the prototype</span></div>
+  </header>
+
+  <!-- PRIVACY BOARD -->
+  <section id="privacy" data-screen-label="Privacy board" aria-labelledby="h-pb" style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-direction:column;gap:6px;max-width:900px">
+      <span style="font-size:0.875rem;font-weight:700;color:var(--privacy)">01 · PRIVACY DEMONSTRATION</span>
+      <h2 id="h-pb" style="margin:0;font-size:2rem;line-height:1.2">One student, four views</h2>
+      <p style="margin:0;font-size:1.125rem;color:var(--text-muted);text-wrap:pretty">Case NB-0142, Adaeze Okonkwo, 300 level, Computing and Engineering Sciences. She shared her accommodations with CSC 301 and said no for CSC 305.</p>
+    </div>
+    <div style="display:flex;gap:20px;align-items:center;font-size:0.9375rem">
+      <span style="display:inline-flex;align-items:center;gap:8px"><span style="width:24px;height:24px;border-radius:6px;background:var(--surface);border:1px solid var(--border-strong)"></span>Can see</span>
+      <span style="display:inline-flex;align-items:center;gap:8px"><span style="width:24px;height:24px;border-radius:6px;background:var(--primary-bg);border:1px solid var(--primary)"></span>Only with the student's say-so</span>
+      <span style="display:inline-flex;align-items:center;gap:8px"><span style="width:24px;height:24px;border-radius:6px;background:repeating-linear-gradient(135deg,var(--privacy-bg) 0 6px,var(--surface) 6px 12px);border:1px dashed var(--privacy)"></span>Cannot see</span>
+    </div>
+    <div role="table" aria-label="What each role can see" style="display:grid;grid-template-columns:220px repeat(4,minmax(0,1fr));gap:10px">
+      <span role="columnheader"></span>
+      <sc-for list="{{ roles }}" as="r" hint-placeholder-count="4">
+        <div role="columnheader" style="display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:10px;background:var(--surface);border:1px solid var(--border)">
+          <span style="display:flex;gap:10px;align-items:center"><span style="width:40px;height:40px;border-radius:50%;background:{{ r.bg }};color:{{ r.fg }};display:flex;align-items:center;justify-content:center"><nb-icon name="{{ r.icon }}" size="22"></nb-icon></span><span style="display:flex;flex-direction:column;line-height:1.25"><span style="font-weight:700;font-size:1.125rem">{{ r.role }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ r.who }}</span></span></span>
+          <span style="font-size:0.875rem;color:var(--text-muted)">Screen: {{ r.screen }}</span>
+        </div>
+      </sc-for>
+      <sc-for list="{{ rows }}" as="row" hint-placeholder-count="8">
+        <span role="rowheader" style="padding:14px 4px;font-weight:700;display:flex;flex-direction:column;gap:2px;line-height:1.3">{{ row.field }}<span style="font-weight:400;font-size:0.8125rem;color:var(--text-muted)">{{ row.hint }}</span></span>
+        <sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="4">
+          <div role="cell" style="padding:12px 14px;border-radius:8px;background:{{ c.bg }};border:1px {{ c.bdStyle }} {{ c.bd }};display:flex;flex-direction:column;gap:4px;min-height:64px;justify-content:center">
+            <sc-if value="{{ c.hidden }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;color:var(--privacy);font-weight:700;font-size:0.9375rem"><nb-icon name="eye-off" size="16"></nb-icon>Cannot see</span></sc-if>
+            <sc-if value="{{ c.ask }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;color:var(--primary);font-weight:700;font-size:0.8125rem"><nb-icon name="toggle-right" size="14"></nb-icon>Shared by Adaeze</span></sc-if>
+            <span style="font-size:0.9375rem;line-height:1.4;color:{{ c.fg }};text-wrap:pretty">{{ c.text }}</span>
+          </div>
+        </sc-for>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- READING PREFS APPLIED -->
+  <section id="reading" data-screen-label="Reading preferences applied" aria-labelledby="h-rp" style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-direction:column;gap:6px;max-width:900px">
+      <span style="font-size:0.875rem;font-weight:700;color:var(--primary)">02 · READING PREFERENCES APPLIED</span>
+      <h2 id="h-rp" style="margin:0;font-size:2rem;line-height:1.2">Default and adjusted, on two screens</h2>
+      <p style="margin:0;font-size:1.125rem;color:var(--text-muted)">Right column: OpenDyslexic, XL text (24px), relaxed line spacing 1.8, wide letter spacing, Soft theme.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px">
+      <sc-for list="{{ rpCols }}" as="col" hint-placeholder-count="2">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span style="font-weight:700;font-size:1.125rem">{{ col.label }}</span>
+          <sc-for list="{{ col.screens }}" as="sc" hint-placeholder-count="2">
+            <div style="border-radius:12px;overflow:hidden;border:1px solid {{ col.border }};background:{{ col.bg }};color:{{ col.text }};font-family:{{ col.font }};line-height:{{ col.lh }};letter-spacing:{{ col.ls }};font-size:{{ col.fs }}">
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:{{ col.surface }};border-bottom:1px solid {{ col.border }};font-size:0.75em"><span style="font-weight:700">NeuroBridge</span><span style="color:{{ col.muted }}">{{ sc.area }}</span></div>
+              <div style="padding:20px;display:flex;flex-direction:column;gap:12px">
+                <span style="font-weight:700;font-size:1.3em;line-height:1.25">{{ sc.title }}</span>
+                <div style="padding:14px 16px;border-radius:8px;background:{{ col.surface }};border:1px solid {{ col.border }};display:flex;flex-direction:column;gap:8px">
+                  <span style="align-self:flex-start;padding:2px 10px;border-radius:999px;background:{{ col.tagBg }};color:{{ col.primary }};font-weight:700;font-size:0.7em">{{ sc.tag }}</span>
+                  <span style="text-wrap:pretty">{{ sc.body }}</span>
+                </div>
+                <span style="align-self:flex-start;display:inline-flex;align-items:center;min-height:2.6em;padding:0 1em;border-radius:8px;background:{{ col.primary }};color:#FFFFFF;font-weight:700;font-size:0.85em">{{ sc.cta }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- SCREEN INDEX -->
+  <section id="screens" data-screen-label="Screen index" aria-labelledby="h-si" style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-direction:column;gap:6px;max-width:900px">
+      <span style="font-size:0.875rem;font-weight:700;color:var(--accent-ink)">03 · EVERY SCREEN</span>
+      <h2 id="h-si" style="margin:0;font-size:2rem;line-height:1.2">Open the prototype</h2>
+      <p style="margin:0;font-size:1.125rem;color:var(--text-muted)">Each file is clickable. Use the "Start at" tweak to jump to a specific screen or state.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+      <sc-for list="{{ files }}" as="f" hint-placeholder-count="6">
+        <a href="{{ f.href }}" style="display:flex;flex-direction:column;gap:14px;padding:20px;border-radius:12px;background:var(--surface);border:1px solid var(--border);color:var(--text);text-decoration:none" style-hover="border-color:var(--primary)">
+          <span style="display:flex;gap:12px;align-items:center"><span style="width:44px;height:44px;border-radius:12px;background:{{ f.bg }};color:{{ f.fg }};display:flex;align-items:center;justify-content:center"><nb-icon name="{{ f.icon }}" size="22"></nb-icon></span><span style="flex:1;display:flex;flex-direction:column;line-height:1.25"><span style="font-weight:700;font-size:1.125rem">{{ f.title }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ f.sub }}</span></span><nb-icon name="arrow-up-right" size="20"></nb-icon></span>
+          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ f.screens }}" as="s" hint-placeholder-count="5"><li style="padding:4px 10px;border-radius:999px;background:var(--surface-2);font-size:0.8125rem">{{ s }}</li></sc-for></ul>
+          <sc-if value="{{ f.hasJourney }}" hint-placeholder-val="{{ false }}"><span style="display:flex;gap:8px;align-items:flex-start;font-size:0.875rem;color:var(--text-muted);padding-top:10px;border-top:1px solid var(--border)"><span style="color:var(--accent-ink);display:flex;padding-top:2px"><nb-icon name="route" size="16"></nb-icon></span>{{ f.journey }}</span></sc-if>
+        </a>
+      </sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const SEE = {bg:'var(--surface)', bd:'var(--border-strong)', bdStyle:'solid', fg:'var(--text)'};
+const ASK = {bg:'var(--primary-bg)', bd:'var(--primary)', bdStyle:'solid', fg:'var(--text)', ask:true};
+const NO = {bg:'repeating-linear-gradient(135deg,var(--privacy-bg) 0 6px,var(--surface) 6px 12px)', bd:'var(--privacy)', bdStyle:'dashed', fg:'var(--text-muted)', hidden:true};
+const c = (k, text) => ({...k, text, hidden:!!k.hidden, ask:!!k.ask});
+
+class Component extends DCLogic {
+  renderVals() {
+    const rows = [
+      {field:'Name', hint:'Who the case is about', cells:[c(SEE,'Adaeze Okonkwo (you)'), c(SEE,'Adaeze Okonkwo · NB-0142'), c(ASK,'Adaeze Okonkwo, in CSC 301 only. CSC 305 sees no name.'), c(NO,'Never. Totals only.')]},
+      {field:'Check-in answers', hint:'Questionnaire responses', cells:[c(SEE,'"Timed reading tasks are hard. I lose my place in long texts."'), c(SEE,'Same answers, with the non-diagnostic summary'), c(NO,'Never shown to lecturers.'), c(NO,'Never.')]},
+      {field:'Request', hint:'What she wrote', cells:[c(SEE,'Extra time and slides early, for CSC 301 and CSC 305. Within a week.'), c(SEE,'Full request, urgency and contact preference'), c(NO,'Not shown.'), c(NO,'Counted in "support requests", no detail.')]},
+      {field:'Case notes', hint:'Officer\'s private notes', cells:[c(NO,'Not shown. She can ask for a copy.'), c(SEE,'Mrs. Aisha Bello\'s notes. Every view is logged.'), c(NO,'Never.'), c(NO,'Never.')]},
+      {field:'Assigned professional', hint:'Who supports her', cells:[c(SEE,'Mrs. Aisha Bello, Support Officer, with contact'), c(SEE,'Mrs. Aisha Bello, and caseload'), c(NO,'Not shown.'), c(NO,'Not shown.')]},
+      {field:'Accommodations', hint:'Approved in her plan', cells:[c(SEE,'Extra time (25%), slides 48 hours early, deadline extension'), c(SEE,'Full plan, review date 15 Jan 2027'), c(ASK,'CSC 301: extra time, slides early, extension, with what to do. CSC 305: counted, not named.'), c(SEE,'Part of totals: "Extra time · 77 students"')]},
+      {field:'Disclosure choices', hint:'Per course', cells:[c(SEE,'CSC 301 on, CSC 305 off. Can change any time.'), c(SEE,'Sees her choices, can\'t change them'), c(NO,'Only the result, not the choice for other courses.'), c(NO,'Never.')]},
+      {field:'Reports', hint:'Aggregate figures', cells:[c(NO,'Not needed.'), c(SEE,'Caseload totals'), c(NO,'Not shown.'), c(SEE,'Computing, 300 level: totals. Groups under 5 are hidden.')]},
+    ];
+    const softCol = {label:'Dyslexia-friendly · XL · Soft theme', bg:'#F4EEE2', surface:'#FBF8F1', border:'#DED4C2', text:'#2A2620', muted:'#5C564D', primary:'#2F5D8A', tagBg:'#E5EAEE', font:'"OpenDyslexic","Atkinson Hyperlegible",sans-serif', lh:'1.8', ls:'0.04em', fs:'24px'};
+    const defCol = {label:'Default', bg:'#FAF8F5', surface:'#FFFFFF', border:'#E3DED6', text:'#1F2328', muted:'#5B6470', primary:'#2F5D8A', tagBg:'#E8EFF6', font:'"Atkinson Hyperlegible",sans-serif', lh:'1.6', ls:'0em', fs:'16px'};
+    const screens = [
+      {area:'Student · My support plan', title:'Your support plan', tag:'Approved 14 Oct', body:'You have extra time on assessments and slides 48 hours before class. Your next check-in with Mrs. Bello is on Thursday.', cta:'Request a change'},
+      {area:'Lecturer · Teaching Studio', title:'2. How the call stack works', tag:'AI draft', body:'Each call waits for the one below it to finish. When the base case returns, the answers pass back up the chain, one step at a time.', cta:'Accept'},
+    ];
+    return {
+      roles:[
+        {role:'Student',who:'Adaeze Okonkwo',screen:'My support plan',icon:'user',bg:'var(--accent-bg)',fg:'var(--accent-ink)'},
+        {role:'Support Officer',who:'Mrs. Aisha Bello',screen:'Case NB-0142',icon:'heart-handshake',bg:'var(--privacy-bg)',fg:'var(--privacy)'},
+        {role:'Lecturer',who:'Dr. Temitope Ogunleye',screen:'Accommodations in CSC 301',icon:'presentation',bg:'var(--primary-bg)',fg:'var(--primary)'},
+        {role:'Department Head',who:'Prof. Yetunde Adeyemi',screen:'Inclusion dashboard',icon:'chart-column',bg:'var(--warning-bg)',fg:'var(--warning-ink)'},
+      ],
+      rows,
+      rpCols:[{...defCol, screens}, {...softCol, screens}],
+      files:[
+        {title:'Welcome and sign-in',sub:'Public and first run',href:'Welcome%20and%20Sign-in.dc.html',icon:'log-in',bg:'var(--accent-bg)',fg:'var(--accent-ink)',screens:['Landing','Sign in','Staff code (MFA)','Student onboarding, 3 steps','Access denied','Urgent help'],journey:''},
+        {title:'Student workspace',sub:'Mobile-first',href:'Student%20Workspace.dc.html',icon:'user',bg:'var(--accent-bg)',fg:'var(--accent-ink)',screens:['Home','Check-in','Request support','Who sees my support','Support plan','Messages','Appointments'],journey:'Check-in → request → disclosure settings → support plan'},
+        {title:'Support Officer workspace',sub:'Desktop and tablet',href:'Support%20Officer%20Workspace.dc.html',icon:'heart-handshake',bg:'var(--privacy-bg)',fg:'var(--privacy)',screens:['Caseload','Case detail','Assign professional','Support plan builder','Follow-ups'],journey:'Open new case → assign professional → build support plan'},
+        {title:'Lecturer workspace',sub:'Desktop and tablet',href:'Lecturer%20Workspace.dc.html',icon:'presentation',bg:'var(--primary-bg)',fg:'var(--primary)',screens:['My courses','Accommodations','Teaching Studio, 5 steps','Lesson library'],journey:'Setup → configure → review with citations → export'},
+        {title:'Department Head and System Admin',sub:'Desktop and tablet',href:'Leadership%20and%20Admin%20Workspace.dc.html',icon:'chart-column',bg:'var(--warning-bg)',fg:'var(--warning-ink)',screens:['Inclusion dashboard','Teaching readiness','Reports','Users and roles','Courses and curriculum','Accommodation catalogue','Audit log','Settings'],journey:''},
+        {title:'Design system',sub:'Tokens and components',href:'NeuroBridge%20Design%20System.dc.html',icon:'swatch-book',bg:'var(--surface-2)',fg:'var(--text)',screens:['Light, dark, high contrast','Core components','Privacy chip','Data and charts','Navigation','Reading preferences'],journey:''},
+      ].map(f=>({...f, hasJourney:!!f.journey})),
+    };
+  }
+}
+</script>
+</body>
+</html>

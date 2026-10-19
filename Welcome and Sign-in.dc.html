@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=Lexend:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
+<link href="nb-theme.css" rel="stylesheet">
+<script src="nb-icons.js"></script>
+</helmet>
+<div ref="{{ rootRef }}" style="position:relative;min-height:100vh;background:var(--bg);color:var(--text);display:flex;flex-direction:column">
+  <a href="#ws-main" style="position:absolute;left:12px;top:-80px;z-index:100;background:var(--primary);color:var(--on-primary);padding:12px 16px;border-radius:8px;font-weight:700;text-decoration:none" style-focus="top:12px">Skip to content</a>
+
+  <header style="flex:none;display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border)">
+    <button type="button" onClick="{{ goLanding }}" aria-label="NeuroBridge home" style="display:flex;align-items:center;gap:12px;border:0;background:transparent;padding:0;cursor:pointer;min-height:44px;text-align:left">
+      <img src="assets/babcock-logo.jpeg" alt="Babcock University" style="height:40px;width:auto;display:block;border-radius:2px">
+      <span style="display:flex;flex-direction:column;line-height:1.15"><span style="font-weight:700">NeuroBridge</span><span style="font-size:0.8125rem;color:var(--text-muted)">Learning support</span></span>
+    </button>
+    <div style="flex:1 1 auto"></div>
+    <button type="button" onClick="{{ goUrgent }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:var(--danger);font-weight:700;font-size:0.9375rem;cursor:pointer"><nb-icon name="life-buoy" size="20"></nb-icon><sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">Need urgent help?</sc-if><sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">Urgent help</sc-if></button>
+    <button type="button" onClick="{{ openPrefs }}" aria-haspopup="dialog" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;font-size:0.875rem;cursor:pointer"><nb-icon name="type" size="20"></nb-icon>Reading</button>
+  </header>
+
+  <main id="ws-main" tabindex="-1" style="flex:1 1 auto;outline:none;display:flex;flex-direction:column">
+
+    <!-- LANDING -->
+    <sc-if value="{{ sLanding }}" hint-placeholder-val="{{ true }}">
+      <section aria-labelledby="h-hero" style="width:100%;max-width:1120px;margin:0 auto;padding:{{ heroPad }};display:flex;flex-wrap:wrap;gap:40px;align-items:center">
+        <div style="flex:1 1 440px;min-width:0;display:flex;flex-direction:column;gap:20px">
+          <span style="display:inline-flex;align-self:flex-start;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--accent-bg);color:var(--accent-ink);font-size:0.875rem;font-weight:700"><nb-icon name="graduation-cap" size="16"></nb-icon>For Babcock University students and staff</span>
+          <h1 id="h-hero" style="margin:0;font-size:{{ heroSize }};line-height:1.15;text-wrap:balance">Get the learning support you need, privately.</h1>
+          <p style="margin:0;font-size:1.1875rem;color:var(--text-muted);max-width:52ch;text-wrap:pretty">NeuroBridge connects you with the support office, keeps your details safe, and helps lecturers make lessons that work for everyone.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:10px">
+            <button type="button" onClick="{{ goSignin }}" style="display:inline-flex;align-items:center;gap:10px;min-height:56px;padding:0 24px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;font-size:1.0625rem;cursor:pointer" style-hover="background:var(--primary-hover)"><nb-icon name="log-in" size="22"></nb-icon>Sign in with university account</button>
+          </div>
+        </div>
+        <div aria-hidden="true" style="flex:1 1 320px;min-width:0;max-width:440px;aspect-ratio:1/0.85;position:relative">
+          <div style="position:absolute;left:4%;top:8%;width:52%;aspect-ratio:1;border-radius:50%;background:var(--primary-bg)"></div>
+          <div style="position:absolute;right:6%;top:2%;width:34%;aspect-ratio:1;border-radius:24px;background:var(--accent-bg)"></div>
+          <div style="position:absolute;right:2%;bottom:6%;width:46%;aspect-ratio:1;border-radius:50%;background:var(--privacy-bg)"></div>
+          <div style="position:absolute;left:18%;bottom:10%;width:26%;aspect-ratio:1;border-radius:20px;background:var(--warning-bg)"></div>
+          <div style="position:absolute;left:30%;top:46%;width:44%;height:10px;border-radius:999px;background:var(--primary);transform:rotate(-12deg)"></div>
+          <div style="position:absolute;left:24%;top:36%;width:20px;height:20px;border-radius:50%;background:var(--primary)"></div>
+          <div style="position:absolute;right:22%;top:54%;width:20px;height:20px;border-radius:50%;background:var(--accent)"></div>
+        </div>
+      </section>
+      <section aria-labelledby="h-promise" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+        <div style="max-width:1120px;margin:0 auto;padding:{{ promisePad }};display:flex;flex-direction:column;gap:24px">
+          <h2 id="h-promise" style="margin:0;font-size:1.5rem">Our privacy promise</h2>
+          <ul style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px">
+            <sc-for list="{{ promises }}" as="pr" hint-placeholder-count="3">
+              <li style="display:flex;flex-direction:column;gap:10px">
+                <span style="width:48px;height:48px;border-radius:12px;background:{{ pr.bg }};color:{{ pr.fg }};display:flex;align-items:center;justify-content:center"><nb-icon name="{{ pr.icon }}" size="24"></nb-icon></span>
+                <span style="font-weight:700;font-size:1.125rem">{{ pr.title }}</span>
+                <span style="color:var(--text-muted);text-wrap:pretty">{{ pr.text }}</span>
+              </li>
+            </sc-for>
+          </ul>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- SIGN IN -->
+    <sc-if value="{{ sSignin }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;display:flex;justify-content:center;align-items:flex-start;padding:{{ cardWrapPad }}">
+        <section aria-labelledby="h-signin" style="width:100%;max-width:460px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:{{ cardPad }};display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;gap:4px"><h1 id="h-signin" style="margin:0;font-size:1.75rem;line-height:1.25">Sign in</h1><p style="margin:0;color:var(--text-muted)">Use the same account as the student portal or staff email.</p></div>
+          <button type="button" onClick="{{ ssoSignin }}" disabled="{{ busy }}" style="display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;font-size:1.0625rem;cursor:pointer" style-hover="background:var(--primary-hover)">
+            <sc-if value="{{ ssoBusy }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--on-primary);border-right-color:transparent;animation:nbSpin .8s linear infinite"></span></sc-if>
+            <sc-if value="{{ ssoIdle }}" hint-placeholder-val="{{ true }}"><nb-icon name="building-2" size="22"></nb-icon></sc-if>{{ ssoLabel }}
+          </button>
+          <div style="display:flex;align-items:center;gap:12px;color:var(--text-muted);font-size:0.875rem"><div style="flex:1;height:1px;background:var(--border)"></div>or<div style="flex:1;height:1px;background:var(--border)"></div></div>
+          <sc-if value="{{ emailClosed }}" hint-placeholder-val="{{ true }}">
+            <button type="button" onClick="{{ openEmail }}" aria-expanded="false" style="min-height:48px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Sign in with email and password</button>
+          </sc-if>
+          <sc-if value="{{ emailOpen }}" hint-placeholder-val="{{ false }}">
+            <form onSubmit="{{ emailSignin }}" noValidate="" style="display:flex;flex-direction:column;gap:14px">
+              <sc-if value="{{ hasSignErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:8px;background:var(--danger-bg)"><span style="color:var(--danger);display:flex;padding-top:2px"><nb-icon name="circle-alert" size="20"></nb-icon></span><span>{{ signErr }}</span></div></sc-if>
+              <div style="display:flex;flex-direction:column;gap:6px"><label for="si-email" style="font-weight:700">University email</label><input id="si-email" type="email" autocomplete="username" value="{{ email }}" onChange="{{ onEmail }}" placeholder="name@student.babcock.edu.ng" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"></div>
+              <div style="display:flex;flex-direction:column;gap:6px"><label for="si-pw" style="font-weight:700">Password</label>
+                <div style="display:flex;gap:6px"><input id="si-pw" type="{{ pwType }}" autocomplete="current-password" value="{{ pw }}" onChange="{{ onPw }}" style="flex:1;min-width:0;min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)"><button type="button" onClick="{{ togglePw }}" aria-pressed="{{ pwShown }}" style="min-height:48px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px"><nb-icon name="{{ pwIcon }}" size="18"></nb-icon>{{ pwToggleLabel }}</button></div>
+              </div>
+              <button type="submit" disabled="{{ busy }}" style="min-height:52px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">{{ emailLabel }}</button>
+              <button type="button" onClick="{{ forgot }}" style="align-self:flex-start;min-height:44px;padding:0;border:0;background:transparent;color:var(--primary);text-decoration:underline;text-underline-offset:3px;cursor:pointer">Forgot your password?</button>
+            </form>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:8px;background:var(--surface-2);font-size:0.875rem">
+            <span style="font-weight:700">Trying the prototype?</span>
+            <span style="color:var(--text-muted)">Emails ending in <span style="font-family:var(--mono)">@student.babcock.edu.ng</span> go to student onboarding. Staff emails ask for a code next. Password "wrong" shows the error.</span>
+          </div>
+        </section>
+      </div>
+    </sc-if>
+
+    <!-- MFA -->
+    <sc-if value="{{ sMfa }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;display:flex;justify-content:center;align-items:flex-start;padding:{{ cardWrapPad }}">
+        <section aria-labelledby="h-mfa" style="width:100%;max-width:460px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:{{ cardPad }};display:flex;flex-direction:column;gap:18px">
+          <span style="width:56px;height:56px;border-radius:50%;background:var(--privacy-bg);color:var(--privacy);display:flex;align-items:center;justify-content:center"><nb-icon name="smartphone" size="28"></nb-icon></span>
+          <div style="display:flex;flex-direction:column;gap:4px"><h1 id="h-mfa" style="margin:0;font-size:1.75rem;line-height:1.25">Enter your code</h1><p style="margin:0;color:var(--text-muted);text-wrap:pretty">Staff accounts can open student records, so we check it's you. Open your authenticator app and type the 6-digit code.</p></div>
+          <form onSubmit="{{ verifyCode }}" noValidate="" style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;flex-direction:column;gap:6px"><label for="mfa-code" style="font-weight:700">6-digit code</label>
+              <input id="mfa-code" inputMode="numeric" autocomplete="one-time-code" maxLength="6" value="{{ code }}" onChange="{{ onCode }}" aria-invalid="{{ codeBad }}" aria-describedby="mfa-err" style="min-height:60px;padding:0 16px;border-radius:8px;border:{{ codeBd }};background:var(--surface);font-family:var(--mono);font-size:1.75rem;letter-spacing:0.4em;text-align:center"></div>
+            <sc-if value="{{ hasCodeErr }}" hint-placeholder-val="{{ false }}"><span id="mfa-err" role="alert" style="display:flex;gap:6px;align-items:center;color:var(--danger);font-weight:700"><nb-icon name="circle-alert" size="18"></nb-icon>{{ codeErr }}</span></sc-if>
+            <button type="button" role="checkbox" aria-checked="{{ rememberOn }}" onClick="{{ toggleRemember }}" style="display:flex;gap:12px;align-items:center;text-align:left;min-height:48px;padding:0;border:0;background:transparent;cursor:pointer">
+              <span style="width:24px;height:24px;flex:none;border-radius:6px;border:2px solid {{ remBd }};background:{{ remBg }};color:var(--on-primary);display:flex;align-items:center;justify-content:center"><sc-if value="{{ remember }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="16"></nb-icon></sc-if></span>
+              <span>Trust this computer for 30 days</span>
+            </button>
+            <button type="submit" disabled="{{ busy }}" style="min-height:52px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">{{ verifyLabel }}</button>
+          </form>
+          <div style="display:flex;flex-wrap:wrap;gap:8px 16px"><button type="button" onClick="{{ resend }}" style="min-height:44px;padding:0;border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Use a backup code</button><button type="button" onClick="{{ goSignin }}" style="min-height:44px;padding:0;border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Sign in as someone else</button></div>
+          <span style="font-size:0.875rem;color:var(--text-muted)">Prototype: any 6 digits work, except 000000.</span>
+        </section>
+      </div>
+    </sc-if>
+
+    <!-- STAFF ROUTE -->
+    <sc-if value="{{ sRoute }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;display:flex;justify-content:center;align-items:flex-start;padding:{{ cardWrapPad }}">
+        <section aria-labelledby="h-route" style="width:100%;max-width:560px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:{{ cardPad }};display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;flex-direction:column;gap:4px"><h1 id="h-route" style="margin:0;font-size:1.75rem;line-height:1.25">Welcome back</h1><p style="margin:0;color:var(--text-muted)">You're signed in. In the real product you'd go straight to your workspace. Pick one to preview:</p></div>
+          <sc-for list="{{ workspaces }}" as="w" hint-placeholder-count="4">
+            <a href="{{ w.href }}" style="display:flex;gap:12px;align-items:center;min-height:64px;padding:10px 14px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);text-decoration:none" style-hover="border-color:var(--primary);background:var(--primary-bg)"><span style="width:40px;height:40px;flex:none;border-radius:10px;background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center"><nb-icon name="{{ w.icon }}" size="22"></nb-icon></span><span style="flex:1;display:flex;flex-direction:column;line-height:1.3"><span style="font-weight:700">{{ w.label }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ w.sub }}</span></span><nb-icon name="arrow-right" size="20"></nb-icon></a>
+          </sc-for>
+        </section>
+      </div>
+    </sc-if>
+
+    <!-- ONBOARDING -->
+    <sc-if value="{{ sOnboard }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;display:flex;justify-content:center;align-items:flex-start;padding:{{ cardWrapPad }}">
+        <section aria-labelledby="h-ob" style="width:100%;max-width:{{ obMax }};background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:{{ cardPad }};display:flex;flex-direction:column;gap:22px">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+            <span style="font-weight:700;color:var(--text-muted)">Step {{ obNum }} of 3</span>
+            <ol aria-label="Progress" style="list-style:none;margin:0;padding:0;display:flex;gap:6px">
+              <sc-for list="{{ obDots }}" as="d" hint-placeholder-count="3"><li aria-current="{{ d.current }}" style="width:{{ d.w }};height:8px;border-radius:999px;background:{{ d.bg }};transition:width .2s"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">{{ d.label }}</span></li></sc-for>
+            </ol>
+          </div>
+
+          <sc-if value="{{ ob1 }}" hint-placeholder-val="{{ true }}">
+            <div aria-hidden="true" style="display:flex;gap:10px;align-items:flex-end;height:72px"><div style="width:56px;height:56px;border-radius:50%;background:var(--primary-bg)"></div><div style="width:40px;height:72px;border-radius:12px;background:var(--accent-bg)"></div><div style="width:32px;height:32px;border-radius:50%;background:var(--primary)"></div></div>
+            <div style="display:flex;flex-direction:column;gap:10px"><h1 id="h-ob" style="margin:0;font-size:2rem;line-height:1.2">Welcome, Adaeze</h1><p style="margin:0;font-size:1.125rem;text-wrap:pretty">NeuroBridge is where you can ask for learning support, track what's happening, and choose who knows about it.</p></div>
+            <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px">
+              <sc-for list="{{ welcomeItems }}" as="w" hint-placeholder-count="3"><li style="display:flex;gap:12px;align-items:flex-start"><span style="width:36px;height:36px;flex:none;border-radius:10px;background:var(--accent-bg);color:var(--accent-ink);display:flex;align-items:center;justify-content:center"><nb-icon name="{{ w.icon }}" size="20"></nb-icon></span><span style="padding-top:5px;text-wrap:pretty">{{ w.text }}</span></li></sc-for>
+            </ul>
+            <p style="margin:0;color:var(--text-muted)">This takes about a minute. You can skip it and come back later.</p>
+          </sc-if>
+
+          <sc-if value="{{ ob2 }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:10px"><h1 id="h-ob" style="margin:0;font-size:2rem;line-height:1.2">Who sees what</h1><p style="margin:0;font-size:1.125rem;text-wrap:pretty">Your answers stay with the support office. Lecturers only see what to do, and only if you say yes.</p></div>
+            <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+              <div role="table" aria-label="Who sees what" style="border:1px solid var(--border);border-radius:10px;overflow:hidden">
+                <div role="row" style="display:grid;grid-template-columns:minmax(150px,1.3fr) repeat(4,minmax(0,1fr));background:var(--surface-2);font-size:0.875rem;font-weight:700">
+                  <span role="columnheader" style="padding:10px 12px">Who</span>
+                  <sc-for list="{{ matrixCols }}" as="c" hint-placeholder-count="4"><span role="columnheader" style="padding:10px 8px;text-align:center;line-height:1.3">{{ c }}</span></sc-for>
+                </div>
+                <sc-for list="{{ matrix }}" as="r" hint-placeholder-count="4">
+                  <div role="row" style="display:grid;grid-template-columns:minmax(150px,1.3fr) repeat(4,minmax(0,1fr));border-top:1px solid var(--border);align-items:center">
+                    <span role="rowheader" style="padding:12px;display:flex;gap:10px;align-items:center;font-weight:700"><span style="width:32px;height:32px;flex:none;border-radius:50%;background:{{ r.bg }};color:{{ r.fg }};display:flex;align-items:center;justify-content:center"><nb-icon name="{{ r.icon }}" size="18"></nb-icon></span>{{ r.who }}</span>
+                    <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="4"><span role="cell" style="padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center"><span style="width:32px;height:32px;border-radius:50%;background:{{ c.bg }};color:{{ c.fg }};display:flex;align-items:center;justify-content:center"><nb-icon name="{{ c.icon }}" size="18"></nb-icon></span><span style="font-size:0.75rem;color:{{ c.tFg }};font-weight:700">{{ c.text }}</span></span></sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <sc-for list="{{ matrix }}" as="r" hint-placeholder-count="4">
+                  <div style="border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px">
+                    <span style="display:flex;gap:10px;align-items:center;font-weight:700"><span style="width:32px;height:32px;flex:none;border-radius:50%;background:{{ r.bg }};color:{{ r.fg }};display:flex;align-items:center;justify-content:center"><nb-icon name="{{ r.icon }}" size="18"></nb-icon></span>{{ r.who }}</span>
+                    <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px"><sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="4"><li style="display:flex;gap:8px;align-items:center;font-size:0.9375rem"><span style="color:{{ c.fg }};display:flex"><nb-icon name="{{ c.icon }}" size="18"></nb-icon></span><span>{{ c.col }}: <strong style="color:{{ c.tFg }}">{{ c.text }}</strong></span></li></sc-for></ul>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <details style="border:1px solid var(--border);border-radius:10px;padding:0 14px">
+              <summary style="min-height:52px;display:flex;align-items:center;gap:8px;font-weight:700;cursor:pointer"><nb-icon name="circle-help" size="20"></nb-icon>What does a lecturer actually see?</summary>
+              <div style="padding:0 0 14px;display:flex;flex-direction:column;gap:8px">
+                <div style="padding:12px 14px;border-radius:8px;background:var(--surface-2);font-size:0.9375rem;display:flex;flex-direction:column;gap:4px"><span style="font-weight:700">Adaeze Okonkwo · CSC 301</span><span>Extra time on assessments (25%)</span><span>Slides 48 hours before class</span></div>
+                <span style="font-size:0.9375rem;color:var(--text-muted)">That's all. No reasons, no check-in answers, no notes. You choose this per course, and you can change it any time.</span>
+              </div>
+            </details>
+          </sc-if>
+
+          <sc-if value="{{ ob3 }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:10px"><h1 id="h-ob" style="margin:0;font-size:2rem;line-height:1.2">Make it easy to read</h1><p style="margin:0;font-size:1.125rem;text-wrap:pretty">Pick what feels comfortable. You'll see the change straight away. Find these again under "Reading" at the top.</p></div>
+            <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+              <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:18px">
+                <sc-for list="{{ prefGroups }}" as="g" hint-placeholder-count="4">
+                  <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+                    <legend style="font-weight:700;padding:0;margin-bottom:8px">{{ g.label }}</legend>
+                    <div style="display:grid;grid-template-columns:repeat({{ g.cols }},minmax(0,1fr));gap:6px">
+                      <sc-for list="{{ g.opts }}" as="o" hint-placeholder-count="4">
+                        <button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;padding:6px 8px;border-radius:8px;border:2px solid {{ o.bd }};background:{{ o.bg }};color:var(--text);font-family:{{ o.font }};cursor:pointer;line-height:1.2"><span style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:{{ o.size }}"><sc-if value="{{ o.hasSwatch }}" hint-placeholder-val="{{ false }}"><span style="width:16px;height:16px;border-radius:50%;background:{{ o.swatch }};border:1px solid var(--border-strong)"></span></sc-if>{{ o.label }}</span><span style="font-size:0.75rem;color:var(--text-muted)">{{ o.sub }}</span></button>
+                      </sc-for>
+                    </div>
+                  </fieldset>
+                </sc-for>
+              </div>
+              <div aria-label="Preview" style="flex:1 1 260px;min-width:0;padding:18px;border-radius:10px;background:var(--surface-2);display:flex;flex-direction:column;gap:8px">
+                <span style="font-size:0.8125rem;font-weight:700;color:var(--text-muted)">Preview</span>
+                <span style="font-weight:700;font-size:1.25rem">Your support plan</span>
+                <p style="margin:0;text-wrap:pretty">You have extra time on assessments and slides before class. Your next check-in with Mrs. Bello is on Thursday.</p>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:4px;border-top:1px solid var(--border)">
+            <div style="display:flex;gap:8px;padding-top:12px">
+              <sc-if value="{{ obCanBack }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ obBack }}" style="min-height:52px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Back</button></sc-if>
+              <button type="button" onClick="{{ obFinish }}" style="min-height:52px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Skip for now</button>
+            </div>
+            <div style="padding-top:12px"><button type="button" onClick="{{ obNext }}" style="display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:0 24px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)">{{ obNextLabel }}<nb-icon name="arrow-right" size="20"></nb-icon></button></div>
+          </div>
+        </section>
+      </div>
+    </sc-if>
+
+    <!-- 403 -->
+    <sc-if value="{{ sDenied }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;display:flex;justify-content:center;align-items:flex-start;padding:{{ cardWrapPad }}">
+        <section aria-labelledby="h-403" style="width:100%;max-width:560px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:{{ cardPad }};display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
+          <div aria-hidden="true" style="position:relative;width:120px;height:80px"><div style="position:absolute;left:0;top:10px;width:64px;height:64px;border-radius:50%;background:var(--privacy-bg)"></div><div style="position:absolute;right:0;top:0;width:56px;height:56px;border-radius:14px;background:var(--primary-bg)"></div><div style="position:absolute;left:40px;top:26px;width:40px;height:40px;border-radius:50%;background:var(--privacy);display:flex;align-items:center;justify-content:center;color:#FFFFFF"><nb-icon name="lock" size="20"></nb-icon></div></div>
+          <h1 id="h-403" style="margin:0;font-size:1.75rem;line-height:1.25">You don't have access to this page</h1>
+          <p style="margin:0;color:var(--text-muted);max-width:46ch;text-wrap:pretty">{{ deniedWhy }}</p>
+          <div style="width:100%;display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:8px;background:var(--surface-2);text-align:left;font-size:0.9375rem">
+            <span><strong>Signed in as:</strong> {{ deniedRole }}</span>
+            <span><strong>Tried to open:</strong> {{ deniedTarget }}</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+            <button type="button" onClick="{{ goRoute }}" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">Go to my workspace</button>
+            <button type="button" onClick="{{ askAccess }}" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">I think I should have access</button>
+          </div>
+          <span style="font-size:0.875rem;color:var(--text-muted)">This attempt was recorded, as all access attempts are. Nothing was shown.</span>
+        </section>
+      </div>
+    </sc-if>
+
+    <!-- URGENT -->
+    <sc-if value="{{ sUrgent }}" hint-placeholder-val="{{ false }}">
+      <div style="width:100%;max-width:720px;margin:0 auto;padding:{{ cardWrapPad }};display:flex;flex-direction:column;gap:20px">
+        <button type="button" onClick="{{ goBack }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0;border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="arrow-left" size="18"></nb-icon>Back</button>
+        <h1 style="margin:0;font-size:1.75rem;line-height:1.25">Need urgent help?</h1>
+        <div role="note" style="display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:10px;background:var(--danger-bg)"><span style="color:var(--danger);display:flex;padding-top:2px"><nb-icon name="siren" size="22"></nb-icon></span><span><strong>If you or someone else is in danger right now, call 112.</strong> You don't need to sign in to get help.</span></div>
+        <sc-for list="{{ urgentContacts }}" as="u" hint-placeholder-count="4">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center">
+            <span style="width:48px;height:48px;flex:none;border-radius:50%;background:{{ u.bg }};color:{{ u.fg }};display:flex;align-items:center;justify-content:center"><nb-icon name="{{ u.icon }}" size="24"></nb-icon></span>
+            <span style="flex:1 1 220px;display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700;font-size:1.0625rem">{{ u.name }}</span><span style="color:var(--text-muted)">{{ u.hours }}</span></span>
+            <a href="{{ u.href }}" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:8px;border:1px solid var(--primary);background:var(--surface);color:var(--primary);font-weight:700;text-decoration:none"><nb-icon name="{{ u.actIcon }}" size="18"></nb-icon>{{ u.action }}</a>
+          </div>
+        </sc-for>
+        <span style="font-size:0.875rem;color:var(--text-muted)">Numbers on this page are placeholders for the prototype.</span>
+      </div>
+    </sc-if>
+  </main>
+
+  <footer style="flex:none;border-top:1px solid var(--border);background:var(--surface)">
+    <div style="max-width:1120px;margin:0 auto;padding:16px 20px;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;font-size:0.9375rem">
+      <span style="color:var(--text-muted);flex:1 1 220px">NeuroBridge · Babcock University, Ilishan-Remo</span>
+      <button type="button" onClick="{{ goUrgent }}" style="min-height:44px;padding:0;border:0;background:transparent;color:var(--danger);font-weight:700;cursor:pointer">Need urgent help?</button>
+      <a href="#" onClick="{{ noop }}" style="min-height:44px;display:inline-flex;align-items:center">Privacy notice</a>
+      <a href="#" onClick="{{ noop }}" style="min-height:44px;display:inline-flex;align-items:center">Accessibility statement</a>
+    </div>
+  </footer>
+
+  <sc-if value="{{ prefsOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePrefs }}" style="position:fixed;inset:0;z-index:40;background:rgba(20,22,26,.35)"></div>
+    <aside role="dialog" aria-modal="true" aria-labelledby="rp-title" style="position:fixed;top:0;right:0;bottom:0;z-index:41;width:min(440px,100%);background:var(--surface);border-left:1px solid var(--border);box-shadow:var(--shadow-lg);display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;flex-direction:column;line-height:1.3"><h2 id="rp-title" style="margin:0;font-size:1.25rem">Reading preferences</h2><span style="font-size:0.875rem;color:var(--text-muted)">Changes apply straight away and are saved for you.</span></div>
+        <button type="button" onClick="{{ closePrefs }}" aria-label="Close reading preferences" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="22"></nb-icon></button>
+      </div>
+      <div style="flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:24px">
+        <sc-for list="{{ prefGroupsAll }}" as="g" hint-placeholder-count="5">
+          <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+            <legend style="font-weight:700;padding:0;margin-bottom:8px">{{ g.label }}</legend>
+            <div style="display:grid;grid-template-columns:repeat({{ g.cols }},minmax(0,1fr));gap:6px">
+              <sc-for list="{{ g.opts }}" as="o" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;padding:6px 8px;border-radius:8px;border:2px solid {{ o.bd }};background:{{ o.bg }};color:var(--text);font-family:{{ o.font }};cursor:pointer;line-height:1.2"><span style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:{{ o.size }}"><sc-if value="{{ o.hasSwatch }}" hint-placeholder-val="{{ false }}"><span style="width:16px;height:16px;border-radius:50%;background:{{ o.swatch }};border:1px solid var(--border-strong)"></span></sc-if>{{ o.label }}</span><span style="font-size:0.75rem;color:var(--text-muted)">{{ o.sub }}</span></button>
+              </sc-for>
+            </div>
+          </fieldset>
+        </sc-for>
+        <div style="display:flex;flex-direction:column;border-top:1px solid var(--border)">
+          <sc-for list="{{ prefToggles }}" as="t" hint-placeholder-count="1">
+            <div style="display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)">
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span id="{{ t.id }}" style="font-weight:700">{{ t.title }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ t.desc }}</span></div>
+              <button type="button" role="switch" aria-checked="{{ t.on }}" aria-labelledby="{{ t.id }}" onClick="{{ t.onClick }}" style="flex:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;background:transparent;cursor:pointer"><span style="font-size:0.875rem;font-weight:700;width:28px;text-align:right">{{ t.label }}</span><span style="position:relative;width:52px;height:32px;border-radius:999px;background:{{ t.track }};border:2px solid {{ t.trackBd }}"><span style="position:absolute;top:2px;left:{{ t.knobLeft }};width:24px;height:24px;border-radius:50%;background:{{ t.knob }};transition:left .15s"></span></span></button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;padding:16px 20px;border-top:1px solid var(--border)"><button type="button" onClick="{{ resetPrefs }}" style="min-height:48px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Reset to default</button></div>
+    </aside>
+  </sc-if>
+
+  <div role="status" aria-live="polite" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;width:min(480px,calc(100% - 24px))">
+    <sc-for list="{{ toasts }}" as="t" hint-placeholder-count="0">
+      <div style="display:flex;gap:12px;align-items:center;padding:10px 8px 10px 16px;border-radius:10px;background:var(--text);color:var(--bg);box-shadow:var(--shadow-lg)"><span style="color:#6BC1AE;display:flex"><nb-icon name="circle-check" size="20"></nb-icon></span><span style="flex:1;font-size:0.9375rem">{{ t.msg }}</span><button type="button" onClick="{{ t.onClose }}" aria-label="Dismiss" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="18"></nb-icon></button></div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;landing&quot;,&quot;signin&quot;,&quot;mfa&quot;,&quot;onboarding&quot;,&quot;denied&quot;,&quot;urgent&quot;],&quot;default&quot;:&quot;landing&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Start at&quot;}}">
+const PKEY = 'nb-reading-prefs';
+const DEFAULT_PREFS = {size:'M',line:'1.6',letter:'0em',font:'default',theme:'light',motion:false,focus:false};
+const SCREENS = ['landing','signin','mfa','onboarding','denied','urgent'];
+const YES = {icon:'check',bg:'var(--accent-bg)',fg:'var(--accent-ink)',tFg:'var(--accent-ink)'};
+const NO = {icon:'minus',bg:'var(--surface-2)',fg:'var(--text-muted)',tFg:'var(--text-muted)'};
+const ASK = {icon:'toggle-right',bg:'var(--primary-bg)',fg:'var(--primary)',tFg:'var(--primary)'};
+const COLS = ['Your answers and notes','Your support plan','What to do in class','Totals, no names'];
+
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  state = { prefs:{...DEFAULT_PREFS}, prefsOpen:false, layout:'desktop', nav:null, prev:'landing', toasts:[],
+    emailOpen:false, email:'', pw:'', pwShown:false, signErr:null, busy:null, code:'', codeErr:null, remember:true, ob:1 };
+  componentDidMount() {
+    let saved = null; try { saved = JSON.parse(localStorage.getItem(PKEY)||'null'); } catch(e) {}
+    const init = {...DEFAULT_PREFS, ...(saved||{})}; this.apply(init); if (saved) this.setState({prefs:init});
+    const el = this.rootRef.current;
+    const measure = () => { const w = el ? el.clientWidth : window.innerWidth; const layout = w<768?'mobile':w<1024?'tablet':'desktop'; if (layout!==this.state.layout) this.setState({layout}); };
+    measure(); if (window.ResizeObserver && el) { this.ro = new ResizeObserver(measure); this.ro.observe(el); }
+    this.onKey = e => { if (e.key==='Escape') this.setState({prefsOpen:false}); };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); window.removeEventListener('keydown',this.onKey); clearTimeout(this.t); }
+  apply(p) {
+    const r = document.documentElement; r.dataset.theme = p.theme;
+    r.style.fontSize = {S:'16px',M:'18px',L:'20px',XL:'24px'}[p.size] || '18px';
+    r.style.setProperty('--lh', p.line); r.style.setProperty('--ls', p.letter);
+    r.style.setProperty('--font', p.font==='dyslexic' ? '"OpenDyslexic","Atkinson Hyperlegible",sans-serif' : '"Atkinson Hyperlegible",Lexend,system-ui,sans-serif');
+    if (p.motion) r.dataset.motion='reduce'; else delete r.dataset.motion;
+  }
+  setPrefs(next) { this.apply(next); try { localStorage.setItem(PKEY, JSON.stringify(next)); } catch(e) {} this.setState({prefs:next}); }
+  setPref(k,v) { this.setPrefs({...this.state.prefs,[k]:v}); }
+  toast(msg) { const id = Date.now()+Math.random(); this.setState(s=>({toasts:[...s.toasts,{id,msg}]})); setTimeout(()=>this.setState(s=>({toasts:s.toasts.filter(x=>x.id!==id)})), 6000); }
+  seg(key, opts) { const cur = this.state.prefs[key]; return opts.map(o => { const on = cur===o.v; return { label:o.label, sub:o.sub||'', size:o.size||'0.9375rem', font:o.font||'inherit', hasSwatch:!!o.swatch, swatch:o.swatch||'transparent', pressed:String(on), bg:on?'var(--primary-bg)':'var(--surface)', bd:on?'var(--primary)':'var(--border)', onClick:()=>this.setPref(key,o.v) }; }); }
+  sw(on) { return { on:String(on), label:on?'On':'Off', track:on?'var(--primary)':'var(--surface-2)', trackBd:on?'var(--primary)':'var(--border-strong)', knob:on?'var(--on-primary)':'var(--border-strong)', knobLeft:on?'22px':'2px' }; }
+  screen() { const sp = SCREENS.includes(this.props.startScreen) ? this.props.startScreen : 'landing'; const n = this.state.nav; return n && n.prop===sp ? n.screen : sp; }
+  go(screen, extra) { const cur = this.screen(); this.setState({nav:{prop:this.props.startScreen||'landing', screen}, prev:cur, ...(extra||{})}); window.scrollTo(0,0); }
+  delay(fn, ms) { clearTimeout(this.t); this.t = setTimeout(fn, ms||900); }
+
+  renderVals() {
+    const s = this.state, screen = this.screen();
+    const isMobile = s.layout==='mobile';
+    const groups = [
+      {label:'Text size', cols:4, opts:this.seg('size',[{v:'S',label:'S',sub:'16px',size:'0.875rem'},{v:'M',label:'M',sub:'18px',size:'1rem'},{v:'L',label:'L',sub:'20px',size:'1.125rem'},{v:'XL',label:'XL',sub:'24px',size:'1.25rem'}])},
+      {label:'Line spacing', cols:3, opts:this.seg('line',[{v:'1.6',label:'Default',sub:'1.6'},{v:'1.8',label:'Relaxed',sub:'1.8'},{v:'2',label:'Loose',sub:'2.0'}])},
+      {label:'Letter spacing', cols:3, opts:this.seg('letter',[{v:'0em',label:'Default'},{v:'0.04em',label:'Wide'},{v:'0.08em',label:'Wider'}])},
+      {label:'Font', cols:2, opts:this.seg('font',[{v:'default',label:'Default',sub:'Atkinson Hyperlegible',font:'"Atkinson Hyperlegible",sans-serif'},{v:'dyslexic',label:'Dyslexia-friendly',sub:'OpenDyslexic',font:'"OpenDyslexic",sans-serif',size:'0.8125rem'}])},
+      {label:'Theme', cols:2, opts:this.seg('theme',[{v:'light',label:'Light',swatch:'#FAF8F5'},{v:'dark',label:'Dark',swatch:'#14161A'},{v:'hc',label:'High contrast',swatch:'#0A0A0A'},{v:'soft',label:'Soft',sub:'Cream background',swatch:'#F4EEE2'}])},
+    ];
+    const em = s.email.trim().toLowerCase();
+    const isStudent = /@student\.babcock\.edu\.ng$/.test(em);
+    const matrix = [
+      {who:'You',icon:'user',bg:'var(--accent-bg)',fg:'var(--accent-ink)',c:[YES,YES,YES,NO],t:['Always','Always','Always','Not needed']},
+      {who:'Support office',icon:'heart-handshake',bg:'var(--privacy-bg)',fg:'var(--privacy)',c:[YES,YES,YES,YES],t:['Your officer only','Yes','Yes','Yes']},
+      {who:'Your lecturers',icon:'presentation',bg:'var(--primary-bg)',fg:'var(--primary)',c:[NO,NO,ASK,NO],t:['Never','Never','If you say yes','No']},
+      {who:'Department heads',icon:'chart-column',bg:'var(--warning-bg)',fg:'var(--warning-ink)',c:[NO,NO,NO,YES],t:['Never','Never','Never','Small groups hidden']},
+    ].map(r=>({...r, cells:r.c.map((c,i)=>({...c, text:r.t[i], col:COLS[i]}))}));
+    const finish = () => { this.toast('All set. Opening your workspace…'); this.delay(()=>{ window.location.href = 'Student%20Workspace.dc.html'; }, 1200); };
+    const pad = isMobile ? '24px 16px 40px' : '48px 24px 64px';
+    return {
+      rootRef:this.rootRef, isMobile, notMobile:!isMobile,
+      sLanding:screen==='landing', sSignin:screen==='signin', sMfa:screen==='mfa', sRoute:screen==='route', sOnboard:screen==='onboarding', sDenied:screen==='denied', sUrgent:screen==='urgent',
+      goLanding:()=>this.go('landing'), goSignin:()=>this.go('signin',{signErr:null, code:'', codeErr:null}), goUrgent:()=>this.go('urgent'), goBack:()=>this.go(s.prev==='urgent'?'landing':s.prev), goRoute:()=>this.go('route'), noop:e=>e.preventDefault(),
+      openPrefs:()=>this.setState({prefsOpen:true}), closePrefs:()=>this.setState({prefsOpen:false}), prefsOpen:s.prefsOpen, prefGroupsAll:groups, prefGroups:groups.slice(0,4).concat([groups[4]]).filter((g,i)=>i!==2),
+      prefToggles:[{id:'pt-motion',title:'Reduce motion',desc:'Stops pulsing and sliding effects.',...this.sw(!!s.prefs.motion),onClick:()=>this.setPref('motion',!s.prefs.motion)}],
+      resetPrefs:()=>this.setPrefs({...DEFAULT_PREFS}),
+      heroPad: isMobile?'32px 16px 40px':'72px 24px 80px', heroSize: isMobile?'2.25rem':'3rem', promisePad: isMobile?'32px 16px':'48px 24px', cardWrapPad:pad, cardPad: isMobile?'20px':'32px',
+      promises:[
+        {icon:'lock',title:'Only the support office sees your answers',text:'What you tell us in a check-in or request stays with the officer looking after you.',bg:'var(--privacy-bg)',fg:'var(--privacy)'},
+        {icon:'toggle-right',title:'You choose what lecturers know',text:'They only see what to do, like extra time, and only for the courses you pick. Never the reason.',bg:'var(--primary-bg)',fg:'var(--primary)'},
+        {icon:'eye-off',title:'Reports never name anyone',text:'University reports show totals, and any group smaller than five is hidden.',bg:'var(--accent-bg)',fg:'var(--accent-ink)'},
+      ],
+      busy:!!s.busy, ssoBusy:s.busy==='sso', ssoIdle:s.busy!=='sso', ssoLabel:s.busy==='sso'?'Opening university sign-in…':'Sign in with university account',
+      ssoSignin:()=>{ this.setState({busy:'sso'}); this.delay(()=>{ this.setState({busy:null}); this.go('onboarding',{ob:1}); }, 1100); },
+      emailOpen:s.emailOpen, emailClosed:!s.emailOpen, openEmail:()=>{ this.setState({emailOpen:true}); setTimeout(()=>{ const i = document.getElementById('si-email'); if (i) i.focus(); }, 50); },
+      email:s.email, onEmail:e=>this.setState({email:e.target.value, signErr:null}), pw:s.pw, onPw:e=>this.setState({pw:e.target.value, signErr:null}),
+      pwType:s.pwShown?'text':'password', pwShown:String(s.pwShown), pwIcon:s.pwShown?'eye-off':'eye', pwToggleLabel:s.pwShown?'Hide':'Show', togglePw:()=>this.setState(x=>({pwShown:!x.pwShown})),
+      hasSignErr:!!s.signErr, signErr:s.signErr||'', emailLabel:s.busy==='email'?'Signing in…':'Sign in',
+      emailSignin:e=>{ e.preventDefault();
+        if (!/@(student\.)?babcock\.edu\.ng$/.test(em)) return this.setState({signErr:'Use your Babcock email, ending in babcock.edu.ng.'});
+        if (!s.pw) return this.setState({signErr:'Enter your password.'});
+        this.setState({busy:'email'});
+        this.delay(()=>{ this.setState({busy:null}); if (s.pw.toLowerCase()==='wrong') return this.setState({signErr:'That email and password don\'t match. Check for typos, or reset your password.'}); if (isStudent) this.go('onboarding',{ob:1}); else this.go('mfa',{code:'',codeErr:null}); }); },
+      forgot:()=>this.toast('If that email has an account, we\'ve sent a reset link.'),
+      code:s.code, onCode:e=>this.setState({code:e.target.value.replace(/\D/g,'').slice(0,6), codeErr:null}), hasCodeErr:!!s.codeErr, codeErr:s.codeErr||'', codeBad:String(!!s.codeErr), codeBd:s.codeErr?'2px solid var(--danger)':'1px solid var(--border-strong)',
+      remember:s.remember, rememberOn:String(s.remember), remBd:s.remember?'var(--primary)':'var(--border-strong)', remBg:s.remember?'var(--primary)':'transparent', toggleRemember:()=>this.setState(x=>({remember:!x.remember})),
+      verifyLabel:s.busy==='mfa'?'Checking…':'Verify and continue',
+      verifyCode:e=>{ e.preventDefault(); if (s.code.length!==6) return this.setState({codeErr:'Enter all 6 digits.'}); this.setState({busy:'mfa'}); this.delay(()=>{ this.setState({busy:null}); if (s.code==='000000') return this.setState({codeErr:'That code didn\'t work. Codes change every 30 seconds, so try the newest one.'}); this.go('route'); }); },
+      resend:()=>this.toast('Enter one of the backup codes you saved when you set up your account.'),
+      workspaces:[
+        {label:'Support Officer',sub:'Caseload, triage and support plans',icon:'heart-handshake',href:'Support%20Officer%20Workspace.dc.html'},
+        {label:'Lecturer',sub:'Accommodations and Teaching Studio',icon:'presentation',href:'Lecturer%20Workspace.dc.html'},
+        {label:'Department Head',sub:'Inclusion dashboard and reports',icon:'chart-column',href:'Leadership%20and%20Admin%20Workspace.dc.html'},
+        {label:'System Admin',sub:'Users, courses, audit log and settings',icon:'settings',href:'Leadership%20and%20Admin%20Workspace.dc.html'},
+      ],
+      obNum:String(s.ob), ob1:s.ob===1, ob2:s.ob===2, ob3:s.ob===3, obMax: s.ob===2?'860px':'680px',
+      obDots:[1,2,3].map(n=>({w:n===s.ob?'32px':'12px', bg:n<=s.ob?'var(--primary)':'var(--border)', current:n===s.ob?'step':'false', label:'Step '+n+(n<s.ob?', done':n===s.ob?', current':'')})),
+      welcomeItems:[{icon:'message-square',text:'Ask for support, with or without a short check-in first.'},{icon:'list-checks',text:'See your request move from received to support plan.'},{icon:'toggle-right',text:'Decide, course by course, whether a lecturer sees your accommodations.'}],
+      matrix, matrixCols:COLS,
+      obCanBack:s.ob>1, obBack:()=>this.setState(x=>({ob:x.ob-1})), obNextLabel:s.ob===3?'Finish and go to my home':'Next',
+      obNext:()=>{ if (s.ob<3) { this.setState(x=>({ob:x.ob+1})); window.scrollTo(0,0); } else finish(); }, obFinish:finish,
+      deniedWhy:'Case records are only open to the support office team looking after that student. This keeps students\' details private, even from other staff.',
+      deniedRole:'Dr. Temitope Ogunleye · Lecturer', deniedTarget:'Case record NB-0142',
+      askAccess:()=>this.toast('We\'ve told the system admin. They\'ll reply by email.'),
+      urgentContacts:[
+        {name:'Campus emergency line',hours:'24 hours, every day',icon:'siren',bg:'var(--danger-bg)',fg:'var(--danger)',href:'tel:+2340000000000',action:'Call 0800 000 0000',actIcon:'phone'},
+        {name:'National emergency number',hours:'Police, fire and ambulance',icon:'phone-call',bg:'var(--danger-bg)',fg:'var(--danger)',href:'tel:112',action:'Call 112',actIcon:'phone'},
+        {name:'Counselling and wellbeing centre',hours:'Mon to Fri, 8am to 5pm',icon:'heart-handshake',bg:'var(--privacy-bg)',fg:'var(--privacy)',href:'tel:+2340000000001',action:'Call the centre',actIcon:'phone'},
+        {name:'University health centre',hours:'24 hours, every day',icon:'stethoscope',bg:'var(--accent-bg)',fg:'var(--accent-ink)',href:'tel:+2340000000002',action:'Call the health centre',actIcon:'phone'},
+      ],
+      toasts:s.toasts.map(t=>({...t, onClose:()=>this.setState(x=>({toasts:x.toasts.filter(y=>y.id!==t.id)}))})),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=Lexend:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
+<link href="nb-theme.css" rel="stylesheet">
+<script src="nb-icons.js"></script>
+</helmet>
+<div style="min-height:100vh;display:flex;justify-content:center;align-items:{{ outerAlign }};padding:{{ outerPad }};background:{{ outerBg }}">
+<div ref="{{ rootRef }}" style="position:relative;width:{{ frameW }};height:{{ frameH }};border-radius:{{ frameR }};border:{{ frameBd }};overflow:hidden;background:var(--bg);color:var(--text);display:flex;flex-direction:column;font-size:1rem">
+  <a href="#sw-main" style="position:absolute;left:12px;top:-80px;z-index:100;background:var(--primary);color:var(--on-primary);padding:12px 16px;border-radius:8px;font-weight:700;text-decoration:none" style-focus="top:12px">Skip to content</a>
+
+  <sc-if value="{{ offline }}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="flex:none;display:flex;gap:10px;align-items:center;justify-content:center;padding:8px 16px;background:var(--text);color:var(--bg);font-size:0.875rem;font-weight:700"><nb-icon name="wifi-off" size="18"></nb-icon>You're offline. Your answers are saved on this device.</div>
+  </sc-if>
+
+  <header style="flex:none;display:flex;align-items:center;gap:12px;padding:{{ headerPad }};background:var(--surface);border-bottom:1px solid var(--border)">
+    <img src="assets/babcock-logo.jpeg" alt="Babcock University" style="height:{{ logoH }};width:auto;display:block;border-radius:2px">
+    <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0">
+      <span style="font-weight:700">NeuroBridge</span>
+      <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ false }}"><span style="font-size:0.8125rem;color:var(--text-muted)">Learning support</span></sc-if>
+    </div>
+    <div style="flex:1 1 auto"></div>
+    <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ false }}">
+      <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;background:var(--primary-bg);color:var(--primary);font-size:0.8125rem;font-weight:700;white-space:nowrap"><nb-icon name="graduation-cap" size="16"></nb-icon>Signed in as Student</span>
+    </sc-if>
+    <button type="button" onClick="{{ openPrefs }}" aria-haspopup="dialog" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;min-width:44px;justify-content:center;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;font-size:0.875rem;cursor:pointer"><nb-icon name="type" size="20"></nb-icon>Reading</button>
+    <button type="button" onClick="{{ toggleNotif }}" aria-expanded="{{ notifExpanded }}" aria-label="{{ notifAria }}" style="position:relative;width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--surface-2)"><nb-icon name="bell" size="22"></nb-icon><sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:5px;right:3px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:var(--danger);color:#FFFFFF;font-size:0.6875rem;font-weight:700;display:flex;align-items:center;justify-content:center">{{ unread }}</span></sc-if></button>
+    <span aria-hidden="true" style="width:40px;height:40px;flex:none;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem">AO</span>
+  </header>
+
+  <div style="flex:1 1 auto;min-height:0;display:flex">
+    <sc-if value="{{ showSidebar }}" hint-placeholder-val="{{ false }}">
+      <nav aria-label="Main" style="flex:none;width:{{ sideW }};border-right:1px solid var(--border);background:var(--surface);padding:16px {{ sidePadX }};display:flex;flex-direction:column;gap:2px;overflow:auto">
+        <sc-for list="{{ sideItems }}" as="si" hint-placeholder-count="7">
+          <button type="button" onClick="{{ si.onClick }}" aria-current="{{ si.current }}" style="display:flex;flex-direction:{{ si.dir }};align-items:center;gap:{{ si.gap }};min-height:{{ si.minH }};padding:{{ si.pad }};border-radius:8px;border:0;border-left:3px solid {{ si.bar }};background:{{ si.bg }};color:{{ si.fg }};font-weight:{{ si.weight }};font-size:{{ si.fs }};text-align:{{ si.align }};cursor:pointer;line-height:1.2" style-hover="background:var(--surface-2)"><nb-icon name="{{ si.icon }}" size="22"></nb-icon><span>{{ si.label }}</span></button>
+        </sc-for>
+        <div style="flex:1"></div>
+        <button type="button" onClick="{{ goUrgent }}" style="display:flex;flex-direction:{{ urgentDir }};align-items:center;gap:{{ urgentGap }};min-height:52px;padding:{{ urgentPad }};border-radius:8px;border:1px solid var(--danger);background:transparent;color:var(--danger);font-weight:700;font-size:{{ urgentFs }};cursor:pointer;text-align:center;line-height:1.2"><nb-icon name="life-buoy" size="22"></nb-icon><span>Need urgent help?</span></button>
+      </nav>
+    </sc-if>
+
+    <main id="sw-main" ref="{{ mainRef }}" tabindex="-1" style="flex:1 1 auto;min-width:0;overflow:auto;outline:none">
+      <div style="max-width:1200px;margin:0 auto;padding:{{ mainPad }};display:flex;flex-direction:column;gap:24px">
+
+        <sc-if value="{{ hasCrumbs }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ false }}">
+            <nav aria-label="Breadcrumb"><ol style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:0.9375rem">
+              <sc-for list="{{ crumbs }}" as="c" hint-placeholder-count="2">
+                <li style="display:flex;align-items:center;gap:6px"><sc-if value="{{ c.link }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ c.onClick }}" style="border:0;background:transparent;padding:0;color:var(--primary);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:44px">{{ c.label }}</button><span aria-hidden="true" style="color:var(--text-muted);display:flex"><nb-icon name="chevron-right" size="16"></nb-icon></span></sc-if><sc-if value="{{ c.last }}" hint-placeholder-val="{{ false }}"><span aria-current="page" style="font-weight:700">{{ c.label }}</span></sc-if></li>
+              </sc-for>
+            </ol></nav>
+          </sc-if>
+          <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ true }}">
+            <button type="button" onClick="{{ goBack }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 10px 0 4px;margin:-8px 0 -8px -4px;border:0;border-radius:8px;background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="chevron-left" size="22"></nb-icon>{{ backLabel }}</button>
+          </sc-if>
+        </sc-if>
+
+        <!-- HOME -->
+        <sc-if value="{{ sHome }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+            <div style="display:flex;flex-direction:column;gap:4px;max-width:60ch">
+              <h1 style="margin:0;font-size:1.75rem;line-height:1.25">Good morning, Adaeze</h1>
+              <p style="margin:0;color:var(--text-muted)">{{ homeSub }}</p>
+            </div>
+            <button type="button" onClick="{{ goRequest }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 22px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer;flex:{{ ctaFlex }}" style-hover="background:var(--primary-hover)"><nb-icon name="hand-heart" size="22"></nb-icon>Ask for support</button>
+          </div>
+
+          <sc-if value="{{ homeLoading }}" hint-placeholder-val="{{ false }}">
+            <div aria-busy="true" aria-label="Loading your home page" style="display:flex;flex-wrap:wrap;gap:16px">
+              <div style="flex:2 1 420px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:16px;animation:nbPulse 1.6s ease-in-out infinite"><div style="width:45%;height:22px;border-radius:6px;background:var(--surface-2)"></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"><div style="height:8px;border-radius:999px;background:var(--surface-2)"></div><div style="height:8px;border-radius:999px;background:var(--surface-2)"></div><div style="height:8px;border-radius:999px;background:var(--surface-2)"></div><div style="height:8px;border-radius:999px;background:var(--surface-2)"></div></div><div style="width:90%;height:14px;border-radius:4px;background:var(--surface-2)"></div><div style="width:70%;height:14px;border-radius:4px;background:var(--surface-2)"></div></div>
+              <div style="flex:1 1 260px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:14px;animation:nbPulse 1.6s ease-in-out infinite"><div style="width:60%;height:18px;border-radius:6px;background:var(--surface-2)"></div><div style="width:100%;height:56px;border-radius:8px;background:var(--surface-2)"></div><div style="width:40%;height:44px;border-radius:8px;background:var(--surface-2)"></div></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ homeError }}" hint-placeholder-val="{{ false }}">
+            <div role="alert" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+              <span style="width:56px;height:56px;border-radius:50%;background:var(--danger-bg);color:var(--danger);display:flex;align-items:center;justify-content:center"><nb-icon name="cloud-off" size="28"></nb-icon></span>
+              <h2 style="margin:0;font-size:1.25rem">We couldn't load your home page</h2>
+              <p style="margin:0;color:var(--text-muted);max-width:40ch">This is on our side, not yours. Your information is safe.</p>
+              <button type="button" onClick="{{ retryHome }}" style="display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:0 22px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="refresh-cw" size="20"></nb-icon>Try again</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ homeReady }}" hint-placeholder-val="{{ true }}">
+            <sc-if value="{{ checkinPaused }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;padding:16px 20px;border-radius:10px;background:var(--primary-bg)">
+                <span style="color:var(--primary);display:flex"><nb-icon name="bookmark" size="22"></nb-icon></span>
+                <span style="flex:1 1 220px"><strong>Your check-in is saved.</strong> You stopped at question {{ pausedAt }} of 5.</span>
+                <button type="button" onClick="{{ resumeCheckin }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:var(--surface);color:var(--primary);font-weight:700;cursor:pointer">Continue check-in</button>
+              </div>
+            </sc-if>
+            <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+              <div style="flex:2 1 420px;min-width:0;display:flex;flex-direction:column;gap:16px">
+                <sc-if value="{{ stageNone }}" hint-placeholder-val="{{ true }}">
+                  <section aria-labelledby="h-start" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:20px">
+                    <div aria-hidden="true" style="position:relative;width:112px;height:56px"><div style="position:absolute;left:0;bottom:0;width:44px;height:44px;border-radius:50%;background:var(--primary-bg)"></div><div style="position:absolute;right:0;bottom:0;width:44px;height:44px;border-radius:50%;background:var(--accent-bg)"></div><div style="position:absolute;left:22px;bottom:18px;width:68px;height:8px;border-radius:999px;background:var(--primary)"></div></div>
+                    <div style="display:flex;flex-direction:column;gap:6px">
+                      <h2 id="h-start" style="margin:0;font-size:1.375rem">You haven't asked for support yet</h2>
+                      <p style="margin:0;color:var(--text-muted);max-width:60ch;text-wrap:pretty">There are two ways to start. Neither needs a diagnosis, and you can skip anything.</p>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px">
+                      <button type="button" onClick="{{ goCheckin }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;padding:18px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer" style-hover="border-color:var(--primary);background:var(--primary-bg)">
+                        <span style="color:var(--primary);display:flex"><nb-icon name="clipboard-list" size="26"></nb-icon></span>
+                        <span style="font-weight:700;font-size:1.0625rem">Take the check-in</span>
+                        <span style="color:var(--text-muted);font-size:0.9375rem">5 short questions. Helps you put things into words.</span>
+                      </button>
+                      <button type="button" onClick="{{ goRequest }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;padding:18px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer" style-hover="border-color:var(--primary);background:var(--primary-bg)">
+                        <span style="color:var(--primary);display:flex"><nb-icon name="send" size="26"></nb-icon></span>
+                        <span style="font-weight:700;font-size:1.0625rem">Ask for support directly</span>
+                        <span style="color:var(--text-muted);font-size:0.9375rem">A short form. Takes about 2 minutes.</span>
+                      </button>
+                    </div>
+                  </section>
+                </sc-if>
+                <sc-if value="{{ stageActive }}" hint-placeholder-val="{{ false }}">
+                  <section aria-labelledby="h-status" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:20px">
+                    <div style="display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;align-items:flex-start">
+                      <div style="display:flex;flex-direction:column;gap:4px">
+                        <span style="font-size:0.875rem;color:var(--text-muted)">Your support request · sent 13 Oct</span>
+                        <h2 id="h-status" style="margin:0;font-size:1.375rem">{{ statusTitle }}</h2>
+                      </div>
+                      <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:{{ badgeBg }};color:{{ badgeFg }};font-size:0.875rem;font-weight:700;white-space:nowrap"><nb-icon name="{{ badgeIcon }}" size="16"></nb-icon>{{ badgeLabel }}</span>
+                    </div>
+                    <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ false }}">
+                      <ol aria-label="Request progress" style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+                        <sc-for list="{{ steps }}" as="st" hint-placeholder-count="4">
+                          <li aria-current="{{ st.current }}" style="display:flex;flex-direction:column;gap:10px">
+                            <div style="height:6px;border-radius:999px;background:{{ st.bar }}"></div>
+                            <div style="display:flex;gap:8px;align-items:flex-start">
+                              <span style="width:28px;height:28px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:{{ st.dotBg }};color:{{ st.dotFg }};border:2px solid {{ st.dotBd }};font-weight:700;font-size:0.8125rem">{{ st.mark }}</span>
+                              <span style="display:flex;flex-direction:column;line-height:1.3"><span style="font-weight:700;font-size:0.9375rem">{{ st.label }}</span><span style="font-size:0.8125rem;color:{{ st.stateFg }}">{{ st.state }}</span></span>
+                            </div>
+                          </li>
+                        </sc-for>
+                      </ol>
+                    </sc-if>
+                    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ true }}">
+                      <ol aria-label="Request progress" style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+                        <sc-for list="{{ steps }}" as="st" hint-placeholder-count="4">
+                          <li aria-current="{{ st.current }}" style="display:flex;gap:12px">
+                            <div style="display:flex;flex-direction:column;align-items:center"><span style="width:32px;height:32px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:{{ st.dotBg }};color:{{ st.dotFg }};border:2px solid {{ st.dotBd }};font-weight:700;font-size:0.875rem">{{ st.mark }}</span><span style="flex:1;width:2px;min-height:12px;background:{{ st.line }}"></span></div>
+                            <div style="padding:4px 0 14px;display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ st.label }}</span><span style="font-size:0.875rem;color:{{ st.stateFg }}">{{ st.state }}</span></div>
+                          </li>
+                        </sc-for>
+                      </ol>
+                    </sc-if>
+                    <p style="margin:0;max-width:62ch;text-wrap:pretty">{{ statusBody }}</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between">
+                      <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--privacy-bg);color:var(--privacy);font-size:0.875rem;font-weight:700"><nb-icon name="eye" size="16"></nb-icon>Visible to: you and your support officer</span>
+                      <button type="button" onClick="{{ statusAction }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">{{ statusActionLabel }}<nb-icon name="arrow-right" size="18"></nb-icon></button>
+                    </div>
+                  </section>
+                </sc-if>
+              </div>
+
+              <sc-if value="{{ showSecondary }}" hint-placeholder-val="{{ true }}">
+                <div style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:16px">
+                  <section aria-labelledby="h-next" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                    <h2 id="h-next" style="margin:0;font-size:1.125rem">Next appointment</h2>
+                    <sc-if value="{{ hasNextAppt }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;gap:14px;align-items:flex-start">
+                        <span style="width:56px;flex:none;border-radius:8px;background:var(--primary-bg);color:var(--primary);display:flex;flex-direction:column;align-items:center;padding:6px 0;line-height:1.15"><span style="font-size:0.8125rem;font-weight:700">{{ nextAppt.mon }}</span><span style="font-size:1.5rem;font-weight:700">{{ nextAppt.day }}</span></span>
+                        <span style="display:flex;flex-direction:column;gap:2px;line-height:1.4"><span style="font-weight:700">{{ nextAppt.type }} · {{ nextAppt.time }}</span><span style="font-size:0.9375rem">with {{ nextAppt.with }}</span><span style="font-size:0.9375rem;color:var(--text-muted)">{{ nextAppt.place }}</span></span>
+                      </div>
+                      <button type="button" onClick="{{ goAppts }}" style="align-self:flex-start;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer;margin-left:-14px" style-hover="background:var(--primary-bg)">See all or reschedule</button>
+                    </sc-if>
+                    <sc-if value="{{ noNextAppt }}" hint-placeholder-val="{{ true }}">
+                      <p style="margin:0;color:var(--text-muted)">Nothing booked. Your support officer will suggest a time once they've read your request.</p>
+                    </sc-if>
+                  </section>
+                  <section aria-labelledby="h-privacy" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px">
+                    <h2 id="h-privacy" style="margin:0;font-size:1.125rem;display:flex;align-items:center;gap:8px"><span style="color:var(--privacy);display:flex"><nb-icon name="shield-check" size="22"></nb-icon></span>Your privacy</h2>
+                    <p style="margin:0;font-size:0.9375rem;text-wrap:pretty">Your lecturer will see the support you need, not the reason. You choose which lecturers see anything at all.</p>
+                    <button type="button" onClick="{{ goDisclosure }}" style="align-self:flex-start;min-height:44px;padding:0 14px;margin-left:-14px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)">Choose who sees my support</button>
+                  </section>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </sc-if>
+
+        <!-- CHECK-IN -->
+        <sc-if value="{{ sCheckin }}" hint-placeholder-val="{{ false }}">
+          <div style="width:100%;max-width:680px;display:flex;flex-direction:column;gap:24px">
+            <sc-if value="{{ ciIntro }}" hint-placeholder-val="{{ false }}">
+              <h1 style="margin:0;font-size:1.75rem;line-height:1.25">Learning-support check-in</h1>
+              <div role="note" style="display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:10px;background:var(--primary-bg)">
+                <span style="color:var(--primary);display:flex;padding-top:2px"><nb-icon name="info" size="22"></nb-icon></span>
+                <span><strong>This is not a diagnosis.</strong> It helps us understand what support might help.</span>
+              </div>
+              <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px">
+                <li style="display:flex;gap:12px;align-items:center"><span style="color:var(--text-muted);display:flex"><nb-icon name="list-checks" size="22"></nb-icon></span>5 short questions, one at a time</li>
+                <li style="display:flex;gap:12px;align-items:center"><span style="color:var(--text-muted);display:flex"><nb-icon name="timer-off" size="22"></nb-icon></span>No time limit. Most people take about 5 minutes.</li>
+                <li style="display:flex;gap:12px;align-items:center"><span style="color:var(--text-muted);display:flex"><nb-icon name="skip-forward" size="22"></nb-icon></span>Skip any question, or choose "Prefer not to say"</li>
+                <li style="display:flex;gap:12px;align-items:center"><span style="color:var(--text-muted);display:flex"><nb-icon name="save" size="22"></nb-icon></span>Your answers save as you go. Stop and come back any time.</li>
+              </ul>
+              <span style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--privacy-bg);color:var(--privacy);font-size:0.875rem;font-weight:700"><nb-icon name="lock" size="16"></nb-icon>Only your support officer can see your answers</span>
+              <div style="display:flex;flex-wrap:wrap;gap:12px">
+                <button type="button" onClick="{{ ciStart }}" style="flex:{{ ctaFlex }};display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)">Start check-in</button>
+                <button type="button" onClick="{{ goRequest }}" style="flex:{{ ctaFlex }};min-height:52px;padding:0 20px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)">Ask for support directly instead</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ ciQuestion }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+                  <span style="font-weight:700">Question {{ qNum }} of 5</span>
+                  <span role="status" style="display:inline-flex;align-items:center;gap:6px;font-size:0.875rem;color:var(--text-muted)"><nb-icon name="{{ savedIcon }}" size="16"></nb-icon>{{ savedLabel }}</span>
+                </div>
+                <div role="progressbar" aria-label="Check-in progress" aria-valuemin="0" aria-valuemax="5" aria-valuenow="{{ qNum }}" style="height:8px;border-radius:999px;background:var(--surface-2);overflow:hidden"><div style="height:100%;width:{{ qPct }};background:var(--primary);border-radius:999px;transition:width .25s"></div></div>
+              </div>
+              <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:20px">
+                <legend style="padding:0;margin-bottom:8px;font-size:1.375rem;font-weight:700;line-height:1.4;text-wrap:pretty">{{ q.text }}</legend>
+                <sc-if value="{{ q.hasHint }}" hint-placeholder-val="{{ false }}"><span style="color:var(--text-muted);margin-top:-12px">{{ q.hint }}</span></sc-if>
+                <sc-if value="{{ q.isLikert }}" hint-placeholder-val="{{ true }}">
+                  <div role="radiogroup" aria-label="{{ q.text }}" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px">
+                    <sc-for list="{{ likertOpts }}" as="o" hint-placeholder-count="5">
+                      <button type="button" role="radio" aria-checked="{{ o.checked }}" aria-label="{{ o.aria }}" onClick="{{ o.onClick }}" style="min-height:60px;border-radius:8px;border:2px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};font-weight:700;font-size:1.125rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px"><sc-if value="{{ o.on }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="18"></nb-icon></sc-if>{{ o.label }}</button>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;gap:16px;font-size:0.9375rem;color:var(--text-muted)"><span>1 · Not at all like me</span><span style="text-align:right">5 · Very like me</span></div>
+                </sc-if>
+                <sc-if value="{{ q.isChips }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-wrap:wrap;gap:8px">
+                    <sc-for list="{{ ciChips }}" as="c" hint-placeholder-count="6">
+                      <button type="button" aria-pressed="{{ c.pressed }}" onClick="{{ c.onClick }}" style="display:inline-flex;align-items:center;gap:6px;min-height:48px;padding:0 16px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-weight:700;cursor:pointer"><nb-icon name="{{ c.icon }}" size="18"></nb-icon>{{ c.label }}</button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ q.isText }}" hint-placeholder-val="{{ false }}">
+                  <label for="ci-text" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">{{ q.text }}</label>
+                  <textarea id="ci-text" rows="5" value="{{ ciText }}" onChange="{{ onCiText }}" placeholder="For example: I lose my place when slides change quickly." style="padding:14px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);resize:vertical;line-height:var(--lh)"></textarea>
+                </sc-if>
+                <div style="display:flex;flex-wrap:wrap;gap:8px">
+                  <button type="button" onClick="{{ ciPrefer }}" aria-pressed="{{ preferPressed }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--border-strong);background:{{ preferBg }};font-weight:700;cursor:pointer"><sc-if value="{{ preferOn }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="18"></nb-icon></sc-if>Prefer not to say</button>
+                  <button type="button" onClick="{{ ciSkip }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)">Skip this question</button>
+                </div>
+              </fieldset>
+              <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border)">
+                <button type="button" onClick="{{ ciSaveLater }}" style="display:inline-flex;align-items:center;gap:6px;min-height:48px;padding:0 14px;margin-left:-14px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)"><nb-icon name="bookmark" size="20"></nb-icon>Save and continue later</button>
+                <div style="display:flex;gap:8px;flex:{{ ctaFlex }}">
+                  <button type="button" onClick="{{ ciBack }}" style="flex:1 1 auto;min-height:52px;padding:0 18px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Back</button>
+                  <button type="button" onClick="{{ ciNext }}" style="flex:2 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)">{{ nextLabel }}<nb-icon name="arrow-right" size="20"></nb-icon></button>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ ciResult }}" hint-placeholder-val="{{ false }}">
+              <h1 style="margin:0;font-size:1.75rem;line-height:1.25">Thanks for sharing, Adaeze</h1>
+              <section aria-labelledby="h-told" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:14px">
+                <h2 id="h-told" style="margin:0;font-size:1.125rem">What you told us</h2>
+                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
+                  <sc-for list="{{ summary }}" as="sm" hint-placeholder-count="3">
+                    <li style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--primary);display:flex;padding-top:3px"><nb-icon name="message-circle" size="20"></nb-icon></span><span style="text-wrap:pretty">{{ sm }}</span></li>
+                  </sc-for>
+                </ul>
+                <div style="height:1px;background:var(--border)"></div>
+                <p style="margin:0;font-size:1.125rem;font-weight:700;text-wrap:pretty">{{ suggestion }}</p>
+                <p style="margin:0;color:var(--text-muted);text-wrap:pretty">A support officer will talk it through with you and agree what would help. This summary is not a diagnosis and isn't shared with lecturers.</p>
+              </section>
+              <span style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--privacy-bg);color:var(--privacy);font-size:0.875rem;font-weight:700"><nb-icon name="lock" size="16"></nb-icon>Only your support officer can see your answers</span>
+              <div style="display:flex;flex-wrap:wrap;gap:12px">
+                <button type="button" onClick="{{ ciToRequest }}" style="flex:{{ ctaFlex }};display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)">Request support<nb-icon name="arrow-right" size="20"></nb-icon></button>
+                <button type="button" onClick="{{ ciNotNow }}" style="flex:{{ ctaFlex }};min-height:52px;padding:0 20px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)">Not now, keep my answers</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- REQUEST -->
+        <sc-if value="{{ sRequest }}" hint-placeholder-val="{{ false }}">
+          <div style="width:100%;max-width:720px;display:flex;flex-direction:column;gap:24px">
+            <sc-if value="{{ reqForm }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <h1 style="margin:0;font-size:1.75rem;line-height:1.25">Ask for support</h1>
+                <p style="margin:0;color:var(--text-muted);text-wrap:pretty">Tell us what's getting in the way. You can skip anything.</p>
+                <sc-if value="{{ reqPrefilled }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;font-size:0.9375rem;color:var(--accent-ink);font-weight:700"><nb-icon name="circle-check" size="18"></nb-icon>We've filled in a few things from your check-in. Change anything you like.</span></sc-if>
+              </div>
+              <sc-if value="{{ reqError }}" hint-placeholder-val="{{ false }}">
+                <div role="alert" style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;background:var(--danger-bg)"><span style="color:var(--danger);display:flex;padding-top:2px"><nb-icon name="circle-alert" size="20"></nb-icon></span><span>There's 1 thing to fix before you send. <a href="#q-barriers">Go to it</a></span></div>
+              </sc-if>
+              <fieldset id="q-barriers" aria-describedby="q-barriers-err" style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:12px">
+                <legend style="padding:0;margin-bottom:4px;font-weight:700;font-size:1.125rem">What's getting in the way?</legend>
+                <span style="color:var(--text-muted);margin-top:-6px">Pick any that fit, or write your own.</span>
+                <sc-if value="{{ reqError }}" hint-placeholder-val="{{ false }}"><span id="q-barriers-err" style="display:flex;gap:6px;align-items:flex-start;color:var(--danger);font-weight:700"><nb-icon name="circle-alert" size="18"></nb-icon>Choose at least one, or write a few words. Keeping it short is fine.</span></sc-if>
+                <div style="display:flex;flex-wrap:wrap;gap:8px">
+                  <sc-for list="{{ reqChips }}" as="c" hint-placeholder-count="8">
+                    <button type="button" aria-pressed="{{ c.pressed }}" onClick="{{ c.onClick }}" style="display:inline-flex;align-items:center;gap:6px;min-height:48px;padding:0 16px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-weight:700;cursor:pointer"><nb-icon name="{{ c.icon }}" size="18"></nb-icon>{{ c.label }}</button>
+                  </sc-for>
+                </div>
+                <label for="rq-text" style="font-weight:700;margin-top:4px">Tell us more <span style="font-weight:400;color:var(--text-muted)">(optional)</span></label>
+                <textarea id="rq-text" rows="3" value="{{ reqText }}" onChange="{{ onReqText }}" style="padding:14px;border-radius:8px;border:{{ reqTextBd }};background:var(--surface);resize:vertical;line-height:var(--lh)"></textarea>
+              </fieldset>
+              <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:12px">
+                <legend style="padding:0;margin-bottom:4px;font-weight:700;font-size:1.125rem">Which courses is this about? <span style="font-weight:400;color:var(--text-muted)">(optional)</span></legend>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:8px">
+                  <sc-for list="{{ courseOpts }}" as="c" hint-placeholder-count="5">
+                    <button type="button" role="checkbox" aria-checked="{{ c.pressed }}" onClick="{{ c.onClick }}" style="display:flex;gap:12px;align-items:center;text-align:left;min-height:56px;padding:8px 14px;border-radius:8px;border:{{ c.bdW }} solid {{ c.bd }};background:{{ c.bg }};cursor:pointer">
+                      <span style="width:24px;height:24px;flex:none;border-radius:6px;border:2px solid {{ c.boxBd }};background:{{ c.boxBg }};color:var(--on-primary);display:flex;align-items:center;justify-content:center"><sc-if value="{{ c.on }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="16"></nb-icon></sc-if></span>
+                      <span style="display:flex;flex-direction:column;line-height:1.3"><span style="font-weight:700">{{ c.code }}</span><span style="font-size:0.9375rem;color:var(--text-muted)">{{ c.name }}</span></span>
+                    </button>
+                  </sc-for>
+                </div>
+              </fieldset>
+              <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:12px">
+                <legend style="padding:0;margin-bottom:4px;font-weight:700;font-size:1.125rem">How should we contact you?</legend>
+                <div role="radiogroup" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:8px">
+                  <sc-for list="{{ contactOpts }}" as="c" hint-placeholder-count="4">
+                    <button type="button" role="radio" aria-checked="{{ c.pressed }}" onClick="{{ c.onClick }}" style="display:flex;gap:12px;align-items:center;text-align:left;min-height:56px;padding:8px 14px;border-radius:8px;border:{{ c.bdW }} solid {{ c.bd }};background:{{ c.bg }};cursor:pointer">
+                      <span style="width:22px;height:22px;flex:none;border-radius:50%;border:2px solid {{ c.boxBd }};display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:{{ c.dot }}"></span></span>
+                      <span style="display:flex;align-items:center;gap:8px"><nb-icon name="{{ c.icon }}" size="20"></nb-icon><span style="display:flex;flex-direction:column;line-height:1.25"><span style="font-weight:700">{{ c.label }}</span><span style="font-size:0.8125rem;color:var(--text-muted)">{{ c.sub }}</span></span></span>
+                    </button>
+                  </sc-for>
+                </div>
+              </fieldset>
+              <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:12px">
+                <legend style="padding:0;margin-bottom:4px;font-weight:700;font-size:1.125rem">How soon do you need help?</legend>
+                <div role="radiogroup" style="display:flex;flex-direction:column;gap:8px">
+                  <sc-for list="{{ urgencyOpts }}" as="c" hint-placeholder-count="3">
+                    <button type="button" role="radio" aria-checked="{{ c.pressed }}" onClick="{{ c.onClick }}" style="display:flex;gap:12px;align-items:center;text-align:left;min-height:56px;padding:8px 14px;border-radius:8px;border:{{ c.bdW }} solid {{ c.bd }};background:{{ c.bg }};cursor:pointer">
+                      <span style="width:22px;height:22px;flex:none;border-radius:50%;border:2px solid {{ c.boxBd }};display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:{{ c.dot }}"></span></span>
+                      <span style="display:flex;flex-direction:column;line-height:1.3"><span style="font-weight:700">{{ c.label }}</span><span style="font-size:0.9375rem;color:var(--text-muted)">{{ c.sub }}</span></span>
+                    </button>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ isUrgent }}" hint-placeholder-val="{{ false }}">
+                  <div role="note" style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;background:var(--danger-bg)"><span style="color:var(--danger);display:flex;padding-top:2px"><nb-icon name="life-buoy" size="20"></nb-icon></span><span>If you're not safe right now, don't wait for a reply. <button type="button" onClick="{{ goUrgent }}" style="border:0;background:transparent;padding:0;color:var(--danger);font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer">See urgent help contacts</button></span></div>
+                </sc-if>
+              </fieldset>
+              <div style="display:flex;flex-direction:column;gap:12px;padding-top:16px;border-top:1px solid var(--border)">
+                <span style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--privacy-bg);color:var(--privacy);font-size:0.875rem;font-weight:700"><nb-icon name="lock" size="16"></nb-icon>Only your support officer can see this request</span>
+                <button type="button" onClick="{{ submitReq }}" aria-busy="{{ reqBusy }}" style="align-self:{{ submitAlign }};display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 28px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;font-size:1.0625rem;cursor:pointer" style-hover="background:var(--primary-hover)"><sc-if value="{{ reqSending }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--on-primary);border-right-color:transparent;animation:nbSpin .8s linear infinite"></span></sc-if>{{ submitLabel }}</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ reqDone }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+                <span style="width:64px;height:64px;border-radius:50%;background:var(--accent-bg);color:var(--accent-ink);display:flex;align-items:center;justify-content:center"><nb-icon name="circle-check" size="34"></nb-icon></span>
+                <h1 style="margin:0;font-size:1.75rem;line-height:1.25">Request sent</h1>
+                <p style="margin:0;max-width:60ch;text-wrap:pretty">A support officer will reply within 5 working days, usually sooner. We'll send you a message in NeuroBridge.</p>
+              </div>
+              <section aria-labelledby="h-next-steps" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:14px">
+                <h2 id="h-next-steps" style="margin:0;font-size:1.125rem">What happens next</h2>
+                <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px">
+                  <li style="display:flex;gap:12px"><span style="width:28px;height:28px;flex:none;border-radius:50%;background:var(--primary-bg);color:var(--primary);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:0.875rem">1</span><span>A support officer reads your request and gets in touch.</span></li>
+                  <li style="display:flex;gap:12px"><span style="width:28px;height:28px;flex:none;border-radius:50%;background:var(--primary-bg);color:var(--primary);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:0.875rem">2</span><span>You talk it through together, in person or online.</span></li>
+                  <li style="display:flex;gap:12px"><span style="width:28px;height:28px;flex:none;border-radius:50%;background:var(--primary-bg);color:var(--primary);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:0.875rem">3</span><span>You agree a support plan. You choose which lecturers see it.</span></li>
+                </ol>
+              </section>
+              <div style="display:flex;flex-wrap:wrap;gap:12px">
+                <button type="button" onClick="{{ goDisclosure }}" style="flex:{{ ctaFlex }};display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)"><nb-icon name="eye" size="20"></nb-icon>Choose who sees my support</button>
+                <button type="button" onClick="{{ goHome }}" style="flex:{{ ctaFlex }};min-height:52px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Back to home</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- DISCLOSURE -->
+        <sc-if value="{{ sDisclosure }}" hint-placeholder-val="{{ false }}">
+          <div style="width:100%;max-width:800px;display:flex;flex-direction:column;gap:24px">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <h1 style="margin:0;font-size:1.75rem;line-height:1.25">Who sees my support</h1>
+              <p style="margin:0;font-size:1.125rem;text-wrap:pretty">Your lecturer will see the support you need, not the reason.</p>
+            </div>
+            <sc-if value="{{ planPending }}" hint-placeholder-val="{{ false }}">
+              <div role="note" style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;background:var(--warning-bg)"><span style="color:var(--warning-ink);display:flex;padding-top:2px"><nb-icon name="clock" size="20"></nb-icon></span><span>Your plan isn't agreed yet. These choices apply as soon as it is. The previews show the support that's usually offered; yours may differ.</span></div>
+            </sc-if>
+            <section aria-labelledby="h-never" style="padding:20px;border-radius:10px;background:var(--privacy-bg);display:flex;flex-direction:column;gap:12px">
+              <h2 id="h-never" style="margin:0;font-size:1.125rem;display:flex;gap:8px;align-items:center;color:var(--text)"><span style="color:var(--privacy);display:flex"><nb-icon name="shield-check" size="22"></nb-icon></span>Lecturers never see</h2>
+              <ul style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:8px 16px">
+                <li style="display:flex;gap:8px;align-items:center"><span style="color:var(--privacy);display:flex"><nb-icon name="eye-off" size="18"></nb-icon></span>Your check-in answers</li>
+                <li style="display:flex;gap:8px;align-items:center"><span style="color:var(--privacy);display:flex"><nb-icon name="eye-off" size="18"></nb-icon></span>Why you need support</li>
+                <li style="display:flex;gap:8px;align-items:center"><span style="color:var(--privacy);display:flex"><nb-icon name="eye-off" size="18"></nb-icon></span>Messages with your officer</li>
+                <li style="display:flex;gap:8px;align-items:center"><span style="color:var(--privacy);display:flex"><nb-icon name="eye-off" size="18"></nb-icon></span>Notes from your appointments</li>
+              </ul>
+            </section>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <sc-for list="{{ shareCards }}" as="sc" hint-placeholder-count="4">
+                <section aria-label="{{ sc.aria }}" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px">
+                  <div style="display:flex;gap:16px;align-items:flex-start">
+                    <div style="flex:1 1 auto;display:flex;flex-direction:column;gap:2px;min-width:0">
+                      <span style="font-size:0.875rem;color:var(--text-muted);font-weight:700">{{ sc.code }}</span>
+                      <span id="{{ sc.id }}" style="font-weight:700;font-size:1.0625rem">{{ sc.title }}</span>
+                      <span style="font-size:0.9375rem;color:var(--text-muted)">{{ sc.who }}</span>
+                    </div>
+                    <button type="button" role="switch" aria-checked="{{ sc.onStr }}" aria-labelledby="{{ sc.id }}" aria-describedby="{{ sc.descId }}" onClick="{{ sc.onClick }}" style="flex:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;background:transparent;cursor:pointer">
+                      <span style="font-size:0.875rem;font-weight:700;min-width:44px;text-align:right">{{ sc.label }}</span>
+                      <span style="position:relative;width:56px;height:34px;border-radius:999px;background:{{ sc.track }};border:2px solid {{ sc.trackBd }}"><span style="position:absolute;top:3px;left:{{ sc.knobLeft }};width:24px;height:24px;border-radius:50%;background:{{ sc.knob }};transition:left .15s;display:flex;align-items:center;justify-content:center;color:var(--primary)"><sc-if value="{{ sc.on }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="14"></nb-icon></sc-if></span></span>
+                    </button>
+                  </div>
+                  <div id="{{ sc.descId }}" style="padding:14px 16px;border-radius:8px;background:{{ sc.previewBg }};border:1px solid var(--border);display:flex;flex-direction:column;gap:8px">
+                    <span style="font-weight:700">{{ sc.previewHead }}</span>
+                    <sc-if value="{{ sc.on }}" hint-placeholder-val="{{ true }}">
+                      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px">
+                        <sc-for list="{{ sc.items }}" as="it" hint-placeholder-count="2"><li style="display:flex;gap:8px;align-items:center"><span style="color:var(--accent-ink);display:flex"><nb-icon name="check" size="18"></nb-icon></span>{{ it }}</li></sc-for>
+                      </ul>
+                    </sc-if>
+                    <span style="font-size:0.9375rem;color:var(--text-muted);text-wrap:pretty">{{ sc.previewFoot }}</span>
+                  </div>
+                </section>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+              <button type="button" onClick="{{ goPlan }}" style="flex:{{ ctaFlex }};display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)">{{ discCta }}<nb-icon name="arrow-right" size="20"></nb-icon></button>
+              <span style="display:inline-flex;align-items:center;gap:6px;color:var(--text-muted);font-size:0.9375rem"><nb-icon name="save" size="18"></nb-icon>Changes save straight away</span>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- PLAN -->
+        <sc-if value="{{ sPlan }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ planPendingOnly }}" hint-placeholder-val="{{ false }}">
+            <h1 style="margin:0;font-size:1.75rem;line-height:1.25">My support plan</h1>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+              <div aria-hidden="true" style="position:relative;width:112px;height:56px"><div style="position:absolute;left:0;bottom:0;width:44px;height:44px;border-radius:50%;background:var(--primary-bg)"></div><div style="position:absolute;right:0;bottom:0;width:44px;height:44px;border-radius:50%;background:var(--accent-bg)"></div><div style="position:absolute;left:22px;bottom:18px;width:68px;height:8px;border-radius:999px;background:var(--primary)"></div></div>
+              <h2 style="margin:0;font-size:1.25rem">{{ planEmptyTitle }}</h2>
+              <p style="margin:0;color:var(--text-muted);max-width:44ch">{{ planEmptyBody }}</p>
+              <button type="button" onClick="{{ planEmptyAction }}" style="min-height:52px;padding:0 22px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">{{ planEmptyCta }}</button>
+              <sc-if value="{{ canSkipAhead }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ skipAhead }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px dashed var(--border-strong);background:transparent;color:var(--text-muted);font-size:0.875rem;cursor:pointer">Prototype: jump to "plan agreed"</button></sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{ planActive }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <h1 style="margin:0;font-size:1.75rem;line-height:1.25">My support plan</h1>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+                  <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--accent-bg);color:var(--accent-ink);font-size:0.875rem;font-weight:700"><nb-icon name="circle-check" size="16"></nb-icon>Plan active</span>
+                  <span style="display:inline-flex;align-items:center;gap:6px;font-size:0.9375rem;color:var(--text-muted)"><nb-icon name="calendar" size="16"></nb-icon>Agreed 12 Oct · Review on 20 Nov 2026</span>
+                </div>
+              </div>
+              <button type="button" onClick="{{ toggleChange }}" aria-expanded="{{ changeExpanded }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer;flex:{{ ctaFlex }}"><nb-icon name="pencil" size="20"></nb-icon>Request a change</button>
+            </div>
+            <sc-if value="{{ changeOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--surface);border:2px solid var(--primary);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                <label for="chg" style="font-weight:700;font-size:1.0625rem">What would you like to change?</label>
+                <span style="color:var(--text-muted);margin-top:-6px">Mariam will read this and get back to you. Nothing changes until you both agree.</span>
+                <textarea id="chg" rows="3" value="{{ changeText }}" onChange="{{ onChangeText }}" placeholder="For example: Extra time isn't enough for long reading tasks." style="padding:14px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);resize:vertical;line-height:var(--lh)"></textarea>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <button type="button" onClick="{{ sendChange }}" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">Send to Mariam</button>
+                  <button type="button" onClick="{{ toggleChange }}" style="min-height:48px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Cancel</button>
+                </div>
+              </div>
+            </sc-if>
+            <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+              <section aria-labelledby="h-acc" style="flex:2 1 440px;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:16px">
+                <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center">
+                  <h2 id="h-acc" style="margin:0;font-size:1.25rem">Approved support</h2>
+                  <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--privacy-bg);color:var(--privacy);font-size:0.8125rem;font-weight:700"><nb-icon name="eye" size="14"></nb-icon>Visible to: you, your officer, lecturers you choose</span>
+                </div>
+                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column">
+                  <sc-for list="{{ accommodations }}" as="a" hint-placeholder-count="4">
+                    <li style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-top:1px solid var(--border)">
+                      <span style="width:44px;height:44px;flex:none;border-radius:10px;background:var(--accent-bg);color:var(--accent-ink);display:flex;align-items:center;justify-content:center"><nb-icon name="{{ a.icon }}" size="22"></nb-icon></span>
+                      <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:700">{{ a.title }}</span><span style="font-size:0.9375rem;text-wrap:pretty">{{ a.desc }}</span><span style="font-size:0.875rem;color:var(--text-muted)">Applies to: {{ a.scope }}</span></span>
+                    </li>
+                  </sc-for>
+                </ul>
+                <button type="button" onClick="{{ goDisclosure }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;margin-left:-14px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)"><nb-icon name="eye" size="18"></nb-icon>Choose which lecturers see this ({{ shareCount }} of 4 sharing)</button>
+              </section>
+              <sc-if value="{{ showSecondary }}" hint-placeholder-val="{{ true }}">
+                <div style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:16px">
+                  <section aria-labelledby="h-pro" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                    <h2 id="h-pro" style="margin:0;font-size:1.125rem">Your support team</h2>
+                    <div style="display:flex;gap:12px;align-items:center"><span aria-hidden="true" style="width:44px;height:44px;flex:none;border-radius:50%;background:var(--accent-bg);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-weight:700">KA</span><span style="display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">Dr. Kemi Adewale</span><span style="font-size:0.9375rem;color:var(--text-muted)">Learning support specialist</span></span></div>
+                    <div style="display:flex;gap:12px;align-items:center"><span aria-hidden="true" style="width:44px;height:44px;flex:none;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700">MO</span><span style="display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">Mariam Ojo</span><span style="font-size:0.9375rem;color:var(--text-muted)">Your support officer</span></span></div>
+                    <div style="display:flex;flex-direction:column;gap:6px;font-size:0.9375rem">
+                      <span style="display:flex;gap:8px;align-items:center"><nb-icon name="map-pin" size="18"></nb-icon>Student Support Centre, Room 12</span>
+                      <span style="display:flex;gap:8px;align-items:center"><nb-icon name="mail" size="18"></nb-icon>support@neurobridge.example</span>
+                    </div>
+                    <button type="button" onClick="{{ goMessages }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="message-square" size="18"></nb-icon>Message Mariam</button>
+                  </section>
+                  <section aria-labelledby="h-up" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px">
+                    <h2 id="h-up" style="margin:0;font-size:1.125rem">Coming up</h2>
+                    <sc-for list="{{ upcomingShort }}" as="u" hint-placeholder-count="2">
+                      <div style="display:flex;gap:12px;align-items:center"><span style="width:52px;flex:none;border-radius:8px;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;padding:4px 0;line-height:1.15"><span style="font-size:0.75rem;font-weight:700;color:var(--text-muted)">{{ u.mon }}</span><span style="font-size:1.25rem;font-weight:700">{{ u.day }}</span></span><span style="display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ u.type }}</span><span style="font-size:0.9375rem;color:var(--text-muted)">{{ u.time }} · {{ u.with }}</span></span></div>
+                    </sc-for>
+                    <button type="button" onClick="{{ goAppts }}" style="align-self:flex-start;min-height:44px;padding:0 14px;margin-left:-14px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)">All appointments</button>
+                  </section>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </sc-if>
+
+        <!-- MESSAGES -->
+        <sc-if value="{{ sMessages }}" hint-placeholder-val="{{ false }}">
+          <div style="width:100%;max-width:760px;display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between">
+              <div style="display:flex;gap:12px;align-items:center"><span aria-hidden="true" style="width:44px;height:44px;flex:none;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700">MO</span><span style="display:flex;flex-direction:column;line-height:1.3"><h1 style="margin:0;font-size:1.375rem">Mariam Ojo</h1><span style="font-size:0.9375rem;color:var(--text-muted)">Your support officer · replies within 1 working day</span></span></div>
+              <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--privacy-bg);color:var(--privacy);font-size:0.8125rem;font-weight:700"><nb-icon name="lock" size="14"></nb-icon>Only you and Mariam can read these</span>
+            </div>
+            <sc-if value="{{ noMessages }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+                <span style="width:56px;height:56px;border-radius:50%;background:var(--primary-bg);color:var(--primary);display:flex;align-items:center;justify-content:center"><nb-icon name="messages-square" size="28"></nb-icon></span>
+                <h2 style="margin:0;font-size:1.25rem">No messages yet</h2>
+                <p style="margin:0;color:var(--text-muted);max-width:42ch">Once you ask for support, your officer will write to you here. You can also send a question now.</p>
+              </div>
+            </sc-if>
+            <ol aria-label="Messages" style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px">
+              <sc-for list="{{ msgs }}" as="m" hint-placeholder-count="3">
+                <li style="display:flex;flex-direction:column;align-items:{{ m.align }};gap:4px">
+                  <span style="font-size:0.8125rem;color:var(--text-muted)">{{ m.who }} · {{ m.time }}</span>
+                  <div style="max-width:min(560px,88%);padding:12px 16px;border-radius:{{ m.radius }};background:{{ m.bg }};border:1px solid {{ m.bd }};text-wrap:pretty">{{ m.text }}</div>
+                  <sc-if value="{{ m.mine }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;font-size:0.8125rem;color:var(--text-muted)"><nb-icon name="{{ m.stIcon }}" size="14"></nb-icon>{{ m.status }}</span></sc-if>
+                </li>
+              </sc-for>
+            </ol>
+            <form onSubmit="{{ sendMsg }}" style="position:sticky;bottom:0;display:flex;gap:8px;align-items:flex-end;padding:12px;border-radius:10px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-md)">
+              <label for="msg-in" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Write a message to Mariam</label>
+              <textarea id="msg-in" rows="2" value="{{ draft }}" onChange="{{ onDraft }}" placeholder="Write a message…" style="flex:1;min-width:0;padding:12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);resize:none;line-height:1.5"></textarea>
+              <button type="submit" style="display:inline-flex;align-items:center;gap:6px;min-height:48px;padding:0 18px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer"><nb-icon name="send" size="18"></nb-icon>Send</button>
+            </form>
+          </div>
+        </sc-if>
+
+        <!-- APPOINTMENTS -->
+        <sc-if value="{{ sAppts }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:12px 16px;align-items:flex-end;justify-content:space-between">
+            <h1 style="margin:0;font-size:1.75rem;line-height:1.25">Appointments</h1>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;flex:{{ ctaFlex }}">
+              <div role="tablist" aria-label="View" style="display:flex;padding:4px;border-radius:10px;background:var(--surface-2);gap:4px;flex:1 1 auto">
+                <sc-for list="{{ apptTabs }}" as="t" hint-placeholder-count="2">
+                  <button type="button" role="tab" aria-selected="{{ t.selected }}" onClick="{{ t.onClick }}" style="flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid {{ t.bd }};background:{{ t.bg }};font-weight:700;cursor:pointer;color:var(--text)"><nb-icon name="{{ t.icon }}" size="18"></nb-icon>{{ t.label }}</button>
+                </sc-for>
+              </div>
+              <button type="button" onClick="{{ startBook }}" style="flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover)"><nb-icon name="calendar-plus" size="20"></nb-icon>Book</button>
+            </div>
+          </div>
+
+          <sc-if value="{{ booking }}" hint-placeholder-val="{{ false }}">
+            <section aria-labelledby="h-book" style="background:var(--surface);border:2px solid var(--primary);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:18px">
+              <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+                <div style="display:flex;flex-direction:column;gap:2px"><h2 id="h-book" style="margin:0;font-size:1.25rem">{{ bookTitle }}</h2><span style="color:var(--text-muted);font-size:0.9375rem">{{ bookSub }}</span></div>
+                <button type="button" onClick="{{ cancelBook }}" aria-label="Close" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--surface-2)"><nb-icon name="x" size="22"></nb-icon></button>
+              </div>
+              <sc-if value="{{ isNewBooking }}" hint-placeholder-val="{{ true }}">
+                <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+                  <legend style="padding:0;margin-bottom:8px;font-weight:700">What kind of appointment?</legend>
+                  <div role="radiogroup" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:8px">
+                    <sc-for list="{{ bookTypes }}" as="c" hint-placeholder-count="3">
+                      <button type="button" role="radio" aria-checked="{{ c.pressed }}" onClick="{{ c.onClick }}" style="display:flex;gap:10px;align-items:center;text-align:left;min-height:56px;padding:8px 12px;border-radius:8px;border:{{ c.bdW }} solid {{ c.bd }};background:{{ c.bg }};cursor:pointer"><span style="width:22px;height:22px;flex:none;border-radius:50%;border:2px solid {{ c.boxBd }};display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:{{ c.dot }}"></span></span><span style="display:flex;flex-direction:column;line-height:1.25"><span style="font-weight:700">{{ c.label }}</span><span style="font-size:0.8125rem;color:var(--text-muted)">{{ c.sub }}</span></span></button>
+                    </sc-for>
+                  </div>
+                </fieldset>
+              </sc-if>
+              <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+                <legend style="padding:0;margin-bottom:8px;font-weight:700">Where?</legend>
+                <div role="radiogroup" style="display:flex;gap:8px;flex-wrap:wrap">
+                  <sc-for list="{{ bookModes }}" as="c" hint-placeholder-count="2">
+                    <button type="button" role="radio" aria-checked="{{ c.pressed }}" onClick="{{ c.onClick }}" style="display:inline-flex;gap:8px;align-items:center;min-height:48px;padding:0 16px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-weight:700;cursor:pointer"><nb-icon name="{{ c.icon }}" size="18"></nb-icon>{{ c.label }}</button>
+                  </sc-for>
+                </div>
+              </fieldset>
+              <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:12px">
+                <legend style="padding:0;margin-bottom:8px;font-weight:700">Pick a time</legend>
+                <sc-for list="{{ slotDays }}" as="sd" hint-placeholder-count="3">
+                  <div style="display:flex;flex-direction:column;gap:6px">
+                    <span style="font-size:0.9375rem;color:var(--text-muted);font-weight:700">{{ sd.label }}</span>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px">
+                      <sc-for list="{{ sd.slots }}" as="sl" hint-placeholder-count="2">
+                        <button type="button" aria-pressed="{{ sl.pressed }}" onClick="{{ sl.onClick }}" style="display:inline-flex;align-items:center;gap:6px;min-height:48px;min-width:96px;justify-content:center;padding:0 14px;border-radius:8px;border:{{ sl.bdW }} solid {{ sl.bd }};background:{{ sl.bg }};color:{{ sl.fg }};font-weight:700;cursor:pointer"><sc-if value="{{ sl.on }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="16"></nb-icon></sc-if>{{ sl.time }}</button>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </fieldset>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--border)">
+                <button type="button" onClick="{{ confirmBook }}" disabled="{{ bookDisabled }}" style="flex:{{ ctaFlex }};min-height:52px;padding:0 22px;border-radius:8px;border:1px {{ bookBdStyle }} {{ bookBtnBd }};background:{{ bookBtnBg }};color:{{ bookBtnFg }};font-weight:700;cursor:{{ bookCursor }}">{{ bookCta }}</button>
+                <button type="button" onClick="{{ cancelBook }}" style="flex:{{ ctaFlex }};min-height:52px;padding:0 18px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Cancel</button>
+              </div>
+            </section>
+          </sc-if>
+
+          <sc-if value="{{ apptList }}" hint-placeholder-val="{{ true }}">
+            <section aria-labelledby="h-upc" style="display:flex;flex-direction:column;gap:12px">
+              <h2 id="h-upc" style="margin:0;font-size:1.25rem">Upcoming</h2>
+              <sc-if value="{{ noUpcoming }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:20px;border-radius:10px;border:1px dashed var(--border-strong);color:var(--text-muted)">Nothing booked yet. Use Book to choose a time that suits you.</p></sc-if>
+              <sc-for list="{{ upcoming }}" as="a" hint-placeholder-count="2">
+                <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center">
+                  <span style="width:60px;flex:none;border-radius:8px;background:var(--primary-bg);color:var(--primary);display:flex;flex-direction:column;align-items:center;padding:6px 0;line-height:1.15"><span style="font-size:0.8125rem;font-weight:700">{{ a.dow }}</span><span style="font-size:1.5rem;font-weight:700">{{ a.day }}</span><span style="font-size:0.75rem">{{ a.mon }}</span></span>
+                  <span style="flex:1 1 220px;display:flex;flex-direction:column;gap:2px;line-height:1.4;min-width:0"><span style="font-weight:700">{{ a.type }} · {{ a.time }}</span><span style="font-size:0.9375rem">with {{ a.with }}</span><span style="display:inline-flex;align-items:center;gap:6px;font-size:0.9375rem;color:var(--text-muted)"><nb-icon name="{{ a.placeIcon }}" size="16"></nb-icon>{{ a.place }}</span></span>
+                  <button type="button" onClick="{{ a.onReschedule }}" aria-label="{{ a.reschedLabel }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Reschedule</button>
+                </div>
+              </sc-for>
+            </section>
+            <sc-if value="{{ hasPast }}" hint-placeholder-val="{{ false }}">
+              <section aria-labelledby="h-past" style="display:flex;flex-direction:column;gap:12px">
+                <h2 id="h-past" style="margin:0;font-size:1.25rem">Past</h2>
+                <sc-for list="{{ past }}" as="a" hint-placeholder-count="1">
+                  <div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:16px;align-items:center;color:var(--text-muted)">
+                    <span style="width:60px;flex:none;display:flex;flex-direction:column;align-items:center;line-height:1.15"><span style="font-size:0.8125rem">{{ a.dow }}</span><span style="font-size:1.25rem;font-weight:700">{{ a.day }}</span></span>
+                    <span style="display:flex;flex-direction:column;line-height:1.4"><span style="font-weight:700;color:var(--text)">{{ a.type }}</span><span style="font-size:0.9375rem">{{ a.time }} · with {{ a.with }}</span></span>
+                  </div>
+                </sc-for>
+              </section>
+            </sc-if>
+          </sc-if>
+
+          <sc-if value="{{ apptCal }}" hint-placeholder-val="{{ false }}">
+            <section aria-label="Calendar" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <button type="button" onClick="{{ prevMonth }}" aria-label="Previous month" style="width:44px;height:44px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="chevron-left" size="20"></nb-icon></button>
+                <h2 style="margin:0;font-size:1.25rem">{{ calTitle }}</h2>
+                <button type="button" onClick="{{ nextMonth }}" aria-label="Next month" style="width:44px;height:44px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="chevron-right" size="20"></nb-icon></button>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px">
+                <sc-for list="{{ weekdays }}" as="wd" hint-placeholder-count="7"><span style="text-align:center;font-size:0.8125rem;font-weight:700;color:var(--text-muted);padding:4px 0">{{ wd }}</span></sc-for>
+                <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="35">
+                  <button type="button" onClick="{{ c.onClick }}" aria-label="{{ c.aria }}" aria-pressed="{{ c.pressed }}" style="min-height:52px;border-radius:8px;border:{{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;font-weight:{{ c.weight }};padding:4px 0">
+                    <span>{{ c.num }}</span>
+                    <span style="width:8px;height:8px;border-radius:50%;background:{{ c.dot }}"></span>
+                  </button>
+                </sc-for>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid var(--border)">
+                <span style="font-weight:700">{{ dayTitle }}</span>
+                <sc-for list="{{ dayAppts }}" as="a" hint-placeholder-count="1">
+                  <div style="display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:8px;background:var(--primary-bg)"><span style="color:var(--primary);display:flex"><nb-icon name="calendar-check" size="20"></nb-icon></span><span style="display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ a.type }} · {{ a.time }}</span><span style="font-size:0.9375rem">with {{ a.with }} · {{ a.place }}</span></span></div>
+                </sc-for>
+                <sc-if value="{{ dayEmpty }}" hint-placeholder-val="{{ true }}"><span style="color:var(--text-muted)">Nothing on this day. Days with a dot have appointments.</span></sc-if>
+              </div>
+            </section>
+          </sc-if>
+        </sc-if>
+
+        <!-- URGENT -->
+        <sc-if value="{{ sUrgent }}" hint-placeholder-val="{{ false }}">
+          <div style="width:100%;max-width:720px;display:flex;flex-direction:column;gap:20px">
+            <h1 style="margin:0;font-size:1.75rem;line-height:1.25">Need urgent help?</h1>
+            <div role="note" style="display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:10px;background:var(--danger-bg)"><span style="color:var(--danger);display:flex;padding-top:2px"><nb-icon name="siren" size="22"></nb-icon></span><span><strong>If you or someone else is in danger right now,</strong> call the campus emergency line or the national emergency number 112.</span></div>
+            <sc-for list="{{ urgentContacts }}" as="u" hint-placeholder-count="4">
+              <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center">
+                <span style="width:48px;height:48px;flex:none;border-radius:50%;background:{{ u.bg }};color:{{ u.fg }};display:flex;align-items:center;justify-content:center"><nb-icon name="{{ u.icon }}" size="24"></nb-icon></span>
+                <span style="flex:1 1 220px;display:flex;flex-direction:column;line-height:1.4"><span style="font-weight:700">{{ u.name }}</span><span style="font-size:0.9375rem;color:var(--text-muted)">{{ u.hours }}</span></span>
+                <a href="{{ u.href }}" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:8px;border:1px solid var(--primary);color:var(--primary);font-weight:700;text-decoration:none"><nb-icon name="{{ u.actIcon }}" size="18"></nb-icon>{{ u.action }}</a>
+              </div>
+            </sc-for>
+            <p style="margin:0;font-size:0.9375rem;color:var(--text-muted)">Contact details are placeholders for the pilot. Replace them with the university's confirmed numbers before launch.</p>
+          </div>
+        </sc-if>
+      </div>
+    </main>
+  </div>
+
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ true }}">
+    <nav aria-label="Main" style="flex:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--border);background:var(--surface);padding:6px 4px 10px">
+      <sc-for list="{{ tabItems }}" as="ti" hint-placeholder-count="5">
+        <button type="button" onClick="{{ ti.onClick }}" aria-current="{{ ti.current }}" style="display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px;padding:4px 2px;border:0;border-radius:8px;background:transparent;color:{{ ti.fg }};font-size:0.75rem;font-weight:{{ ti.weight }};text-align:center;line-height:1.2;cursor:pointer"><span style="display:flex;padding:3px 14px;border-radius:999px;background:{{ ti.pill }}"><nb-icon name="{{ ti.icon }}" size="22"></nb-icon></span>{{ ti.label }}</button>
+      </sc-for>
+    </nav>
+  </sc-if>
+
+  <sc-if value="{{ notifOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ toggleNotif }}" style="position:absolute;inset:0;z-index:30"></div>
+    <div role="dialog" aria-label="Notifications" style="position:absolute;top:64px;right:8px;z-index:31;width:min(380px,calc(100% - 16px));max-height:70%;overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);padding:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px"><h2 style="margin:0;font-size:1.125rem">Notifications</h2><button type="button" onClick="{{ markRead }}" style="min-height:44px;padding:0 10px;border-radius:8px;border:0;background:transparent;color:var(--primary);font-weight:700;cursor:pointer;font-size:0.875rem">Mark all as read</button></div>
+      <sc-for list="{{ notifGroups }}" as="g" hint-placeholder-count="2">
+        <div style="display:flex;flex-direction:column;padding:4px 0">
+          <span style="padding:6px 10px;font-size:0.8125rem;font-weight:700;color:var(--text-muted)">{{ g.label }}</span>
+          <sc-for list="{{ g.items }}" as="n" hint-placeholder-count="1">
+            <button type="button" onClick="{{ n.onClick }}" style="display:flex;gap:10px;align-items:flex-start;text-align:left;padding:10px;border:0;border-radius:8px;background:{{ n.bg }};cursor:pointer" style-hover="background:var(--surface-2)"><span style="color:var(--primary);display:flex;padding-top:2px"><nb-icon name="{{ n.icon }}" size="20"></nb-icon></span><span style="flex:1;display:flex;flex-direction:column;line-height:1.4"><span style="font-weight:{{ n.weight }}">{{ n.text }}</span><span style="font-size:0.8125rem;color:var(--text-muted)">{{ n.when }}</span></span></button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ prefsOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePrefs }}" style="position:absolute;inset:0;z-index:40;background:rgba(20,22,26,.35)"></div>
+    <aside role="dialog" aria-modal="true" aria-labelledby="rp-title" style="position:absolute;top:0;right:0;bottom:0;z-index:41;width:min(440px,100%);background:var(--surface);border-left:1px solid var(--border);box-shadow:var(--shadow-lg);display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;flex-direction:column;line-height:1.3"><h2 id="rp-title" style="margin:0;font-size:1.25rem">Reading preferences</h2><span style="font-size:0.875rem;color:var(--text-muted)">Changes apply straight away and are saved for you.</span></div>
+        <button type="button" onClick="{{ closePrefs }}" aria-label="Close reading preferences" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--surface-2)"><nb-icon name="x" size="22"></nb-icon></button>
+      </div>
+      <div style="flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:24px">
+        <sc-for list="{{ prefGroups }}" as="g" hint-placeholder-count="5">
+          <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+            <legend style="font-weight:700;padding:0;margin-bottom:8px">{{ g.label }}</legend>
+            <div style="display:grid;grid-template-columns:repeat({{ g.cols }},minmax(0,1fr));gap:6px">
+              <sc-for list="{{ g.opts }}" as="o" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;padding:6px 8px;border-radius:8px;border:2px solid {{ o.bd }};background:{{ o.bg }};color:var(--text);font-family:{{ o.font }};cursor:pointer;line-height:1.2">
+                  <span style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:{{ o.size }}"><sc-if value="{{ o.hasSwatch }}" hint-placeholder-val="{{ false }}"><span style="width:16px;height:16px;border-radius:50%;background:{{ o.swatch }};border:1px solid var(--border-strong)"></span></sc-if>{{ o.label }}</span>
+                  <span style="font-size:0.75rem;color:var(--text-muted)">{{ o.sub }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </fieldset>
+        </sc-for>
+        <div style="display:flex;flex-direction:column;border-top:1px solid var(--border)">
+          <sc-for list="{{ prefToggles }}" as="t" hint-placeholder-count="2">
+            <div style="display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)">
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span id="{{ t.id }}" style="font-weight:700">{{ t.title }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ t.desc }}</span></div>
+              <button type="button" role="switch" aria-checked="{{ t.on }}" aria-labelledby="{{ t.id }}" onClick="{{ t.onClick }}" style="flex:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;background:transparent;cursor:pointer">
+                <span style="font-size:0.875rem;font-weight:700;width:28px;text-align:right">{{ t.label }}</span>
+                <span style="position:relative;width:52px;height:32px;border-radius:999px;background:{{ t.track }};border:2px solid {{ t.trackBd }}"><span style="position:absolute;top:2px;left:{{ t.knobLeft }};width:24px;height:24px;border-radius:50%;background:{{ t.knob }};transition:left .15s"></span></span>
+              </button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;padding:16px 20px;border-top:1px solid var(--border);flex-wrap:wrap">
+        <button type="button" onClick="{{ toggleSpeak }}" style="flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer"><nb-icon name="{{ speakIcon }}" size="20"></nb-icon>{{ speakLabel }}</button>
+        <button type="button" onClick="{{ resetPrefs }}" style="min-height:48px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)">Reset</button>
+      </div>
+    </aside>
+  </sc-if>
+
+  <div role="status" aria-live="polite" style="position:absolute;left:50%;bottom:{{ toastBottom }};transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;width:min(440px,calc(100% - 24px))">
+    <sc-for list="{{ toasts }}" as="t" hint-placeholder-count="0">
+      <div style="display:flex;gap:12px;align-items:center;padding:10px 8px 10px 16px;border-radius:10px;background:var(--text);color:var(--bg);box-shadow:var(--shadow-lg)">
+        <span style="color:{{ t.fg }};display:flex"><nb-icon name="{{ t.icon }}" size="20"></nb-icon></span>
+        <span style="flex:1;font-size:0.9375rem">{{ t.msg }}</span>
+        <button type="button" onClick="{{ t.onClose }}" aria-label="Dismiss" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="18"></nb-icon></button>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startAt&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;new&quot;,&quot;review&quot;,&quot;plan&quot;],&quot;default&quot;:&quot;new&quot;,&quot;tsType&quot;:&quot;'new'|'review'|'plan'&quot;,&quot;section&quot;:&quot;Journey&quot;},&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;phone&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;'auto'|'phone'&quot;,&quot;section&quot;:&quot;Display&quot;},&quot;homeState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ready&quot;,&quot;loading&quot;,&quot;error&quot;],&quot;default&quot;:&quot;ready&quot;,&quot;tsType&quot;:&quot;'ready'|'loading'|'error'&quot;,&quot;section&quot;:&quot;States&quot;},&quot;offline&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;States&quot;}}">
+const PKEY = 'nb-reading-prefs';
+const DEFAULT_PREFS = {size:'M',line:'1.6',letter:'0em',font:'default',theme:'light',motion:false,focus:false};
+const STAGE = {new:0, review:2, plan:3};
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const TODAY = '2026-10-15';
+const pd = iso => { const [y,m,d] = iso.split('-').map(Number); return new Date(y,m-1,d); };
+const fmtLong = iso => { const d = pd(iso); return DOW[d.getDay()]+' '+d.getDate()+' '+MON[d.getMonth()]; };
+
+const BARRIERS = ['Timed reading tasks','Note-taking in lectures','Keeping track of deadlines','Long written assignments','Noisy rooms or group work','Exams in large halls','Starting or finishing tasks','Bright screens or slides','Something else'];
+const CI_CHIPS = ['Noisy rooms or group work','Note-taking in lectures','Long written assignments','Exams in large halls','Starting or finishing tasks','Bright screens or slides'];
+const QUESTIONS = [
+  {type:'likert', text:'Reading long texts in a set time is hard for me.', said:'reading long texts in a set time is often hard', maps:'Timed reading tasks'},
+  {type:'likert', text:'I find it hard to keep track of deadlines.', said:'keeping track of deadlines is often hard', maps:'Keeping track of deadlines'},
+  {type:'chips', text:'Which of these make study harder for you?', hint:'Pick any that apply.'},
+  {type:'likert', text:'Lectures often move too fast for me to take notes.', said:'lectures often move too fast to take notes', maps:'Note-taking in lectures'},
+  {type:'text', text:'Is there anything else you\'d like us to know?', hint:'Optional. Write as much or as little as you like.'},
+];
+const COURSES = [
+  {id:'csc301', code:'CSC 301', name:'Data Structures', lecturer:'Dr. Temitope Ogunleye', short:'Dr. Ogunleye'},
+  {id:'csc305', code:'CSC 305', name:'Operating Systems', lecturer:'Mr. Chidi Okafor', short:'Mr. Okafor'},
+  {id:'geds210', code:'GEDS 210', name:'Communication in English', lecturer:'Mrs. Bisi Lawal', short:'Mrs. Lawal'},
+  {id:'mth202', code:'MTH 202', name:'Linear Algebra', lecturer:'Dr. Musa Danjuma', short:'Dr. Danjuma'},
+];
+const ACCOM = [
+  {id:'time', icon:'timer', title:'Extra time on timed assessments (25%)', desc:'For tests, quizzes and exams with a time limit.', scope:'All courses'},
+  {id:'slides', icon:'presentation', title:'Lecture slides at least 48 hours before class', desc:'So you can read ahead at your own pace.', scope:'CSC 301, CSC 305'},
+  {id:'quiet', icon:'volume-x', title:'Quiet room for exams', desc:'A smaller room with fewer people.', scope:'End-of-semester exams'},
+  {id:'deadline', icon:'calendar-range', title:'Deadline extension of up to 5 days, on request', desc:'Ask your lecturer before the deadline. No reason needed.', scope:'All courses'},
+];
+const COURSE_ACC = { csc301:['time','slides','deadline'], csc305:['time','slides','deadline'], geds210:['time','deadline'], mth202:['time','deadline'], exams:['time','quiet'] };
+const ACC_SHORT = {time:'Extra time on assessments (25%)', slides:'Slides 48 hours before class', quiet:'Quiet room for exams', deadline:'Deadline extension up to 5 days'};
+const SLOTS = [['2026-10-16','09:00'],['2026-10-16','14:00'],['2026-10-17','10:00'],['2026-10-17','15:30'],['2026-10-20','09:30'],['2026-10-20','13:00'],['2026-10-21','11:00']];
+const BASE_APPTS = {
+  2: [{id:'a1',type:'Consultation',with:'Dr. Kemi Adewale',date:'2026-10-16',time:'11:00',place:'Student Support Centre, Room 12',mode:'person'}],
+  3: [{id:'a0',type:'Consultation',with:'Dr. Kemi Adewale',date:'2026-10-09',time:'11:00',place:'Student Support Centre, Room 12',mode:'person'},
+      {id:'a2',type:'Follow-up',with:'Mariam Ojo',date:'2026-11-03',time:'10:00',place:'Online · link sent by message',mode:'online'},
+      {id:'a3',type:'Plan review',with:'Mariam Ojo',date:'2026-11-20',time:'14:00',place:'Student Support Centre, Room 4',mode:'person'}],
+};
+const BASE_MSGS = {
+  2: [{from:'them',text:'Hi Adaeze, I\'m Mariam, your support officer. Thanks for your request. I\'ve read it and I\'d like to set up a chat with Dr. Kemi Adewale, our learning support specialist.',time:'Tue 13 Oct, 11:40'},
+      {from:'them',text:'I\'ve booked Friday 16 Oct at 11:00 in the Student Support Centre. If that doesn\'t suit you, you can pick another time in Appointments.',time:'Tue 13 Oct, 11:42'},
+      {from:'me',text:'Thank you. Thursday works for me.',time:'Tue 13 Oct, 13:05',status:'Read'}],
+  3: [{from:'them',text:'Hi Adaeze, your support plan is now agreed. You can see it under My plan.',time:'Mon 12 Oct, 15:20'},
+      {from:'them',text:'Remember you choose which lecturers see it. They\'ll only see the support, not the reason.',time:'Mon 12 Oct, 15:21'},
+      {from:'me',text:'Thanks Mariam. I\'ve turned it on for CSC 301 and GEDS 210.',time:'Mon 12 Oct, 16:02',status:'Read'},
+      {from:'them',text:'Great. We\'ll check in on 3 November to see how it\'s going.',time:'Mon 12 Oct, 16:10'}],
+};
+
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  mainRef = React.createRef();
+  state = {
+    prefs:{...DEFAULT_PREFS}, prefsOpen:false, notifOpen:false, toasts:[], speaking:false, layout:'mobile', readAll:false,
+    screen:'home', history:[], stageSet:null, homeRetry:null,
+    q:0, answers:{}, ciText:'', ciPaused:false,
+    req:{barriers:[], text:'', courses:[], contact:'message', urgency:'soon'}, reqPrefilled:false, reqError:false, reqSending:false, reqDone:false,
+    share:{csc301:true, csc305:false, geds210:true, mth202:false, exams:true},
+    changeOpen:false, changeText:'',
+    extraMsgs:[], draft:'',
+    apptView:'list', booking:null, extraAppts:[], moved:{}, calMonth:9, calDay:15,
+  };
+
+  componentDidMount() {
+    let saved = null; try { saved = JSON.parse(localStorage.getItem(PKEY)||'null'); } catch(e) {}
+    const init = {...DEFAULT_PREFS, ...(saved||{})};
+    this.apply(init); if (saved) this.setState({prefs:init});
+    const el = this.rootRef.current;
+    const measure = () => { const w = el ? el.clientWidth : window.innerWidth; const layout = w<768?'mobile':w<1024?'tablet':'desktop'; if (layout!==this.state.layout) this.setState({layout}); };
+    measure();
+    if (window.ResizeObserver && el) { this.ro = new ResizeObserver(measure); this.ro.observe(el); }
+    this.onKey = e => { if (e.key==='Escape') this.setState({prefsOpen:false, notifOpen:false}); };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); window.removeEventListener('keydown',this.onKey); if (window.speechSynthesis) speechSynthesis.cancel(); }
+
+  apply(p) {
+    const r = document.documentElement;
+    r.dataset.theme = p.theme;
+    r.style.fontSize = {S:'16px',M:'18px',L:'20px',XL:'24px'}[p.size] || '18px';
+    r.style.setProperty('--lh', p.line); r.style.setProperty('--ls', p.letter);
+    r.style.setProperty('--font', p.font==='dyslexic' ? '"OpenDyslexic","Atkinson Hyperlegible",sans-serif' : '"Atkinson Hyperlegible",Lexend,system-ui,sans-serif');
+    if (p.motion) r.dataset.motion='reduce'; else delete r.dataset.motion;
+  }
+  setPrefs(next) { this.apply(next); try { localStorage.setItem(PKEY, JSON.stringify(next)); } catch(e) {} this.setState({prefs:next}); }
+  setPref(k,v) { this.setPrefs({...this.state.prefs,[k]:v}); }
+
+  stage() { const sa = this.props.startAt || 'new'; const s = this.state.stageSet; return (s && s.prop===sa) ? s.value : STAGE[sa]; }
+  setStage(v) { this.setState({stageSet:{prop:this.props.startAt||'new', value:v}}); }
+  go(screen, extra) {
+    this.setState(s => ({screen, history:[...s.history, s.screen].slice(-10), notifOpen:false, ...(extra||{})}));
+    const m = this.mainRef.current; if (m) m.scrollTop = 0;
+  }
+  toast(msg, kind) {
+    const id = Date.now()+Math.random();
+    const t = kind==='error' ? {icon:'circle-alert',fg:'#E07A7A'} : kind==='offline' ? {icon:'wifi-off',fg:'#E0A84A'} : {icon:'circle-check',fg:'#6BC1AE'};
+    this.setState(s=>({toasts:[...s.toasts,{id,msg,...t}]}));
+    setTimeout(()=>this.setState(s=>({toasts:s.toasts.filter(x=>x.id!==id)})), 6000);
+  }
+  seg(key, opts) {
+    const cur = this.state.prefs[key];
+    return opts.map(o => { const on = cur===o.v; return { label:o.label, sub:o.sub||'', size:o.size||'0.9375rem', font:o.font||'inherit', hasSwatch:!!o.swatch, swatch:o.swatch||'transparent', pressed:String(on), bg:on?'var(--primary-bg)':'var(--surface)', bd:on?'var(--primary)':'var(--border)', onClick:()=>this.setPref(key,o.v) }; });
+  }
+  sw(on) { return { onStr:String(on), on:String(on), isOn:on, label:on?'On':'Off', track:on?'var(--primary)':'var(--surface-2)', trackBd:on?'var(--primary)':'var(--border-strong)', knob:on?'var(--on-primary)':'var(--border-strong)', knobLeft:on?'24px':'3px' }; }
+  choice(on) { return { pressed:String(on), on, bd:on?'var(--primary)':'var(--border-strong)', bdW:on?'2px':'1px', bg:on?'var(--primary-bg)':'var(--surface)', boxBd:on?'var(--primary)':'var(--border-strong)', boxBg:on?'var(--primary)':'transparent', dot:on?'var(--primary)':'transparent' }; }
+  chip(on) { return { pressed:String(on), icon:on?'check':'plus', bg:on?'var(--primary-bg)':'var(--surface)', fg:on?'var(--primary)':'var(--text)', bd:on?'var(--primary)':'var(--border-strong)' }; }
+
+  allAppts(stage) {
+    const s = this.state;
+    return [...(BASE_APPTS[stage]||[]), ...s.extraAppts].map(a => s.moved[a.id] ? {...a, ...s.moved[a.id]} : a).sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time));
+  }
+  answerFor(i) { return this.state.answers[i]; }
+
+  renderVals() {
+    const s = this.state, p = s.prefs, P = this.props;
+    const stage = this.stage();
+    const offline = !!P.offline;
+    const phone = P.device==='phone';
+    const layout = s.layout, isMobile = layout==='mobile', isTablet = layout==='tablet';
+    const showSidebar = !isMobile && !p.focus;
+    const homeState = (s.homeRetry && s.homeRetry===P.homeState) ? 'ready' : (P.homeState||'ready');
+
+    const nav = [
+      {id:'home',label:'Home',short:'Home',icon:'house'},
+      {id:'checkin',label:'Check-in',short:'Check-in',icon:'clipboard-list'},
+      {id:'request',label:'Ask for support',short:'Ask',icon:'hand-heart'},
+      {id:'plan',label:'My support plan',short:'My plan',icon:'clipboard-check'},
+      {id:'disclosure',label:'Who sees my support',short:'Sharing',icon:'eye'},
+      {id:'messages',label:'Messages',short:'Messages',icon:'message-square'},
+      {id:'appts',label:'Appointments',short:'Bookings',icon:'calendar'},
+    ];
+    const sideItems = nav.map(n => { const on = s.screen===n.id; return {
+      label: isTablet?n.short:n.label, icon:n.icon, current:on?'page':'false', onClick:()=>this.go(n.id, n.id==='request'?{reqDone:false}:null),
+      fg:on?'var(--primary)':'var(--text)', bg:on?'var(--primary-bg)':'transparent', weight:on?700:400, bar:on?'var(--primary)':'transparent',
+      dir:isTablet?'column':'row', gap:isTablet?'2px':'12px', minH:isTablet?'60px':'48px', pad:isTablet?'6px 2px':'0 12px', fs:isTablet?'0.75rem':'1rem', align:isTablet?'center':'left' }; });
+    const tabs = ['home','checkin','plan','messages','appts'].map(id=>nav.find(n=>n.id===id));
+    const tabItems = tabs.map(n => { const on = s.screen===n.id || (n.id==='plan' && s.screen==='disclosure') || (n.id==='home' && (s.screen==='request'||s.screen==='urgent')); return { label:n.short, icon:n.icon, current:on?'page':'false', onClick:()=>this.go(n.id), fg:on?'var(--primary)':'var(--text-muted)', weight:on?700:400, pill:on?'var(--primary-bg)':'transparent' }; });
+
+    const crumbMap = { request:[['home','Home'],[null,'Ask for support']], disclosure:[['plan','My support plan'],[null,'Who sees my support']], urgent:[['home','Home'],[null,'Need urgent help?']], checkin:[['home','Home'],[null,'Check-in']] };
+    const cm = crumbMap[s.screen];
+    const crumbs = cm ? cm.map(([id,label],i)=>({label, link:!!id, last:!id, onClick:id?()=>this.go(id):undefined})) : [];
+
+    // check-in
+    const qi = s.q; const q = QUESTIONS[qi-1];
+    const ans = qi>=1 && qi<=5 ? s.answers[qi] : undefined;
+    const likertOpts = [1,2,3,4,5].map(v => { const on = ans===v; return { label:String(v), aria:v+' of 5'+(v===1?', not at all like me':v===5?', very like me':''), checked:String(on), on, bg:on?'var(--primary)':'var(--surface)', fg:on?'var(--on-primary)':'var(--text)', bd:on?'var(--primary)':'var(--border-strong)', onClick:()=>this.setState(st=>({answers:{...st.answers,[qi]:v}})) }; });
+    const chipArr = Array.isArray(ans) ? ans : [];
+    const ciChips = CI_CHIPS.map(c => ({label:c, ...this.chip(chipArr.includes(c)), onClick:()=>this.setState(st=>{ const cur = Array.isArray(st.answers[qi])?st.answers[qi]:[]; return {answers:{...st.answers,[qi]: cur.includes(c)?cur.filter(x=>x!==c):[...cur,c]}}; })}));
+    const preferOn = ans==='prefer';
+    const summary = []; const mapped = new Set();
+    QUESTIONS.forEach((qq,i) => { const a = s.answers[i+1];
+      if (qq.type==='likert' && typeof a==='number' && a>=4) { summary.push('You said '+qq.said+'.'); mapped.add(qq.maps); }
+      if (qq.type==='chips' && Array.isArray(a) && a.length) { summary.push('You said these make study harder: '+a.join(', ').toLowerCase()+'.'); a.forEach(x=>mapped.add(x)); }
+    });
+    if (s.ciText.trim()) summary.push('You added a note in your own words.');
+    if (!summary.length) summary.push('You didn\'t share specifics, and that\'s completely fine.');
+    const suggestion = mapped.size ? 'A support consultation could help. It\'s a short, private chat about what would make study easier.' : 'A short conversation can still help. You don\'t need to have the right words.';
+
+    // request
+    const rq = s.req;
+    const reqChips = BARRIERS.map(b => ({label:b, ...this.chip(rq.barriers.includes(b)), onClick:()=>this.setState(st=>({reqError:false, req:{...st.req, barriers: st.req.barriers.includes(b)?st.req.barriers.filter(x=>x!==b):[...st.req.barriers,b]}}))}));
+    const courseOpts = [...COURSES.map(c=>({id:c.id,code:c.code,name:c.name})), {id:'none',code:'Not about one course',name:'It affects study in general'}].map(c => ({...c, ...this.choice(rq.courses.includes(c.id)), onClick:()=>this.setState(st=>{ let cs = st.req.courses; if (c.id==='none') cs = cs.includes('none')?[]:['none']; else { cs = cs.filter(x=>x!=='none'); cs = cs.includes(c.id)?cs.filter(x=>x!==c.id):[...cs,c.id]; } return {req:{...st.req,courses:cs}}; })}));
+    const contactOpts = [{id:'message',label:'Secure message',sub:'In NeuroBridge',icon:'message-square'},{id:'email',label:'University email',sub:'a.okonkwo@student…',icon:'mail'},{id:'phone',label:'Phone call',sub:'We\'ll message first',icon:'phone'},{id:'person',label:'In person',sub:'Student Support Centre',icon:'map-pin'}]
+      .map(c => ({...c, ...this.choice(rq.contact===c.id), onClick:()=>this.setState(st=>({req:{...st.req,contact:c.id}}))}));
+    const urgencyOpts = [{id:'later',label:'Within 2 weeks is fine',sub:'For example, before the next assessment'},{id:'soon',label:'Within a week',sub:'Something is coming up soon'},{id:'urgent',label:'It\'s urgent',sub:'We\'ll aim to reply today'}]
+      .map(c => ({...c, ...this.choice(rq.urgency===c.id), onClick:()=>this.setState(st=>({req:{...st.req,urgency:c.id}}))}));
+
+    // disclosure
+    const pending = stage<3;
+    const shareCards = [...COURSES, {id:'exams', code:'Exams office', name:'End-of-semester exams', lecturer:'Exams and Records office', short:'The exams office'}].map(c => {
+      const on = !!s.share[c.id]; const items = (COURSE_ACC[c.id]||[]).map(a=>ACC_SHORT[a]);
+      return { ...this.sw(on), id:'sh-'+c.id, descId:'shd-'+c.id, aria:c.code+' sharing', code:c.code, title:c.name, who:c.lecturer, items,
+        previewBg: on?'var(--surface-2)':'transparent',
+        previewHead: on ? (c.short+(pending?' will see, once your plan is agreed:':' will see:')) : (c.short+' won\'t see anything about your support.'),
+        previewFoot: on ? 'They will not see your check-in answers or why you need support.' : (c.id==='exams' ? 'You may not get extra time in exams unless this is on.' : 'You can still ask them for help yourself. Turn this on any time.'),
+        onClick:()=>{ const nv = !on; this.setState(st=>({share:{...st.share,[c.id]:nv}})); this.toast(nv ? ('Saved. '+c.short+' will see your support.') : ('Saved. '+c.short+' won\'t see your support.')); } };
+    });
+    const shareCount = COURSES.filter(c=>s.share[c.id]).length;
+
+    // appointments
+    const appts = stage>0 ? this.allAppts(stage) : this.allAppts(0);
+    const toCard = a => { const d = pd(a.date); return {...a, dow:DOW[d.getDay()], day:String(d.getDate()), mon:MON[d.getMonth()], placeIcon:a.mode==='online'?'video':'map-pin', reschedLabel:'Reschedule '+a.type+' on '+fmtLong(a.date),
+      onReschedule:()=>this.setState({booking:{mode:'reschedule', id:a.id, type:a.type, place:a.mode||'person', slot:null}, apptView:'list'}) }; };
+    const upcoming = appts.filter(a=>a.date>=TODAY).map(toCard);
+    const past = appts.filter(a=>a.date<TODAY).map(toCard);
+    const next = upcoming[0];
+    const b = s.booking;
+    const bookTypes = [{id:'Consultation',label:'Consultation',sub:'45 min · talk things through'},{id:'Follow-up',label:'Follow-up',sub:'20 min · how is it going?'},{id:'Quick chat',label:'Quick chat',sub:'15 min · one question'}]
+      .map(c => ({...c, ...this.choice(b && b.type===c.id), onClick:()=>this.setState(st=>({booking:{...st.booking,type:c.id}}))}));
+    const bookModes = [{id:'person',label:'In person',icon:'map-pin'},{id:'online',label:'Online',icon:'video'}].map(c => { const on = b && b.place===c.id; return {...c, ...this.chip(on), onClick:()=>this.setState(st=>({booking:{...st.booking,place:c.id}}))}; });
+    const days = [...new Set(SLOTS.map(x=>x[0]))];
+    const slotDays = days.map(d => ({label:fmtLong(d), slots: SLOTS.filter(x=>x[0]===d).map(([date,time]) => { const on = b && b.slot && b.slot.date===date && b.slot.time===time; return { time, on:!!on, pressed:String(!!on), bg:on?'var(--primary)':'var(--surface)', fg:on?'var(--on-primary)':'var(--text)', bd:on?'var(--primary)':'var(--border-strong)', bdW:'1px', onClick:()=>this.setState(st=>({booking:{...st.booking, slot:{date,time}}})) }; })}));
+    const canBook = !!(b && b.slot && b.type);
+    const y = 2026, mo = s.calMonth; const first = new Date(y,mo,1); const offset = (first.getDay()+6)%7; const dim = new Date(y,mo+1,0).getDate();
+    const cells = Math.ceil((offset+dim)/7)*7;
+    const calCells = Array.from({length:cells},(_,i)=>{ const dn = i-offset+1; const inM = dn>=1 && dn<=dim; const iso = inM ? (y+'-'+String(mo+1).padStart(2,'0')+'-'+String(dn).padStart(2,'0')) : '';
+      const has = inM && appts.some(a=>a.date===iso); const sel = inM && dn===s.calDay; const today = iso===TODAY;
+      return { num: inM?String(dn):'', aria: inM ? (dn+' '+MONTH_FULL[mo]+(has?', has appointments':'')) : 'Outside this month', pressed:String(sel), dot: has?'var(--primary)':'transparent',
+        bg: sel?'var(--primary-bg)':'transparent', fg: inM?'var(--text)':'transparent', weight: today||sel?700:400, bd: sel?'2px solid var(--primary)':today?'1px solid var(--border-strong)':'1px solid transparent',
+        onClick: inM ? ()=>this.setState({calDay:dn}) : undefined }; });
+    const selIso = y+'-'+String(mo+1).padStart(2,'0')+'-'+String(s.calDay).padStart(2,'0');
+    const dayAppts = appts.filter(a=>a.date===selIso);
+
+    // messages
+    const msgs = [...(BASE_MSGS[stage]||[]), ...s.extraMsgs].map(m => { const mine = m.from==='me'; return {...m, mine, who:mine?'You':'Mariam', align:mine?'flex-end':'flex-start', bg:mine?'var(--primary-bg)':'var(--surface)', bd:mine?'transparent':'var(--border)', radius:mine?'14px 14px 4px 14px':'14px 14px 14px 4px', status:m.status||'Sent', stIcon:m.status==='Waiting to send'?'clock':'check-check'}; });
+
+    // home status
+    const steps = ['Submitted','Under review','Support plan agreed','Follow-up'].map((label,i) => { const cur = stage===2?1:3; const done = i<cur, now = i===cur; return { label, mark: done?'✓':String(i+1), current: now?'step':'false',
+      state: done?'Done':now?(stage===2?'In progress':'Booked for 3 Nov'):'Not started', stateFg: now?'var(--primary)':'var(--text-muted)',
+      bar: done?'var(--accent)':now?'var(--primary)':'var(--surface-2)', dotBg: done?'var(--accent)':'var(--surface)', dotFg: done?'#FFFFFF':now?'var(--primary)':'var(--text-muted)', dotBd: done?'var(--accent)':now?'var(--primary)':'var(--border-strong)', line: i===3?'transparent':done?'var(--accent)':'var(--border)' }; });
+
+    // notifications
+    const notifs = stage===0 ? [{g:'Getting started',icon:'sparkles',text:'Welcome to NeuroBridge. Set your reading preferences any time from the top bar.',when:'Today',to:'home'}]
+      : stage===2 ? [{g:'Your request',icon:'eye',text:'Your support request was reviewed.',when:'2 hours ago',to:'home'},{g:'Appointments',icon:'calendar-check',text:'Consultation booked for Fri 16 Oct at 11:00.',when:'2 hours ago',to:'appts'},{g:'Messages',icon:'message-square',text:'Mariam Ojo sent you a message.',when:'2 hours ago',to:'messages'}]
+      : [{g:'Your support plan',icon:'circle-check',text:'Your support plan was agreed.',when:'Mon 12 Oct',to:'plan'},{g:'Appointments',icon:'calendar-check',text:'Follow-up on Tue 3 Nov at 10:00.',when:'Mon 12 Oct',to:'appts'}];
+    const groups = [...new Set(notifs.map(n=>n.g))].map(g=>({label:g, items:notifs.filter(n=>n.g===g).map(n=>({...n, bg:s.readAll?'transparent':'var(--primary-bg)', weight:s.readAll?400:700, onClick:()=>{ this.setState({readAll:true}); this.go(n.to); }}))}));
+    const unread = s.readAll ? 0 : notifs.length;
+
+    const prefGroups = [
+      {label:'Text size', cols:4, opts:this.seg('size',[{v:'S',label:'S',sub:'16px',size:'0.875rem'},{v:'M',label:'M',sub:'18px',size:'1rem'},{v:'L',label:'L',sub:'20px',size:'1.125rem'},{v:'XL',label:'XL',sub:'24px',size:'1.25rem'}])},
+      {label:'Line spacing', cols:3, opts:this.seg('line',[{v:'1.6',label:'Default',sub:'1.6'},{v:'1.8',label:'Relaxed',sub:'1.8'},{v:'2',label:'Loose',sub:'2.0'}])},
+      {label:'Letter spacing', cols:3, opts:this.seg('letter',[{v:'0em',label:'Default'},{v:'0.04em',label:'Wide'},{v:'0.08em',label:'Wider'}])},
+      {label:'Font', cols:2, opts:this.seg('font',[{v:'default',label:'Default',sub:'Atkinson Hyperlegible',font:'"Atkinson Hyperlegible",sans-serif'},{v:'dyslexic',label:'Dyslexia-friendly',sub:'OpenDyslexic',font:'"OpenDyslexic",sans-serif',size:'0.8125rem'}])},
+      {label:'Theme', cols:2, opts:this.seg('theme',[{v:'light',label:'Light',swatch:'#FAF8F5'},{v:'dark',label:'Dark',swatch:'#14161A'},{v:'hc',label:'High contrast',swatch:'#0A0A0A'},{v:'soft',label:'Soft',sub:'Cream background',swatch:'#F4EEE2'}])},
+    ];
+    const prefToggles = [{id:'pt-motion',key:'motion',title:'Reduce motion',desc:'Stops pulsing and sliding effects.'},{id:'pt-focus',key:'focus',title:'Focus mode',desc:'Hides the side menu and extra panels.'}]
+      .map(t=>({...t, ...this.sw(!!p[t.key]), onClick:()=>this.setPref(t.key,!p[t.key])}));
+
+    const backTarget = s.screen==='disclosure' ? 'plan' : 'home';
+
+    return {
+      outerAlign: phone?'center':'stretch', outerPad: phone?'24px':'0', outerBg: phone?'var(--surface-2)':'var(--bg)',
+      frameW: phone?'390px':'100%', frameH: phone?'844px':'100vh', frameR: phone?'28px':'0', frameBd: phone?'1px solid var(--border-strong)':'0',
+      rootRef:this.rootRef, mainRef:this.mainRef,
+      offline, isMobile, notMobile:!isMobile,
+      headerPad: isMobile?'8px 12px':'10px 20px', logoH: isMobile?'32px':'40px',
+      mainPad: isMobile?'20px 16px 32px':'32px 32px 64px', ctaFlex: isMobile?'1 1 100%':'0 0 auto', submitAlign: isMobile?'stretch':'flex-start',
+      toastBottom: isMobile?'92px':'24px',
+      showSidebar, sideW: isTablet?'96px':'248px', sidePadX: isTablet?'8px':'12px', sideItems,
+      urgentDir: isTablet?'column':'row', urgentGap: isTablet?'2px':'10px', urgentPad: isTablet?'6px 2px':'0 12px', urgentFs: isTablet?'0.75rem':'1rem',
+      goUrgent:()=>this.go('urgent'), tabItems,
+      hasCrumbs: crumbs.length>0, crumbs, backLabel: backTarget==='plan'?'My plan':'Home', goBack:()=>this.go(backTarget),
+      openPrefs:()=>this.setState({prefsOpen:true, notifOpen:false}), closePrefs:()=>this.setState({prefsOpen:false}),
+      toggleNotif:()=>this.setState(st=>({notifOpen:!st.notifOpen})), notifExpanded:String(s.notifOpen), notifOpen:s.notifOpen, notifGroups:groups, markRead:()=>this.setState({readAll:true}),
+      unread:String(unread), hasUnread: unread>0, notifAria: 'Notifications'+(unread?', '+unread+' unread':''),
+      sHome:s.screen==='home', sCheckin:s.screen==='checkin', sRequest:s.screen==='request', sDisclosure:s.screen==='disclosure', sPlan:s.screen==='plan', sMessages:s.screen==='messages', sAppts:s.screen==='appts', sUrgent:s.screen==='urgent',
+      goHome:()=>this.go('home'), goRequest:()=>this.go('request',{reqDone:false}), goCheckin:()=>this.go('checkin'), goDisclosure:()=>this.go('disclosure'), goPlan:()=>this.go('plan'), goMessages:()=>this.go('messages'), goAppts:()=>this.go('appts'),
+      homeLoading: homeState==='loading', homeError: homeState==='error', homeReady: homeState==='ready', retryHome:()=>this.setState({homeRetry:P.homeState}),
+      homeSub: stage===0 ? 'Take your time. Nothing here is shared unless you choose.' : stage===2 ? 'Your request is being looked at. Here\'s where things are.' : 'Your support plan is active. Your next check-in is on 3 November.',
+      stageNone: stage===0, stageActive: stage>0, showSecondary: !p.focus,
+      checkinPaused: s.ciPaused, pausedAt:String(Math.max(1,s.q)), resumeCheckin:()=>this.go('checkin',{ciPaused:false, q:Math.max(1,s.q)}),
+      statusTitle: stage===2 ? 'Under review by Mariam Ojo' : 'Support plan agreed',
+      badgeLabel: stage===2?'Under review':'Plan active', badgeIcon: stage===2?'eye':'circle-check', badgeBg: stage===2?'var(--primary-bg)':'var(--accent-bg)', badgeFg: stage===2?'var(--primary)':'var(--accent-ink)',
+      statusBody: stage===2 ? 'Mariam has booked a consultation with a learning support specialist. You can change the time if it doesn\'t suit you.' : 'You have 4 approved supports. 2 of your lecturers can see them, because you chose to share.',
+      statusActionLabel: stage===2?'Read Mariam\'s message':'View my support plan', statusAction: stage===2?()=>this.go('messages'):()=>this.go('plan'),
+      steps, hasNextAppt: !!next, noNextAppt: !next, nextAppt: next || {mon:'',day:'',type:'',time:'',with:'',place:''},
+
+      ciIntro: qi===0, ciQuestion: qi>=1 && qi<=5, ciResult: qi===6,
+      ciStart:()=>this.setState({q:1}),
+      qNum:String(qi), qPct:(qi/5*100)+'%',
+      q: q ? {text:q.text, hint:q.hint||'', hasHint:!!q.hint, isLikert:q.type==='likert', isChips:q.type==='chips', isText:q.type==='text'} : {text:'',hint:'',hasHint:false,isLikert:false,isChips:false,isText:false},
+      likertOpts, ciChips, ciText:s.ciText, onCiText:e=>this.setState({ciText:e.target.value}),
+      savedIcon: offline?'hard-drive':'cloud', savedLabel: offline?'Saved on this device':'Saved',
+      preferOn, preferPressed:String(preferOn), preferBg: preferOn?'var(--primary-bg)':'var(--surface)',
+      ciPrefer:()=>this.setState(st=>({answers:{...st.answers,[qi]: st.answers[qi]==='prefer'?undefined:'prefer'}})),
+      ciSkip:()=>this.setState(st=>({answers:{...st.answers,[qi]:'skip'}, q:st.q+1})),
+      ciBack:()=>this.setState(st=>({q:Math.max(0,st.q-1)})),
+      ciNext:()=>{ this.setState(st=>({q:st.q+1})); const m=this.mainRef.current; if(m) m.scrollTop=0; },
+      nextLabel: qi===5?'See summary':'Continue',
+      ciSaveLater:()=>{ this.go('home',{ciPaused:true}); this.toast(offline?'Saved on this device. Pick up where you left off any time.':'Saved. Pick up where you left off any time.', offline?'offline':null); },
+      summary, suggestion,
+      ciToRequest:()=>{ const pre = [...mapped].filter(x=>BARRIERS.includes(x)); this.go('request',{reqDone:false, reqPrefilled:pre.length>0||!!s.ciText.trim(), req:{...s.req, barriers:[...new Set([...s.req.barriers,...pre])], text:s.req.text||s.ciText}}); },
+      ciNotNow:()=>{ this.go('home'); this.toast('Your answers are saved. Only your support officer can see them if you send a request.'); },
+
+      reqForm: !s.reqDone, reqDone: s.reqDone, reqPrefilled: s.reqPrefilled, reqError: s.reqError,
+      reqChips, reqText: rq.text, onReqText:e=>{ const v=e.target.value; this.setState(st=>({reqError:false, req:{...st.req,text:v}})); }, reqTextBd: s.reqError?'2px solid var(--danger)':'1px solid var(--border-strong)',
+      courseOpts, contactOpts, urgencyOpts, isUrgent: rq.urgency==='urgent',
+      reqSending: s.reqSending, reqBusy:String(s.reqSending), submitLabel: s.reqSending?'Sending…':'Submit request',
+      submitReq:()=>{
+        if (s.reqSending) return;
+        if (!rq.barriers.length && !rq.text.trim()) { this.setState({reqError:true}); const m=this.mainRef.current; if(m) m.scrollTop=0; return; }
+        this.setState({reqSending:true});
+        setTimeout(()=>{ this.setState({reqSending:false, reqDone:true, ciPaused:false}); if (stage<2) this.setStage(2); const m=this.mainRef.current; if(m) m.scrollTop=0;
+          this.toast(offline?'You\'re offline. Your request will send when you reconnect.':'Your support request was sent.', offline?'offline':null); }, 1400);
+      },
+
+      planPending: pending, shareCards, shareCount:String(shareCount), discCta: pending?'Done':'View my support plan',
+
+      planPendingOnly: stage<3, planActive: stage===3,
+      planEmptyTitle: stage===0 ? 'No support plan yet' : 'Your plan is being prepared',
+      planEmptyBody: stage===0 ? 'A plan is agreed with your support officer after you ask for support.' : 'After your consultation, you and Mariam will agree what support you\'ll get. It will appear here.',
+      planEmptyCta: stage===0 ? 'Ask for support' : 'Message Mariam', planEmptyAction: stage===0 ? ()=>this.go('request',{reqDone:false}) : ()=>this.go('messages'),
+      canSkipAhead: stage===2, skipAhead:()=>{ this.setStage(3); this.toast('Prototype: skipped ahead to after the consultation.'); },
+      accommodations: ACCOM, toggleChange:()=>this.setState(st=>({changeOpen:!st.changeOpen})), changeOpen:s.changeOpen, changeExpanded:String(s.changeOpen),
+      changeText:s.changeText, onChangeText:e=>this.setState({changeText:e.target.value}),
+      sendChange:()=>{ this.setState({changeOpen:false, changeText:''}); this.toast('Sent to Mariam. Your plan stays the same until you both agree.'); },
+      upcomingShort: upcoming.slice(0,2),
+
+      noMessages: msgs.length===0, msgs, draft:s.draft, onDraft:e=>this.setState({draft:e.target.value}),
+      sendMsg:e=>{ e.preventDefault(); const t = s.draft.trim(); if(!t) return; this.setState(st=>({draft:'', extraMsgs:[...st.extraMsgs,{from:'me',text:t,time:'Just now',status:offline?'Waiting to send':'Sent'}]})); if (offline) this.toast('You\'re offline. Your message will send when you reconnect.','offline'); },
+
+      apptTabs: [{id:'list',label:'List',icon:'list'},{id:'cal',label:'Calendar',icon:'calendar-days'}].map(t=>{ const on = s.apptView===t.id; return {...t, selected:String(on), bg:on?'var(--surface)':'transparent', bd:on?'var(--border-strong)':'transparent', onClick:()=>this.setState({apptView:t.id})}; }),
+      apptList: s.apptView==='list', apptCal: s.apptView==='cal',
+      startBook:()=>this.setState({booking:{mode:'book', type:'Consultation', place:'person', slot:null}, apptView:'list'}),
+      booking: !!b, isNewBooking: !!(b && b.mode==='book'),
+      bookTitle: b && b.mode==='reschedule' ? 'Reschedule your '+b.type.toLowerCase() : 'Book an appointment',
+      bookSub: b && b.mode==='reschedule' ? 'Your current time stays booked until you confirm a new one.' : 'With your support team. You can change it later.',
+      bookTypes, bookModes, slotDays,
+      bookDisabled: !canBook, bookBtnBg: canBook?'var(--primary)':'var(--surface-2)', bookBtnFg: canBook?'var(--on-primary)':'var(--text-muted)', bookBtnBd: canBook?'var(--primary)':'var(--border-strong)', bookBdStyle: canBook?'solid':'dashed', bookCursor: canBook?'pointer':'not-allowed',
+      bookCta: canBook ? ('Confirm '+fmtLong(b.slot.date)+', '+b.slot.time) : 'Choose a time first',
+      confirmBook:()=>{ if(!canBook) return; const when = fmtLong(b.slot.date)+' at '+b.slot.time; const place = b.place==='online'?'Online · link sent by message':'Student Support Centre, Room 12';
+        if (b.mode==='reschedule') this.setState(st=>({booking:null, moved:{...st.moved,[b.id]:{date:b.slot.date,time:b.slot.time,place,mode:b.place}}}));
+        else this.setState(st=>({booking:null, extraAppts:[...st.extraAppts,{id:'x'+Date.now(), type:b.type, with:b.type==='Quick chat'?'Mariam Ojo':'Dr. Kemi Adewale', date:b.slot.date, time:b.slot.time, place, mode:b.place}]}));
+        this.toast((b.mode==='reschedule'?'Moved to ':'Booked for ')+when+'. We\'ll remind you the day before.'); },
+      cancelBook:()=>this.setState({booking:null}),
+      upcoming, past, hasPast: past.length>0, noUpcoming: upcoming.length===0,
+      calTitle: MONTH_FULL[mo]+' 2026', prevMonth:()=>this.setState(st=>({calMonth:Math.max(8,st.calMonth-1), calDay:1})), nextMonth:()=>this.setState(st=>({calMonth:Math.min(11,st.calMonth+1), calDay:1})),
+      weekdays:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], calCells, dayAppts, dayEmpty: dayAppts.length===0, dayTitle: fmtLong(selIso),
+
+      urgentContacts: [
+        {name:'Campus emergency line',hours:'24 hours, every day',icon:'siren',bg:'var(--danger-bg)',fg:'var(--danger)',href:'tel:+2340000000000',action:'Call 0800 000 0000',actIcon:'phone'},
+        {name:'National emergency number',hours:'Police, fire and ambulance',icon:'phone-call',bg:'var(--danger-bg)',fg:'var(--danger)',href:'tel:112',action:'Call 112',actIcon:'phone'},
+        {name:'Counselling unit',hours:'Mon–Fri, 8:00–17:00 · Student Support Centre',icon:'heart-handshake',bg:'var(--primary-bg)',fg:'var(--primary)',href:'tel:+2340000000001',action:'Call 0800 000 0001',actIcon:'phone'},
+        {name:'University health centre',hours:'Open 24 hours for students',icon:'stethoscope',bg:'var(--accent-bg)',fg:'var(--accent-ink)',href:'tel:+2340000000002',action:'Call 0800 000 0002',actIcon:'phone'},
+      ],
+
+      prefsOpen:s.prefsOpen, prefGroups, prefToggles, resetPrefs:()=>this.setPrefs({...DEFAULT_PREFS}),
+      speakLabel: s.speaking?'Stop reading':'Read page aloud', speakIcon: s.speaking?'square':'volume-2',
+      toggleSpeak:()=>{ if (!window.speechSynthesis) { this.toast('Read aloud isn\'t available in this browser.','error'); return; }
+        if (s.speaking) { speechSynthesis.cancel(); this.setState({speaking:false}); return; }
+        const m = this.mainRef.current; const u = new SpeechSynthesisUtterance((m?m.innerText:'').slice(0,2500)); u.onend=()=>this.setState({speaking:false}); speechSynthesis.speak(u); this.setState({speaking:true}); },
+      toasts: s.toasts.map(t=>({...t, onClose:()=>this.setState(st=>({toasts:st.toasts.filter(x=>x.id!==t.id)}))})),
+    };
+  }
+}
+</script>
+</body>
+</html>

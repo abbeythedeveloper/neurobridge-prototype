@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=Lexend:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
+<style>
+:root,[data-theme=light]{--bg:#FAF8F5;--surface:#FFFFFF;--surface-2:#F3F0EA;--text:#1F2328;--text-muted:#5B6470;--primary:#2F5D8A;--primary-hover:#264D73;--on-primary:#FFFFFF;--accent:#3E8E7E;--accent-ink:#2B6B5E;--warning:#B7791F;--warning-ink:#85570F;--danger:#B23A3A;--privacy:#6B4FA0;--border:#E3DED6;--border-strong:#858B94;--primary-bg:#E8EFF6;--accent-bg:#E4F1EE;--warning-bg:#F8EEDC;--danger-bg:#F7E6E6;--privacy-bg:#EFEAF7;--shadow-sm:0 1px 2px rgba(31,35,40,.06);--shadow-md:0 4px 12px rgba(31,35,40,.08);--shadow-lg:0 12px 32px rgba(31,35,40,.16)}
+[data-theme=dark]{--bg:#14161A;--surface:#1D2026;--surface-2:#252931;--text:#E8E6E3;--text-muted:#A3A9B2;--primary:#7FA8D6;--primary-hover:#9BBDE2;--on-primary:#14161A;--accent:#6BC1AE;--accent-ink:#7FCDBB;--warning:#E0A84A;--warning-ink:#E8B866;--danger:#E07A7A;--privacy:#A88FD6;--border:#2C3038;--border-strong:#6B727D;--primary-bg:#1F2C3B;--accent-bg:#1A302B;--warning-bg:#33281A;--danger-bg:#3A2224;--privacy-bg:#2A2438;--shadow-sm:0 1px 2px rgba(0,0,0,.4);--shadow-md:0 4px 12px rgba(0,0,0,.45);--shadow-lg:0 12px 32px rgba(0,0,0,.6)}
+[data-theme=hc]{--bg:#FFFFFF;--surface:#FFFFFF;--surface-2:#F0F0F0;--text:#0A0A0A;--text-muted:#30363F;--primary:#0B3D73;--primary-hover:#072C54;--on-primary:#FFFFFF;--accent:#0F5E4F;--accent-ink:#0F5E4F;--warning:#7A4A00;--warning-ink:#7A4A00;--danger:#8F1D1D;--privacy:#4A2A85;--border:#1F2328;--border-strong:#0A0A0A;--primary-bg:#E3ECF6;--accent-bg:#E0EFEA;--warning-bg:#F5E9D2;--danger-bg:#F5DEDE;--privacy-bg:#EAE2F6;--shadow-sm:none;--shadow-md:none;--shadow-lg:0 0 0 2px #0A0A0A}
+[data-theme=soft]{--bg:#F4EEE2;--surface:#FBF8F1;--surface-2:#EFE7D8;--text:#2A2620;--text-muted:#5C564D;--primary:#2F5D8A;--primary-hover:#264D73;--on-primary:#FFFFFF;--accent:#3E8E7E;--accent-ink:#2A665A;--warning:#B7791F;--warning-ink:#7F5310;--danger:#A93636;--privacy:#6B4FA0;--border:#DED4C2;--border-strong:#857C6F;--primary-bg:#E5EAEE;--accent-bg:#E2ECE5;--warning-bg:#F3E6CF;--danger-bg:#F3E0DB;--privacy-bg:#EAE3EE;--shadow-sm:0 1px 2px rgba(42,38,32,.06);--shadow-md:0 4px 12px rgba(42,38,32,.08);--shadow-lg:0 12px 32px rgba(42,38,32,.16)}
+:root{--font:"Atkinson Hyperlegible",Lexend,system-ui,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;--lh:1.6;--ls:0em;font-size:16px}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);line-height:var(--lh);letter-spacing:var(--ls);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,input,select,textarea{font:inherit;letter-spacing:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+a{color:var(--primary);text-underline-offset:3px}
+a:hover{color:var(--primary-hover)}
+@keyframes nbPulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes nbSpin{to{transform:rotate(360deg)}}
+[data-motion=reduce] *{animation:none !important;transition:none !important}
+[data-motion=reduce]{scroll-behavior:auto}
+@media (prefers-reduced-motion:reduce){*{animation-duration:0s !important;transition:none !important}html{scroll-behavior:auto}}
+</style>
+<script src="nb-icons.js"></script>
+</helmet>
+<div style="min-height:100vh;background:var(--bg);color:var(--text)">
+<a href="#main" style="position:absolute;left:16px;top:-80px;z-index:100;background:var(--primary);color:var(--on-primary);padding:12px 16px;border-radius:8px;font-weight:700;text-decoration:none" style-focus="top:16px">Skip to content</a>
+
+<header style="position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border)">
+  <div style="max-width:1440px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div aria-hidden="true" style="position:relative;width:34px;height:22px;flex:none">
+        <div style="position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;background:var(--primary)"></div>
+        <div style="position:absolute;right:0;top:0;width:22px;height:22px;border-radius:50%;background:var(--accent);opacity:.85"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;line-height:1.15">
+        <span style="font-weight:700;font-size:1.125rem">NeuroBridge</span>
+        <span style="font-size:0.875rem;color:var(--text-muted)">Design system · v1.0</span>
+      </div>
+    </div>
+    <div aria-hidden="true" style="width:1px;height:36px;background:var(--border)"></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <img src="assets/babcock-logo.jpeg" alt="Babcock University" style="height:40px;width:auto;display:block;border-radius:2px">
+    </div>
+    <div style="flex:1 1 auto"></div>
+    <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);font-size:0.875rem;color:var(--text-muted)"><nb-icon name="palette" size="16"></nb-icon>Theme: {{ themeLabel }}</span>
+    <button type="button" onClick="{{ openPrefs }}" aria-haspopup="dialog" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:var(--surface);color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)"><nb-icon name="type" size="20"></nb-icon>Reading preferences</button>
+  </div>
+</header>
+
+<div style="max-width:1440px;margin:0 auto;padding:0 24px;display:flex;gap:48px;align-items:flex-start">
+  <nav aria-label="Design system sections" style="position:sticky;top:88px;flex:0 0 200px;padding:32px 0;display:{{ navDisplay }};flex-direction:column;gap:2px;max-height:calc(100vh - 88px);overflow:auto">
+    <span style="font-size:0.875rem;font-weight:700;color:var(--text-muted);padding:0 12px 8px">On this page</span>
+    <sc-for list="{{ navLinks }}" as="l" hint-placeholder-count="14">
+      <a href="{{ l.href }}" style="display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:8px;color:var(--text);text-decoration:none;font-size:0.9375rem" style-hover="background:var(--surface-2);color:var(--text)">{{ l.label }}</a>
+    </sc-for>
+  </nav>
+
+  <main id="main" tabindex="-1" style="flex:1 1 0;min-width:0;padding:40px 0 96px;display:flex;flex-direction:column;gap:80px;outline:none">
+
+    <section style="display:flex;flex-direction:column;gap:16px;max-width:70ch">
+      <h1 style="margin:0;font-size:2rem;line-height:1.25">A calm, legible system for supporting every learner</h1>
+      <p style="margin:0;font-size:1.125rem;color:var(--text-muted);text-wrap:pretty">Tokens and components for NeuroBridge. Everything here is built to the same rules as the product: plain language, privacy shown where data appears, and nothing that relies on colour alone. Open Reading preferences to see the whole page adapt.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--accent-bg);color:var(--accent-ink);font-size:0.875rem;font-weight:700"><nb-icon name="circle-check" size="16"></nb-icon>WCAG 2.2 AA</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--surface-2);color:var(--text);font-size:0.875rem"><nb-icon name="ruler" size="16"></nb-icon>8px grid</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--surface-2);color:var(--text);font-size:0.875rem"><nb-icon name="hand" size="16"></nb-icon>44px touch targets</span>
+      </div>
+    </section>
+
+    <section id="colour" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Colour</h2>
+        <p style="margin:0;color:var(--text-muted);text-wrap:pretty">Each token has a light, dark and high-contrast value. Ratios are measured live: foreground tokens against the surface, background tokens against body text. Base accent and warning fall below 4.5:1 on white, so they are for icons and borders only; use the <code style="font-family:var(--mono);font-size:0.875em">-ink</code> versions for text.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+        <sc-for list="{{ themeCards }}" as="t" hint-placeholder-count="4">
+          <div style="border-radius:10px;padding:20px;background:{{ t.bg }};border:1px solid {{ t.border }};color:{{ t.text }};display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700">{{ t.name }}</span><span style="font-family:var(--mono);font-size:0.8125rem;color:{{ t.muted }}">{{ t.key }}</span></div>
+            <div style="background:{{ t.surface }};border:1px solid {{ t.border }};border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px">
+              <span style="font-weight:700">Support plan agreed</span>
+              <span style="font-size:0.875rem;color:{{ t.muted }}">Review on 20 Nov 2026</span>
+              <span style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;background:{{ t.privacyBg }};color:{{ t.privacy }};font-size:0.8125rem;font-weight:700"><nb-icon name="eye" size="14"></nb-icon>Visible to: you and your officer</span>
+              <span style="align-self:flex-start;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:8px;background:{{ t.primary }};color:{{ t.onPrimary }};font-weight:700;font-size:0.875rem">View plan</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+        <div style="display:flex;flex-wrap:wrap;gap:16px;padding:12px 20px;background:var(--surface-2);border-bottom:1px solid var(--border);font-size:0.875rem;font-weight:700;color:var(--text-muted)">
+          <span style="flex:1 1 220px">Token and use</span>
+          <div style="flex:2 1 420px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px"><span>Light</span><span>Dark</span><span>High contrast</span></div>
+        </div>
+        <sc-for list="{{ tokenRows }}" as="r" hint-placeholder-count="12">
+          <div style="display:flex;flex-wrap:wrap;gap:16px;padding:14px 20px;border-bottom:1px solid var(--border);align-items:center">
+            <div style="flex:1 1 220px;display:flex;flex-direction:column;gap:2px">
+              <code style="font-family:var(--mono);font-size:0.875rem;font-weight:700">--{{ r.name }}</code>
+              <span style="font-size:0.875rem;color:var(--text-muted)">{{ r.use }}</span>
+            </div>
+            <div style="flex:2 1 420px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+              <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:10px;min-width:0">
+                  <div style="width:40px;height:40px;flex:none;border-radius:8px;background:{{ c.hex }};border:1px solid rgba(127,127,127,.35)"></div>
+                  <div style="display:flex;flex-direction:column;min-width:0;line-height:1.35">
+                    <span style="font-family:var(--mono);font-size:0.8125rem">{{ c.hex }}</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;font-size:0.8125rem;color:{{ c.vColor }}"><nb-icon name="{{ c.vIcon }}" size="14"></nb-icon>{{ c.ratio }} · {{ c.verdict }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section id="type" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Typography</h2>
+        <p style="margin:0;color:var(--text-muted);text-wrap:pretty">Atkinson Hyperlegible for everything, with OpenDyslexic as an opt-in. One family, weight 700 for hierarchy. Left-aligned, never justified, no all-caps paragraphs.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:0.875rem;color:var(--text-muted)">Default · Atkinson Hyperlegible</span>
+          <span style="font-family:'Atkinson Hyperlegible',sans-serif;font-size:2.5rem;line-height:1.2;font-weight:700">b d p q · I l 1 · O 0</span>
+          <p style="margin:0;font-family:'Atkinson Hyperlegible',sans-serif">Tell us what's getting in the way. You can skip anything.</p>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:0.875rem;color:var(--text-muted)">Dyslexia-friendly · OpenDyslexic</span>
+          <span style="font-family:'OpenDyslexic',sans-serif;font-size:2.25rem;line-height:1.25;font-weight:700">b d p q · I l 1</span>
+          <p style="margin:0;font-family:'OpenDyslexic',sans-serif;font-size:0.9375rem">Tell us what's getting in the way. You can skip anything.</p>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px">
+        <sc-for list="{{ typeScale }}" as="s" hint-placeholder-count="7">
+          <div style="display:flex;flex-wrap:wrap;gap:8px 24px;align-items:baseline;padding:16px 24px;border-bottom:1px solid var(--border)">
+            <div style="flex:0 0 160px;display:flex;flex-direction:column;line-height:1.3">
+              <span style="font-weight:700;font-size:0.9375rem">{{ s.name }}</span>
+              <span style="font-family:var(--mono);font-size:0.8125rem;color:var(--text-muted)">{{ s.spec }}</span>
+            </div>
+            <span style="flex:1 1 300px;font-size:{{ s.size }};font-weight:{{ s.weight }};line-height:1.35">{{ s.sample }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px">
+        <div style="padding:16px 20px;border-radius:10px;background:var(--surface-2);display:flex;flex-direction:column;gap:4px"><span style="font-weight:700">Line height 1.6</span><span style="font-size:0.875rem;color:var(--text-muted)">Up to 2.0 via Reading preferences</span></div>
+        <div style="padding:16px 20px;border-radius:10px;background:var(--surface-2);display:flex;flex-direction:column;gap:4px"><span style="font-weight:700">Measure ≤ 70ch</span><span style="font-size:0.875rem;color:var(--text-muted)">Set max-width on every text block</span></div>
+        <div style="padding:16px 20px;border-radius:10px;background:var(--surface-2);display:flex;flex-direction:column;gap:4px"><span style="font-weight:700">16px minimum</span><span style="font-size:0.875rem;color:var(--text-muted)">18px body on student screens</span></div>
+        <div style="padding:16px 20px;border-radius:10px;background:var(--surface-2);display:flex;flex-direction:column;gap:4px"><span style="font-weight:700">No long italics</span><span style="font-size:0.875rem;color:var(--text-muted)">Use bold for emphasis instead</span></div>
+      </div>
+    </section>
+
+    <section id="space" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Space, shape and elevation</h2>
+        <p style="margin:0;color:var(--text-muted)">An 8px grid. Cards 10px radius, inputs and buttons 8px. Shadows are faint; borders do most of the work.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-weight:700">Spacing</span>
+          <sc-for list="{{ spacing }}" as="sp" hint-placeholder-count="7">
+            <div style="display:flex;align-items:center;gap:12px">
+              <code style="font-family:var(--mono);font-size:0.8125rem;width:64px;color:var(--text-muted)">{{ sp.name }}</code>
+              <div style="height:16px;width:{{ sp.px }};background:var(--primary);border-radius:2px"></div>
+              <span style="font-size:0.875rem">{{ sp.px }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:16px">
+          <span style="font-weight:700">Radius</span>
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:72px;height:56px;border:2px solid var(--primary);border-radius:8px"></div><span style="font-size:0.875rem">8 · inputs</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:72px;height:56px;border:2px solid var(--primary);border-radius:10px"></div><span style="font-size:0.875rem">10 · cards</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:72px;height:32px;margin:12px 0;border:2px solid var(--primary);border-radius:999px"></div><span style="font-size:0.875rem">Pill · chips</span></div>
+          </div>
+          <span style="font-weight:700">Focus ring</span>
+          <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+            <span style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:8px;background:var(--primary);color:var(--on-primary);font-weight:700;outline:3px solid var(--primary);outline-offset:2px">Focused button</span>
+            <span style="font-size:0.875rem;color:var(--text-muted)">3px primary, 2px offset. Press Tab anywhere on this page.</span>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:16px">
+          <span style="font-weight:700">Elevation</span>
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <div style="flex:1 1 80px;height:72px;border-radius:10px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;align-items:flex-end;padding:8px;font-size:0.8125rem">sm · cards</div>
+            <div style="flex:1 1 80px;height:72px;border-radius:10px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-md);display:flex;align-items:flex-end;padding:8px;font-size:0.8125rem">md · menus</div>
+            <div style="flex:1 1 80px;height:72px;border-radius:10px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-lg);display:flex;align-items:flex-end;padding:8px;font-size:0.8125rem">lg · panels</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="buttons" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Buttons</h2>
+        <p style="margin:0;color:var(--text-muted)">Labels are verbs. One primary button per screen. Every size meets the 44px target.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:24px">
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <button type="button" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-hover);border-color:var(--primary-hover)">Ask for support</button>
+          <button type="button" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)">Save and continue later</button>
+          <button type="button" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)">Skip this question</button>
+          <button type="button" onClick="{{ openModal }}" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--danger);background:var(--danger);color:var(--on-primary);font-weight:700;cursor:pointer" style-hover="opacity:.9"><nb-icon name="archive" size="20"></nb-icon>Close case</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:24px;font-size:0.875rem;color:var(--text-muted)"><span>Primary</span><span>Secondary</span><span>Ghost</span><span>Destructive (always confirms)</span></div>
+        <div style="height:1px;background:var(--border)"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <button type="button" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;font-size:0.9375rem;cursor:pointer">Compact 44</button>
+          <button type="button" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">Default 48</button>
+          <button type="button" style="min-height:56px;padding:0 28px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;font-size:1.125rem;cursor:pointer">Large 56 · student</button>
+          <button type="button" disabled="" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px dashed var(--border-strong);background:var(--surface-2);color:var(--text-muted);font-weight:700;cursor:not-allowed">Disabled</button>
+          <button type="button" onClick="{{ submitDemo }}" aria-busy="{{ btnBusy }}" style="display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">
+            <sc-if value="{{ btnLoading }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--on-primary);border-right-color:transparent;animation:nbSpin .8s linear infinite"></span></sc-if>
+            <span>{{ btnLabel }}</span>
+          </button>
+        </div>
+        <span style="font-size:0.875rem;color:var(--text-muted)">Disabled uses a dashed border so the state reads without colour. Click the last button to see loading and the success toast.</span>
+      </div>
+    </section>
+
+    <section id="forms" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Form fields</h2>
+        <p style="margin:0;color:var(--text-muted)">Labels sit above fields, hints sit under labels, errors sit next to the field in words. Optional fields say so.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label for="f-name" style="font-weight:700">Preferred name</label>
+            <span id="f-name-hint" style="font-size:0.875rem;color:var(--text-muted)">What should your support officer call you?</span>
+            <input id="f-name" aria-describedby="f-name-hint" value="Adaeze" readonly="" style="min-height:48px;padding:0 14px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label for="f-email" style="font-weight:700">University email</label>
+            <input id="f-email" aria-invalid="true" aria-describedby="f-email-err" value="adaeze.okonkwo@" readonly="" style="min-height:48px;padding:0 14px;border-radius:8px;border:2px solid var(--danger);background:var(--surface)">
+            <span id="f-email-err" style="display:flex;align-items:flex-start;gap:6px;color:var(--danger);font-size:0.9375rem"><nb-icon name="circle-alert" size="18"></nb-icon>Add the part after @, for example adaeze.okonkwo@student.babcock.edu.ng</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label for="f-more" style="font-weight:700">Anything else? <span style="font-weight:400;color:var(--text-muted)">(optional)</span></label>
+            <textarea id="f-more" rows="3" style="padding:12px 14px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);resize:vertical;line-height:var(--lh)">Group work in labs is hard when it's noisy.</textarea>
+            <span style="font-size:0.875rem;color:var(--text-muted);align-self:flex-end">43 of 500 characters</span>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label for="f-contact" style="font-weight:700">Preferred contact method</label>
+            <select id="f-contact" style="min-height:48px;padding:0 14px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+              <option>Secure message in NeuroBridge</option><option>University email</option><option>Phone call</option><option>In person</option>
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;position:relative">
+            <label for="f-combo" style="font-weight:700">Assign a professional</label>
+            <span style="font-size:0.875rem;color:var(--text-muted)">Type a name or role</span>
+            <div style="position:relative">
+              <input id="f-combo" role="combobox" aria-expanded="{{ comboExpanded }}" aria-controls="f-combo-list" aria-autocomplete="list" value="{{ comboQ }}" onChange="{{ onComboChange }}" onFocus="{{ onComboFocus }}" placeholder="Search professionals" style="width:100%;min-height:48px;padding:0 44px 0 14px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+              <span style="position:absolute;right:12px;top:14px;color:var(--text-muted);display:flex"><nb-icon name="search" size="20"></nb-icon></span>
+            </div>
+            <sc-if value="{{ comboOpen }}" hint-placeholder-val="{{ false }}">
+              <div id="f-combo-list" role="listbox" style="position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:5;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-md);padding:6px;display:flex;flex-direction:column">
+                <sc-for list="{{ comboOptions }}" as="o" hint-placeholder-count="3">
+                  <button type="button" role="option" aria-selected="{{ o.selected }}" onClick="{{ o.onPick }}" style="display:flex;justify-content:space-between;gap:12px;align-items:center;text-align:left;min-height:56px;padding:8px 10px;border:0;border-radius:8px;background:transparent;cursor:pointer" style-hover="background:var(--surface-2)">
+                    <span style="display:flex;flex-direction:column;line-height:1.3"><span style="font-weight:700">{{ o.name }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ o.role }}</span></span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;font-size:0.8125rem;color:{{ o.availColor }};white-space:nowrap"><nb-icon name="{{ o.availIcon }}" size="14"></nb-icon>{{ o.avail }}</span>
+                  </button>
+                </sc-for>
+                <sc-if value="{{ comboEmpty }}" hint-placeholder-val="{{ false }}"><span style="padding:12px;color:var(--text-muted)">No one matches. Try a role like "counsellor".</span></sc-if>
+              </div>
+            </sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label for="f-date" style="font-weight:700">Review date</label>
+            <input id="f-date" type="date" value="2026-11-20" style="min-height:48px;padding:0 14px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="selection" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Choice controls</h2>
+        <p style="margin:0;color:var(--text-muted)">Selected states add a check or a filled knob, never just a colour change. Every check-in question offers a way out.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <span style="font-size:0.875rem;font-weight:700;color:var(--text-muted)">Likert scale · student, 18px body</span>
+        <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:16px;max-width:640px">
+          <legend style="font-size:1.25rem;font-weight:700;line-height:1.4;padding:0;margin-bottom:16px">Reading long texts in a set time is hard for me.</legend>
+          <div role="radiogroup" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px">
+            <sc-for list="{{ likertOpts }}" as="o" hint-placeholder-count="5">
+              <button type="button" role="radio" aria-checked="{{ o.checked }}" aria-label="{{ o.aria }}" onClick="{{ o.onClick }}" style="min-height:56px;border-radius:8px;border:2px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};font-weight:700;font-size:1.125rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><sc-if value="{{ o.isChecked }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="18"></nb-icon></sc-if>{{ o.label }}</button>
+            </sc-for>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:16px;font-size:0.9375rem;color:var(--text-muted)"><span>1 · Not at all like me</span><span style="text-align:right">5 · Very like me</span></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" onClick="{{ likertPrefer }}" aria-pressed="{{ preferPressed }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--border-strong);background:{{ preferBg }};font-weight:700;cursor:pointer">Prefer not to say</button>
+            <button type="button" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)">Skip this question</button>
+          </div>
+        </fieldset>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:16px">
+          <span style="font-weight:700">What's getting in the way? <span style="font-weight:400;color:var(--text-muted)">Pick any</span></span>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ chipOpts }}" as="c" hint-placeholder-count="7">
+              <button type="button" aria-pressed="{{ c.pressed }}" onClick="{{ c.onClick }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font-weight:700;cursor:pointer"><nb-icon name="{{ c.icon }}" size="18"></nb-icon>{{ c.label }}</button>
+            </sc-for>
+          </div>
+          <span style="font-size:0.875rem;color:var(--text-muted)">{{ chipCount }}</span>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 24px;display:flex;flex-direction:column">
+          <sc-for list="{{ toggleOpts }}" as="t" hint-placeholder-count="2">
+            <div style="display:flex;gap:16px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--border)">
+              <div style="flex:1 1 auto;display:flex;flex-direction:column;gap:4px">
+                <span id="{{ t.id }}" style="font-weight:700">{{ t.title }}</span>
+                <span style="font-size:0.9375rem;color:var(--text-muted);text-wrap:pretty">{{ t.desc }}</span>
+              </div>
+              <button type="button" role="switch" aria-checked="{{ t.on }}" aria-labelledby="{{ t.id }}" onClick="{{ t.onClick }}" style="flex:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;background:transparent;cursor:pointer">
+                <span style="font-size:0.875rem;font-weight:700;width:28px;text-align:right">{{ t.label }}</span>
+                <span style="position:relative;width:52px;height:32px;border-radius:999px;background:{{ t.track }};border:2px solid {{ t.trackBd }};transition:background .15s">
+                  <span style="position:absolute;top:2px;left:{{ t.knobLeft }};width:24px;height:24px;border-radius:50%;background:{{ t.knob }};transition:left .15s;display:flex;align-items:center;justify-content:center;color:var(--primary)"><sc-if value="{{ t.isOn }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="14"></nb-icon></sc-if></span>
+                </span>
+              </button>
+            </div>
+          </sc-for>
+          <div style="padding:16px 0;display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:0.875rem;font-weight:700;color:var(--text-muted)">Preview</span>
+            <span style="text-wrap:pretty">{{ sharePreview }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="upload" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">File uploader</h2>
+        <p style="margin:0;color:var(--text-muted)">Used in the Teaching Studio and curriculum admin. Progress is shown as a bar and a number; failures say what to do next.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="border:2px dashed var(--border-strong);border-radius:10px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;background:var(--surface-2)">
+          <span style="color:var(--primary);display:flex"><nb-icon name="upload" size="32"></nb-icon></span>
+          <span style="font-weight:700">Drag your approved materials here</span>
+          <span style="font-size:0.9375rem;color:var(--text-muted)">PDF, DOCX or PPTX, up to 50 MB each</span>
+          <input id="nb-file" type="file" multiple="" onChange="{{ onFiles }}" accept=".pdf,.docx,.pptx" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none">
+          <label for="nb-file" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:8px;border:1px solid var(--primary);color:var(--primary);background:var(--surface);font-weight:700;cursor:pointer">Choose files</label>
+        </div>
+        <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ fileRows }}" as="f" hint-placeholder-count="3">
+            <li style="display:flex;gap:14px;align-items:center;padding:12px 14px;border:1px solid var(--border);border-radius:10px">
+              <span style="width:40px;height:40px;flex:none;border-radius:8px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--text-muted)"><nb-icon name="{{ f.typeIcon }}" size="20"></nb-icon></span>
+              <div style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-weight:700;overflow-wrap:anywhere">{{ f.name }}</span><span style="display:inline-flex;align-items:center;gap:4px;font-size:0.875rem;color:{{ f.stColor }}"><nb-icon name="{{ f.stIcon }}" size="16"></nb-icon>{{ f.stLabel }}</span></div>
+                <div role="progressbar" aria-valuenow="{{ f.progress }}" aria-valuemin="0" aria-valuemax="100" aria-label="{{ f.name }}" style="height:6px;border-radius:999px;background:var(--surface-2);overflow:hidden"><div style="height:100%;width:{{ f.width }};background:{{ f.barColor }};transition:width .3s"></div></div>
+                <span style="font-size:0.875rem;color:var(--text-muted)">{{ f.meta }}</span>
+              </div>
+              <sc-if value="{{ f.isError }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ f.onRetry }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Try again</button></sc-if>
+              <button type="button" aria-label="{{ f.removeLabel }}" onClick="{{ f.onRemove }}" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--surface-2)"><nb-icon name="x" size="20"></nb-icon></button>
+            </li>
+          </sc-for>
+        </ul>
+      </div>
+    </section>
+
+    <section id="status" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Status, privacy and banners</h2>
+        <p style="margin:0;color:var(--text-muted)">Violet is reserved for privacy. If you see violet, it tells you who can see something.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:16px">
+          <span style="font-weight:700">Status badges</span>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ statusList }}" as="s" hint-placeholder-count="5">
+              <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:{{ s.bg }};color:{{ s.fg }};border:1px solid {{ s.bd }};font-size:0.875rem;font-weight:700;white-space:nowrap"><nb-icon name="{{ s.icon }}" size="16"></nb-icon>{{ s.label }}</span>
+            </sc-for>
+          </div>
+          <span style="font-weight:700">Privacy chips</span>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px">
+            <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--privacy-bg);color:var(--privacy);font-size:0.875rem;font-weight:700"><nb-icon name="eye" size="16"></nb-icon>Visible to: you and your support officer</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--privacy-bg);color:var(--privacy);font-size:0.875rem;font-weight:700"><nb-icon name="lock" size="16"></nb-icon>Only your support officer can see this</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:transparent;color:var(--privacy);border:1px dashed var(--privacy);font-size:0.875rem;font-weight:700"><nb-icon name="shield" size="16"></nb-icon>Internal only · never shown to student</span>
+          </div>
+          <span style="font-weight:700">Suppressed value</span>
+          <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">
+            <span title="Fewer than 5 students. Hidden to protect identity." style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;background:repeating-linear-gradient(135deg,var(--privacy-bg) 0 6px,var(--surface) 6px 12px);border:1px dashed var(--privacy);color:var(--privacy);font-size:0.875rem;font-weight:700"><nb-icon name="lock" size="14"></nb-icon>Suppressed for privacy</span>
+            <span style="font-size:0.875rem;color:var(--text-muted)">Shown when a group has fewer than 5 students</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <sc-for list="{{ banners }}" as="b" hint-placeholder-count="6">
+            <div role="{{ b.role }}" style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;background:{{ b.bg }};border:1px solid {{ b.bd }}">
+              <span style="color:{{ b.fg }};display:flex;padding-top:2px"><nb-icon name="{{ b.icon }}" size="20"></nb-icon></span>
+              <div style="flex:1 1 auto;display:flex;flex-direction:column;gap:2px">
+                <span style="font-weight:700;color:var(--text)">{{ b.title }}</span>
+                <span style="font-size:0.9375rem;color:var(--text)">{{ b.body }}</span>
+              </div>
+              <sc-if value="{{ b.hasAction }}" hint-placeholder-val="{{ false }}"><button type="button" style="flex:none;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid {{ b.fg }};background:transparent;color:{{ b.fg }};font-weight:700;cursor:pointer">{{ b.action }}</button></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="ai" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">AI drafting</h2>
+        <p style="margin:0;color:var(--text-muted)">AI text is a draft until a lecturer accepts it. Each paragraph links back to its source page.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px;align-items:start">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+          <div role="toolbar" aria-label="Formatting" style="display:flex;flex-wrap:wrap;gap:2px;padding:6px;border-bottom:1px solid var(--border);background:var(--surface-2)">
+            <sc-for list="{{ toolbar }}" as="tb" hint-placeholder-count="8">
+              <button type="button" aria-label="{{ tb.label }}" title="{{ tb.label }}" aria-pressed="{{ tb.pressed }}" onClick="{{ tb.onClick }}" style="width:44px;height:44px;border-radius:8px;border:1px solid {{ tb.bd }};background:{{ tb.bg }};color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--surface)"><nb-icon name="{{ tb.icon }}" size="20"></nb-icon></button>
+            </sc-for>
+          </div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:16px">
+            <h3 style="margin:0;font-size:1.25rem">2. How recursion unwinds</h3>
+            <div style="position:relative;padding:14px 16px 14px 18px;border-radius:8px;background:{{ draftBg }};border:1px {{ draftBorderStyle }} {{ draftBd }};display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <span style="display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;background:{{ draftTagBg }};color:{{ draftTagFg }};font-size:0.8125rem;font-weight:700"><nb-icon name="{{ draftTagIcon }}" size="14"></nb-icon>{{ draftTag }}</span>
+                <a href="#ai" style="display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font-size:0.8125rem;text-decoration:none" style-hover="border-color:var(--primary);color:var(--primary)"><nb-icon name="file-text" size="14"></nb-icon>CSC301_Lecture4.pdf · p. 12</a>
+              </div>
+              <p style="margin:0;max-width:70ch">Each call waits for the one below it to finish. When the smallest case returns, the answers pass back up the chain, one step at a time, like a stack of plates being cleared from the top.</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button type="button" onClick="{{ toggleAccept }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer"><nb-icon name="{{ acceptIcon }}" size="18"></nb-icon>{{ acceptLabel }}</button>
+                <button type="button" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)"><nb-icon name="refresh-cw" size="18"></nb-icon>Regenerate</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap"><span style="font-weight:700">Learning-outcome coverage</span><span style="font-size:0.875rem;color:var(--text-muted)">3 of 4 covered</span></div>
+          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ outcomes }}" as="o" hint-placeholder-count="4">
+              <li style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;background:{{ o.bg }}">
+                <span style="color:{{ o.fg }};display:flex;padding-top:2px"><nb-icon name="{{ o.icon }}" size="20"></nb-icon></span>
+                <span style="display:flex;flex-direction:column;gap:2px"><span>{{ o.text }}</span><span style="font-size:0.875rem;font-weight:700;color:{{ o.fg }}">{{ o.state }}</span></span>
+              </li>
+            </sc-for>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="data" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">KPI tiles and data table</h2>
+        <p style="margin:0;color:var(--text-muted)">Tiles show one number and what changed. Tables sort, filter, paginate, and show skeletons while loading.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="5">
+          <div style="background:var(--surface);border:1px solid {{ k.bd }};border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-size:0.9375rem;color:var(--text-muted)">{{ k.label }}</span><span style="color:{{ k.fg }};display:flex"><nb-icon name="{{ k.icon }}" size="20"></nb-icon></span></div>
+            <sc-if value="{{ k.shown }}" hint-placeholder-val="{{ true }}"><span style="font-size:2rem;font-weight:700;line-height:1.1">{{ k.value }}</span></sc-if>
+            <sc-if value="{{ k.suppressed }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:6px;background:repeating-linear-gradient(135deg,var(--privacy-bg) 0 6px,var(--surface) 6px 12px);border:1px dashed var(--privacy);color:var(--privacy);font-size:0.875rem;font-weight:700"><nb-icon name="lock" size="14"></nb-icon>Suppressed for privacy</span></sc-if>
+            <span style="font-size:0.875rem;color:{{ k.noteColor }}">{{ k.note }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)">
+          <div role="group" aria-label="Filter by status" style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ filterOpts }}" as="fo" hint-placeholder-count="6">
+              <button type="button" aria-pressed="{{ fo.pressed }}" onClick="{{ fo.onClick }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ fo.bd }};background:{{ fo.bg }};color:{{ fo.fg }};font-size:0.9375rem;font-weight:700;cursor:pointer">{{ fo.label }}<span style="font-weight:400">{{ fo.count }}</span></button>
+            </sc-for>
+          </div>
+          <button type="button" onClick="{{ toggleLoading }}" aria-pressed="{{ loadingPressed }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;cursor:pointer"><nb-icon name="loader" size="18"></nb-icon>{{ loadingLabel }}</button>
+        </div>
+        <div style="overflow-x:auto">
+          <div role="table" aria-label="Caseload queue" style="min-width:1020px">
+            <div style="padding:12px 20px 0;font-weight:700">Caseload queue <span style="font-weight:400;color:var(--text-muted)">· Access to these records is logged</span></div>
+            <div role="row" style="display:grid;grid-template-columns:96px 170px minmax(180px,1.4fr) 110px 160px 90px 150px 84px;align-items:center;border-bottom:1px solid var(--border)">
+              <sc-for list="{{ columns }}" as="col" hint-placeholder-count="8">
+                <div role="columnheader" aria-sort="{{ col.ariaSort }}" style="padding:12px 20px;font-size:0.875rem;color:var(--text-muted);font-weight:700;white-space:nowrap">
+                  <sc-if value="{{ col.sortable }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ col.onSort }}" style="display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 6px;margin-left:-6px;border:0;border-radius:6px;background:transparent;color:{{ col.fg }};font-weight:700;font-size:0.875rem;cursor:pointer" style-hover="background:var(--surface-2)">{{ col.label }}<nb-icon name="{{ col.icon }}" size="16"></nb-icon></button></sc-if>
+                  <sc-if value="{{ col.plain }}" hint-placeholder-val="{{ true }}"><span>{{ col.label }}</span></sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <div role="rowgroup">
+              <sc-if value="{{ tableLoading }}" hint-placeholder-val="{{ false }}">
+                <sc-for list="{{ skeletonRows }}" as="sk" hint-placeholder-count="5">
+                  <div role="row" style="padding:18px 20px;border-bottom:1px solid var(--border)"><div style="display:flex;gap:24px;align-items:center;animation:nbPulse 1.6s ease-in-out infinite"><div style="width:90px;height:14px;border-radius:4px;background:var(--surface-2)"></div><div style="width:160px;height:14px;border-radius:4px;background:var(--surface-2)"></div><div style="flex:1;height:14px;border-radius:4px;background:var(--surface-2)"></div><div style="width:110px;height:24px;border-radius:999px;background:var(--surface-2)"></div><div style="width:64px;height:36px;border-radius:8px;background:var(--surface-2)"></div></div></div>
+                </sc-for>
+              </sc-if>
+              <sc-if value="{{ showRows }}" hint-placeholder-val="{{ true }}">
+                <sc-for list="{{ pageRows }}" as="row" hint-placeholder-count="5">
+                  <div role="row" style="display:grid;grid-template-columns:96px 170px minmax(180px,1.4fr) 110px 160px 90px 150px 84px;align-items:center;border-bottom:1px solid var(--border)" style-hover="background:var(--surface-2)">
+                    <div role="cell" style="padding:12px 20px;font-family:var(--mono);font-size:0.875rem;white-space:nowrap">{{ row.id }}</div>
+                    <div role="cell" style="padding:12px 20px;font-weight:700">{{ row.name }}</div>
+                    <div role="cell" style="padding:12px 20px;font-size:0.9375rem">{{ row.faculty }}</div>
+                    <div role="cell" style="padding:12px 20px;white-space:nowrap"><span style="display:inline-flex;align-items:center;gap:6px;font-size:0.9375rem;color:{{ row.urgFg }};font-weight:{{ row.urgW }}"><nb-icon name="{{ row.urgIcon }}" size="16"></nb-icon>{{ row.urgency }}</span></div>
+                    <div role="cell" style="padding:12px 20px"><span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:{{ row.sBg }};color:{{ row.sFg }};border:1px solid {{ row.sBd }};font-size:0.875rem;font-weight:700;white-space:nowrap"><nb-icon name="{{ row.sIcon }}" size="16"></nb-icon>{{ row.status }}</span></div>
+                    <div role="cell" style="padding:12px 20px;white-space:nowrap;font-size:0.9375rem">{{ row.receivedLabel }}</div>
+                    <div role="cell" style="padding:12px 20px;white-space:nowrap"><span style="display:inline-flex;align-items:center;gap:6px;font-size:0.9375rem;color:{{ row.slaFg }};font-weight:{{ row.slaW }}"><nb-icon name="{{ row.slaIcon }}" size="16"></nb-icon>{{ row.slaLabel }}</span></div>
+                    <div role="cell" style="padding:8px 20px 8px 0;text-align:right"><button type="button" onClick="{{ row.onOpen }}" aria-label="{{ row.openLabel }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)">Open</button></div>
+                  </div>
+                </sc-for>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+        <sc-if value="{{ tableEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:40px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+            <div aria-hidden="true" style="position:relative;width:96px;height:56px"><div style="position:absolute;left:0;bottom:0;width:40px;height:40px;border-radius:8px;background:var(--primary-bg)"></div><div style="position:absolute;right:0;bottom:0;width:40px;height:40px;border-radius:8px;background:var(--accent-bg)"></div><div style="position:absolute;left:20px;top:8px;width:56px;height:8px;border-radius:999px;background:var(--primary)"></div></div>
+            <span style="font-weight:700;font-size:1.125rem">No closed cases yet</span>
+            <span style="color:var(--text-muted);max-width:44ch">Cases appear here after the final follow-up is complete.</span>
+            <button type="button" onClick="{{ clearFilter }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Show all cases</button>
+          </div>
+        </sc-if>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border)">
+          <span style="font-size:0.9375rem;color:var(--text-muted)">{{ pageSummary }}</span>
+          <nav aria-label="Pagination" style="display:flex;gap:6px">
+            <button type="button" onClick="{{ prevPage }}" disabled="{{ prevDisabled }}" style="display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;cursor:pointer"><nb-icon name="chevron-left" size="18"></nb-icon>Previous</button>
+            <button type="button" onClick="{{ nextPage }}" disabled="{{ nextDisabled }}" style="display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;cursor:pointer">Next<nb-icon name="chevron-right" size="18"></nb-icon></button>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <section id="charts" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Charts</h2>
+        <p style="margin:0;color:var(--text-muted)">Aggregate only. Values are labelled directly, so nothing depends on reading a colour key. Segments under 5 students are hatched and unlabelled.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-weight:700">Support requests over time</span><span style="font-size:0.875rem;color:var(--text-muted)">2025/26 session · all faculties</span></div>
+        <div style="display:flex;gap:12px">
+          <div style="display:flex;flex-direction:column;justify-content:space-between;font-size:0.8125rem;color:var(--text-muted);height:220px;text-align:right;width:24px"><span>40</span><span>20</span><span>0</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0">
+            <div role="img" aria-label="{{ lineAria }}" style="position:relative;height:220px;border-left:1px solid var(--border-strong);border-bottom:1px solid var(--border-strong)">
+              <div style="position:absolute;left:0;right:0;top:0;border-top:1px dashed var(--border)"></div>
+              <div style="position:absolute;left:0;right:0;top:50%;border-top:1px dashed var(--border)"></div>
+              <svg viewBox="0 0 600 220" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible">
+                <polygon points="{{ areaPoints }}" fill="var(--primary-bg)"></polygon>
+                <polyline points="{{ linePoints }}" fill="none" stroke="var(--primary)" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"></polyline>
+              </svg>
+              <sc-for list="{{ lineDots }}" as="d" hint-placeholder-count="12">
+                <div style="position:absolute;left:{{ d.left }};top:{{ d.top }};transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center">
+                  <span style="position:absolute;bottom:10px;font-size:0.75rem;font-weight:700;color:var(--text)">{{ d.v }}</span>
+                  <span style="width:10px;height:10px;border-radius:50%;background:var(--surface);border:2.5px solid var(--primary)"></span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.8125rem;color:var(--text-muted)">
+              <sc-for list="{{ months }}" as="m" hint-placeholder-count="12"><span style="width:0;display:flex;justify-content:center;white-space:nowrap">{{ m }}</span></sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:16px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:16px">
+          <span style="font-weight:700">Requests by faculty</span>
+          <div role="img" aria-label="{{ barAria }}" style="display:flex;align-items:flex-end;gap:10px;height:200px;border-bottom:1px solid var(--border-strong)">
+            <sc-for list="{{ facultyBars }}" as="b" hint-placeholder-count="6">
+              <div style="flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px">
+                <sc-if value="{{ b.shown }}" hint-placeholder-val="{{ true }}"><span style="font-size:0.8125rem;font-weight:700">{{ b.v }}</span><div style="width:100%;height:{{ b.h }};background:var(--primary);border-radius:4px 4px 0 0"></div></sc-if>
+                <sc-if value="{{ b.suppressed }}" hint-placeholder-val="{{ false }}"><span style="color:var(--privacy);display:flex"><nb-icon name="lock" size="14"></nb-icon></span><div style="width:100%;height:24px;background:repeating-linear-gradient(135deg,var(--privacy-bg) 0 5px,var(--surface) 5px 10px);border:1px dashed var(--privacy);border-bottom:0;border-radius:4px 4px 0 0"></div></sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:10px">
+            <sc-for list="{{ facultyBars }}" as="b" hint-placeholder-count="6"><span style="flex:1 1 0;min-width:0;font-size:0.75rem;line-height:1.3;color:var(--text-muted);text-align:center">{{ b.label }}</span></sc-for>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:14px">
+          <span style="font-weight:700">Accommodation types in use</span>
+          <sc-for list="{{ accomBars }}" as="a" hint-placeholder-count="5">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="display:flex;justify-content:space-between;gap:8px;font-size:0.9375rem"><span>{{ a.label }}</span><span style="font-weight:700;color:{{ a.valColor }}">{{ a.valLabel }}</span></div>
+              <div style="height:14px;border-radius:4px;background:var(--surface-2);overflow:hidden"><div style="height:100%;width:{{ a.w }};background:{{ a.fill }};border-radius:4px"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="progress" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Steppers, timeline, people</h2>
+        <p style="margin:0;color:var(--text-muted)">Steps are numbered and named, with a word for the current state.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <span style="font-size:0.875rem;font-weight:700;color:var(--text-muted)">Horizontal · request status</span>
+        <ol style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px">
+          <sc-for list="{{ steps }}" as="st" hint-placeholder-count="4">
+            <li aria-current="{{ st.current }}" style="display:flex;flex-direction:column;gap:10px">
+              <div style="height:6px;border-radius:999px;background:{{ st.bar }}"></div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <span style="width:32px;height:32px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:{{ st.dotBg }};color:{{ st.dotFg }};border:2px solid {{ st.dotBd }};font-weight:700;font-size:0.875rem"><sc-if value="{{ st.done }}" hint-placeholder-val="{{ false }}"><nb-icon name="check" size="16"></nb-icon></sc-if><sc-if value="{{ st.notDone }}" hint-placeholder-val="{{ true }}">{{ st.n }}</sc-if></span>
+                <span style="display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ st.label }}</span><span style="font-size:0.875rem;color:{{ st.stateFg }}">{{ st.state }}</span></span>
+              </div>
+            </li>
+          </sc-for>
+        </ol>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:0.875rem;font-weight:700;color:var(--text-muted)">Vertical · Teaching Studio</span>
+          <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+            <sc-for list="{{ vsteps }}" as="vs" hint-placeholder-count="5">
+              <li aria-current="{{ vs.current }}" style="display:flex;gap:12px">
+                <div style="display:flex;flex-direction:column;align-items:center">
+                  <span style="width:32px;height:32px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:{{ vs.dotBg }};color:{{ vs.dotFg }};border:2px solid {{ vs.dotBd }};font-weight:700;font-size:0.875rem">{{ vs.mark }}</span>
+                  <span style="flex:1;width:2px;min-height:16px;background:{{ vs.line }}"></span>
+                </div>
+                <div style="padding:4px 0 16px;display:flex;flex-direction:column;line-height:1.35"><span style="font-weight:700">{{ vs.label }}</span><span style="font-size:0.875rem;color:{{ vs.stateFg }}">{{ vs.state }}</span></div>
+              </li>
+            </sc-for>
+          </ol>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:0.875rem;font-weight:700;color:var(--text-muted)">Activity timeline</span>
+          <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+            <sc-for list="{{ timeline }}" as="tl" hint-placeholder-count="5">
+              <li style="display:flex;gap:12px">
+                <div style="display:flex;flex-direction:column;align-items:center">
+                  <span style="width:32px;height:32px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface-2);color:{{ tl.fg }}"><nb-icon name="{{ tl.icon }}" size="16"></nb-icon></span>
+                  <span style="flex:1;width:2px;min-height:12px;background:var(--border)"></span>
+                </div>
+                <div style="padding:4px 0 14px;display:flex;flex-direction:column;line-height:1.4"><span>{{ tl.text }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ tl.when }}</span></div>
+              </li>
+            </sc-for>
+          </ol>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:16px">
+          <span style="font-size:0.875rem;font-weight:700;color:var(--text-muted)">Avatar and role badge</span>
+          <sc-for list="{{ people }}" as="p" hint-placeholder-count="3">
+            <div style="display:flex;gap:12px;align-items:center">
+              <span aria-hidden="true" style="width:44px;height:44px;flex:none;border-radius:50%;background:{{ p.bg }};color:{{ p.fg }};display:flex;align-items:center;justify-content:center;font-weight:700">{{ p.initials }}</span>
+              <span style="display:flex;flex-direction:column;gap:4px;line-height:1.3"><span style="font-weight:700">{{ p.name }}</span><span style="align-self:flex-start;display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;border:1px solid var(--border-strong);font-size:0.8125rem"><nb-icon name="{{ p.icon }}" size="14"></nb-icon>{{ p.role }}</span></span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="calendar" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Calendar</h2>
+        <p style="margin:0;color:var(--text-muted)">Month for planning, week for officers, agenda for phones. Event types carry an icon as well as a colour.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <span style="font-weight:700;font-size:1.25rem">October 2026</span>
+          <div role="tablist" aria-label="Calendar view" style="display:flex;padding:4px;border-radius:10px;background:var(--surface-2);gap:4px">
+            <sc-for list="{{ calTabs }}" as="ct" hint-placeholder-count="3">
+              <button type="button" role="tab" aria-selected="{{ ct.selected }}" onClick="{{ ct.onClick }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:1px solid {{ ct.bd }};background:{{ ct.bg }};font-weight:700;cursor:pointer;color:var(--text)">{{ ct.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{ isMonth }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--border);border-left:1px solid var(--border)">
+            <sc-for list="{{ weekdays }}" as="wd" hint-placeholder-count="7"><span style="padding:8px;font-size:0.8125rem;font-weight:700;color:var(--text-muted);border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface-2)">{{ wd }}</span></sc-for>
+            <sc-for list="{{ monthCells }}" as="mc" hint-placeholder-count="35">
+              <div style="min-height:96px;padding:6px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:{{ mc.bg }};display:flex;flex-direction:column;gap:4px;min-width:0">
+                <span aria-current="{{ mc.current }}" style="align-self:flex-start;min-width:28px;height:28px;padding:0 6px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:{{ mc.weight }};background:{{ mc.numBg }};color:{{ mc.numFg }}">{{ mc.num }}</span>
+                <sc-for list="{{ mc.events }}" as="ev" hint-placeholder-count="0">
+                  <span style="display:flex;align-items:center;gap:4px;padding:2px 6px;border-radius:4px;background:{{ ev.bg }};color:{{ ev.fg }};font-size:0.75rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><nb-icon name="{{ ev.icon }}" size="12"></nb-icon><span style="overflow:hidden;text-overflow:ellipsis">{{ ev.title }}</span></span>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isWeek }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px">
+            <sc-for list="{{ weekCols }}" as="wc" hint-placeholder-count="5">
+              <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+                <div style="padding:8px;border-radius:8px;background:{{ wc.headBg }};color:{{ wc.headFg }};display:flex;flex-direction:column;line-height:1.2"><span style="font-size:0.8125rem">{{ wc.day }}</span><span style="font-weight:700;font-size:1.25rem">{{ wc.num }}</span></div>
+                <sc-for list="{{ wc.events }}" as="ev" hint-placeholder-count="1">
+                  <div style="padding:10px;border-radius:8px;background:{{ ev.bg }};border-left:4px solid {{ ev.fg }};display:flex;flex-direction:column;gap:2px;min-width:0"><span style="display:flex;align-items:center;gap:4px;font-size:0.8125rem;color:{{ ev.fg }};font-weight:700"><nb-icon name="{{ ev.icon }}" size="14"></nb-icon>{{ ev.time }}</span><span style="font-size:0.875rem;overflow-wrap:anywhere">{{ ev.title }}</span></div>
+                </sc-for>
+                <sc-if value="{{ wc.empty }}" hint-placeholder-val="{{ false }}"><span style="padding:10px;font-size:0.875rem;color:var(--text-muted);border:1px dashed var(--border);border-radius:8px">Free</span></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isAgenda }}" hint-placeholder-val="{{ false }}">
+          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;max-width:560px">
+            <sc-for list="{{ agenda }}" as="ag" hint-placeholder-count="5">
+              <li style="display:flex;gap:16px;align-items:center;padding:12px 14px;border:1px solid var(--border);border-radius:10px">
+                <span style="width:56px;flex:none;display:flex;flex-direction:column;align-items:center;line-height:1.15"><span style="font-size:0.8125rem;color:var(--text-muted)">{{ ag.day }}</span><span style="font-weight:700;font-size:1.375rem">{{ ag.num }}</span></span>
+                <span style="flex:1;display:flex;flex-direction:column;line-height:1.35;min-width:0"><span style="font-weight:700">{{ ag.title }}</span><span style="display:inline-flex;align-items:center;gap:4px;font-size:0.875rem;color:{{ ag.fg }}"><nb-icon name="{{ ag.icon }}" size="14"></nb-icon>{{ ag.time }} · {{ ag.kindLabel }}</span></span>
+              </li>
+            </sc-for>
+          </ul>
+        </sc-if>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:0.875rem">
+          <sc-for list="{{ eventKinds }}" as="ek" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:6px;color:{{ ek.fg }};font-weight:700"><nb-icon name="{{ ek.icon }}" size="16"></nb-icon>{{ ek.label }}</span></sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="nav" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Navigation</h2>
+        <p style="margin:0;color:var(--text-muted)">The same skeleton for every role. Desktop sidebar 240px, tablet icon rail, student bottom tab bar. Icons always carry a label.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;gap:16px;padding:10px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap">
+          <img src="assets/babcock-logo.jpeg" alt="Babcock University" style="height:36px;width:auto;display:block">
+          <span style="font-weight:700">NeuroBridge</span>
+          <div style="flex:1 1 200px;max-width:420px;position:relative">
+            <input aria-label="Search" placeholder="Search cases, people, courses" style="width:100%;min-height:44px;padding:0 14px 0 40px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface)">
+            <span style="position:absolute;left:12px;top:12px;color:var(--text-muted);display:flex"><nb-icon name="search" size="20"></nb-icon></span>
+          </div>
+          <div style="flex:1 1 0"></div>
+          <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;background:var(--primary-bg);color:var(--primary);font-size:0.875rem;font-weight:700"><nb-icon name="badge-check" size="16"></nb-icon>Signed in as Support Officer</span>
+          <button type="button" aria-label="Notifications, 3 unread" style="position:relative;width:44px;height:44px;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--surface-2)"><nb-icon name="bell" size="22"></nb-icon><span style="position:absolute;top:6px;right:4px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:var(--danger);color:#FFFFFF;font-size:0.6875rem;font-weight:700;display:flex;align-items:center;justify-content:center">3</span></button>
+          <button type="button" onClick="{{ openPrefs }}" style="display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);font-weight:700;cursor:pointer"><nb-icon name="type" size="18"></nb-icon>Reading</button>
+          <span aria-hidden="true" style="width:40px;height:40px;border-radius:50%;background:var(--accent-bg);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-weight:700">MO</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;min-height:420px">
+          <div style="flex:0 0 240px;border-right:1px solid var(--border);padding:16px 12px;display:flex;flex-direction:column;gap:2px;background:var(--surface)">
+            <sc-for list="{{ sideItems }}" as="si" hint-placeholder-count="6">
+              <a href="#nav" aria-current="{{ si.current }}" style="display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:8px;text-decoration:none;color:{{ si.fg }};background:{{ si.bg }};font-weight:{{ si.weight }};border-left:3px solid {{ si.bar }}"><nb-icon name="{{ si.icon }}" size="20"></nb-icon><span style="flex:1">{{ si.label }}</span><span style="font-size:0.8125rem;color:var(--text-muted)">{{ si.count }}</span></a>
+            </sc-for>
+            <div style="flex:1"></div>
+            <a href="#nav" style="display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:8px;color:var(--danger);font-weight:700;text-decoration:none"><nb-icon name="life-buoy" size="20"></nb-icon>Need urgent help?</a>
+            <button type="button" style="display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:var(--text-muted);cursor:pointer;text-align:left"><nb-icon name="panel-left-close" size="20"></nb-icon>Collapse menu</button>
+          </div>
+          <div style="flex:1 1 300px;padding:24px;display:flex;flex-direction:column;gap:16px;background:var(--bg)">
+            <nav aria-label="Breadcrumb"><ol style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:0.9375rem">
+              <li><a href="#nav">Caseload</a></li><li aria-hidden="true" style="color:var(--text-muted);display:flex"><nb-icon name="chevron-right" size="16"></nb-icon></li>
+              <li><a href="#nav">Case NB-0142</a></li><li aria-hidden="true" style="color:var(--text-muted);display:flex"><nb-icon name="chevron-right" size="16"></nb-icon></li>
+              <li aria-current="page" style="font-weight:700">Support plan</li>
+            </ol></nav>
+            <div style="display:flex;gap:12px;align-items:center;padding:10px 14px;border-radius:8px;background:var(--surface-2);font-size:0.9375rem"><nb-icon name="scroll-text" size="18"></nb-icon>Access to this record is logged.</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
+              <div style="height:96px;border-radius:10px;background:var(--surface);border:1px solid var(--border)"></div>
+              <div style="height:96px;border-radius:10px;background:var(--surface);border:1px solid var(--border)"></div>
+            </div>
+            <div style="flex:1;min-height:120px;border-radius:10px;background:var(--surface);border:1px solid var(--border)"></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 8px;display:flex;flex-direction:column;gap:4px;width:88px">
+          <sc-for list="{{ sideItems }}" as="si" hint-placeholder-count="6">
+            <a href="#nav" aria-current="{{ si.current }}" style="display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px;padding:6px 2px;border-radius:8px;text-decoration:none;color:{{ si.fg }};background:{{ si.bg }};font-size:0.75rem;font-weight:{{ si.weight }};text-align:center;line-height:1.2"><nb-icon name="{{ si.icon }}" size="22"></nb-icon>{{ si.short }}</a>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;flex:1 1 360px;max-width:420px">
+          <div style="border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--bg)">
+            <div style="height:120px;padding:20px;display:flex;flex-direction:column;gap:6px"><span style="font-size:1.375rem;font-weight:700">Good morning, Adaeze</span><span style="color:var(--text-muted);font-size:1.0625rem">Your request is under review.</span></div>
+            <nav aria-label="Student" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--border);background:var(--surface);padding:6px 4px 10px">
+              <sc-for list="{{ tabItems }}" as="ti" hint-placeholder-count="5">
+                <a href="#nav" aria-current="{{ ti.current }}" style="display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px;padding:6px 2px;border-radius:8px;text-decoration:none;color:{{ ti.fg }};font-size:0.75rem;font-weight:{{ ti.weight }};text-align:center;line-height:1.2"><span style="display:flex;padding:2px 14px;border-radius:999px;background:{{ ti.pill }}"><nb-icon name="{{ ti.icon }}" size="22"></nb-icon></span>{{ ti.label }}</a>
+              </sc-for>
+            </nav>
+          </div>
+          <span style="font-size:0.875rem;color:var(--text-muted)">Student bottom tab bar · max 5 items · under 768px</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="overlays" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Overlays and feedback</h2>
+        <p style="margin:0;color:var(--text-muted)">Modals are for confirmations only. Toasts stay for 6 seconds and can be dismissed. The slide-over holds Reading preferences.</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-wrap:wrap;gap:12px">
+        <button type="button" onClick="{{ openPrefs }}" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer"><nb-icon name="panel-right-open" size="20"></nb-icon>Open slide-over</button>
+        <button type="button" onClick="{{ openModal }}" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="square" size="20"></nb-icon>Open confirmation</button>
+        <button type="button" onClick="{{ toastSuccess }}" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="circle-check" size="20"></nb-icon>Success toast</button>
+        <button type="button" onClick="{{ toastError }}" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="circle-alert" size="20"></nb-icon>Error toast</button>
+      </div>
+    </section>
+
+    <section id="empty" style="display:flex;flex-direction:column;gap:24px;scroll-margin-top:96px">
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:70ch">
+        <h2 style="margin:0;font-size:1.5rem;line-height:1.3">Empty, loading and error states</h2>
+        <p style="margin:0;color:var(--text-muted)">Every empty state offers a next step. Content loads as skeletons. Errors are in plain words with a retry.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+          <div aria-hidden="true" style="position:relative;width:112px;height:64px"><div style="position:absolute;left:0;bottom:0;width:44px;height:44px;border-radius:50%;background:var(--primary-bg)"></div><div style="position:absolute;right:0;bottom:0;width:44px;height:44px;border-radius:50%;background:var(--accent-bg)"></div><div style="position:absolute;left:22px;bottom:18px;width:68px;height:8px;border-radius:999px;background:var(--primary)"></div></div>
+          <span style="font-weight:700;font-size:1.125rem">No requests yet</span>
+          <span style="color:var(--text-muted);max-width:36ch">When you ask for support, you'll see its progress here.</span>
+          <button type="button" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer">Ask for support</button>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:14px" aria-busy="true" aria-label="Loading lesson">
+          <div style="display:flex;flex-direction:column;gap:14px;animation:nbPulse 1.6s ease-in-out infinite">
+            <div style="width:60%;height:22px;border-radius:6px;background:var(--surface-2)"></div>
+            <div style="width:100%;height:12px;border-radius:4px;background:var(--surface-2)"></div>
+            <div style="width:92%;height:12px;border-radius:4px;background:var(--surface-2)"></div>
+            <div style="width:78%;height:12px;border-radius:4px;background:var(--surface-2)"></div>
+            <div style="display:flex;gap:8px"><div style="width:96px;height:28px;border-radius:999px;background:var(--surface-2)"></div><div style="width:120px;height:28px;border-radius:999px;background:var(--surface-2)"></div></div>
+          </div>
+          <span style="font-size:0.875rem;color:var(--text-muted)">Skeleton · pulse stops when Reduce motion is on</span>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+          <span style="width:56px;height:56px;border-radius:50%;background:var(--danger-bg);color:var(--danger);display:flex;align-items:center;justify-content:center"><nb-icon name="cloud-off" size="28"></nb-icon></span>
+          <span style="font-weight:700;font-size:1.125rem">We couldn't load your plan</span>
+          <span style="color:var(--text-muted);max-width:36ch">This is on our side, not yours. Your information is safe.</span>
+          <button type="button" style="display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer"><nb-icon name="refresh-cw" size="18"></nb-icon>Try again</button>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+          <span style="width:56px;height:56px;border-radius:50%;background:var(--privacy-bg);color:var(--privacy);display:flex;align-items:center;justify-content:center"><nb-icon name="shield" size="28"></nb-icon></span>
+          <span style="font-weight:700;font-size:1.125rem">This page isn't part of your role</span>
+          <span style="color:var(--text-muted);max-width:36ch">Lecturers see accommodations, not case records. Ask your support office if you think you need access.</span>
+          <button type="button" style="min-height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Back to my courses</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer style="border-top:1px solid var(--border);background:var(--surface)">
+  <div style="max-width:1440px;margin:0 auto;padding:20px 24px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center;font-size:0.9375rem;color:var(--text-muted)">
+    <span>NeuroBridge design system · Babcock University pilot</span>
+    <a href="#nav" style="display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--danger)"><nb-icon name="life-buoy" size="18"></nb-icon>Need urgent help?</a>
+  </div>
+</footer>
+
+<sc-if value="{{ prefsOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closePrefs }}" style="position:fixed;inset:0;z-index:40;background:rgba(20,22,26,.35)"></div>
+  <aside role="dialog" aria-modal="true" aria-labelledby="rp-title" style="position:fixed;top:0;right:0;bottom:0;z-index:41;width:min(440px,100%);background:var(--surface);border-left:1px solid var(--border);box-shadow:var(--shadow-lg);display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)">
+      <div style="display:flex;flex-direction:column;line-height:1.3"><h2 id="rp-title" style="margin:0;font-size:1.25rem">Reading preferences</h2><span style="font-size:0.875rem;color:var(--text-muted)">Changes apply straight away and are saved for you.</span></div>
+      <button type="button" onClick="{{ closePrefs }}" aria-label="Close reading preferences" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--surface-2)"><nb-icon name="x" size="22"></nb-icon></button>
+    </div>
+    <div style="flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:24px">
+      <sc-for list="{{ prefGroups }}" as="g" hint-placeholder-count="5">
+        <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+          <legend style="font-weight:700;padding:0;margin-bottom:8px">{{ g.label }}</legend>
+          <div style="display:grid;grid-template-columns:repeat({{ g.cols }},minmax(0,1fr));gap:6px">
+            <sc-for list="{{ g.opts }}" as="o" hint-placeholder-count="4">
+              <button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;padding:6px 8px;border-radius:8px;border:2px solid {{ o.bd }};background:{{ o.bg }};color:var(--text);font-family:{{ o.font }};cursor:pointer;line-height:1.2">
+                <span style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:{{ o.size }}"><sc-if value="{{ o.hasSwatch }}" hint-placeholder-val="{{ false }}"><span style="width:16px;height:16px;border-radius:50%;background:{{ o.swatch }};border:1px solid var(--border-strong)"></span></sc-if>{{ o.label }}</span>
+                <span style="font-size:0.75rem;color:var(--text-muted)">{{ o.sub }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </fieldset>
+      </sc-for>
+      <div style="display:flex;flex-direction:column;border-top:1px solid var(--border)">
+        <sc-for list="{{ prefToggles }}" as="t" hint-placeholder-count="2">
+          <div style="display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)">
+            <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span id="{{ t.id }}" style="font-weight:700">{{ t.title }}</span><span style="font-size:0.875rem;color:var(--text-muted)">{{ t.desc }}</span></div>
+            <button type="button" role="switch" aria-checked="{{ t.on }}" aria-labelledby="{{ t.id }}" onClick="{{ t.onClick }}" style="flex:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;background:transparent;cursor:pointer">
+              <span style="font-size:0.875rem;font-weight:700;width:28px;text-align:right">{{ t.label }}</span>
+              <span style="position:relative;width:52px;height:32px;border-radius:999px;background:{{ t.track }};border:2px solid {{ t.trackBd }}"><span style="position:absolute;top:2px;left:{{ t.knobLeft }};width:24px;height:24px;border-radius:50%;background:{{ t.knob }};transition:left .15s"></span></span>
+            </button>
+          </div>
+        </sc-for>
+      </div>
+      <div style="padding:16px;border-radius:10px;background:var(--bg);border:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:0.875rem;font-weight:700;color:var(--text-muted)">Preview</span>
+        <p style="margin:0;max-width:70ch">Your lecturer will see the support you need, not the reason.</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;padding:16px 20px;border-top:1px solid var(--border);flex-wrap:wrap">
+      <button type="button" onClick="{{ toggleSpeak }}" style="flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:8px;border:1px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:700;cursor:pointer"><nb-icon name="{{ speakIcon }}" size="20"></nb-icon>{{ speakLabel }}</button>
+      <button type="button" onClick="{{ resetPrefs }}" style="min-height:48px;padding:0 16px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--primary);font-weight:700;cursor:pointer" style-hover="background:var(--primary-bg)">Reset</button>
+    </div>
+  </aside>
+</sc-if>
+
+<sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:50;background:rgba(20,22,26,.45);display:flex;align-items:center;justify-content:center;padding:24px">
+    <div role="alertdialog" aria-modal="true" aria-labelledby="m-title" aria-describedby="m-desc" style="width:min(480px,100%);background:var(--surface);border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow-lg);padding:24px;display:flex;flex-direction:column;gap:16px">
+      <h2 id="m-title" style="margin:0;font-size:1.25rem">Close this case?</h2>
+      <p id="m-desc" style="margin:0;color:var(--text-muted);text-wrap:pretty">The student's support plan will end on the review date. They'll get a message, and you can reopen the case for 90 days.</p>
+      <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+        <button type="button" onClick="{{ closeModal }}" style="min-height:48px;padding:0 18px;border-radius:8px;border:1px solid var(--primary);background:transparent;color:var(--primary);font-weight:700;cursor:pointer">Keep case open</button>
+        <button type="button" onClick="{{ confirmModal }}" style="min-height:48px;padding:0 18px;border-radius:8px;border:1px solid var(--danger);background:var(--danger);color:var(--on-primary);font-weight:700;cursor:pointer">Close case</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<div role="status" aria-live="polite" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;width:min(440px,calc(100% - 32px))">
+  <sc-for list="{{ toasts }}" as="t" hint-placeholder-count="0">
+    <div style="display:flex;gap:12px;align-items:center;padding:12px 12px 12px 16px;border-radius:10px;background:var(--text);color:var(--bg);box-shadow:var(--shadow-lg)">
+      <span style="color:{{ t.fg }};display:flex"><nb-icon name="{{ t.icon }}" size="20"></nb-icon></span>
+      <span style="flex:1">{{ t.msg }}</span>
+      <button type="button" onClick="{{ t.onClose }}" aria-label="Dismiss" style="width:44px;height:44px;flex:none;border-radius:8px;border:0;background:transparent;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center"><nb-icon name="x" size="18"></nb-icon></button>
+    </div>
+  </sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const TOKENS = [
+  ['bg','Page background','bg','#FAF8F5','#14161A','#FFFFFF'],
+  ['surface','Cards, panels','bg','#FFFFFF','#1D2026','#FFFFFF'],
+  ['surface-2','Wells, table headers','bg','#F3F0EA','#252931','#F0F0F0'],
+  ['text','Body text','fg','#1F2328','#E8E6E3','#0A0A0A'],
+  ['text-muted','Secondary text','fg','#5B6470','#A3A9B2','#30363F'],
+  ['primary','Actions, links, focus','fg','#2F5D8A','#7FA8D6','#0B3D73'],
+  ['accent','Success icons, plan active','fg','#3E8E7E','#6BC1AE','#0F5E4F'],
+  ['accent-ink','Success text','fg','#2B6B5E','#7FCDBB','#0F5E4F'],
+  ['warning','Pending icons, borders','fg','#B7791F','#E0A84A','#7A4A00'],
+  ['warning-ink','Pending text','fg','#85570F','#E8B866','#7A4A00'],
+  ['danger','Errors, destructive','fg','#B23A3A','#E07A7A','#8F1D1D'],
+  ['privacy','Privacy chips, restricted data','fg','#6B4FA0','#A88FD6','#4A2A85'],
+  ['border','Dividers','line','#E3DED6','#2C3038','#1F2328'],
+  ['border-strong','Input and control outlines','fg','#858B94','#6B727D','#0A0A0A'],
+  ['primary-bg','Selected, info tint','bg','#E8EFF6','#1F2C3B','#E3ECF6'],
+  ['accent-bg','Success tint','bg','#E4F1EE','#1A302B','#E0EFEA'],
+  ['warning-bg','Pending tint','bg','#F8EEDC','#33281A','#F5E9D2'],
+  ['danger-bg','Error tint','bg','#F7E6E6','#3A2224','#F5DEDE'],
+  ['privacy-bg','Privacy tint','bg','#EFEAF7','#2A2438','#EAE2F6'],
+];
+const BASE = { surface:['#FFFFFF','#1D2026','#FFFFFF'], text:['#1F2328','#E8E6E3','#0A0A0A'] };
+const lum = h => { const c=[1,3,5].map(i=>parseInt(h.substr(i,2),16)/255).map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)); return .2126*c[0]+.7152*c[1]+.0722*c[2]; };
+const ratio = (a,b) => { const A=lum(a),B=lum(b); return (Math.max(A,B)+.05)/(Math.min(A,B)+.05); };
+
+const THEME_CARDS = [
+  {key:'light',name:'Light',bg:'#FAF8F5',surface:'#FFFFFF',text:'#1F2328',muted:'#5B6470',border:'#E3DED6',primary:'#2F5D8A',onPrimary:'#FFFFFF',privacy:'#6B4FA0',privacyBg:'#EFEAF7'},
+  {key:'dark',name:'Dark',bg:'#14161A',surface:'#1D2026',text:'#E8E6E3',muted:'#A3A9B2',border:'#2C3038',primary:'#7FA8D6',onPrimary:'#14161A',privacy:'#A88FD6',privacyBg:'#2A2438'},
+  {key:'hc',name:'High contrast',bg:'#FFFFFF',surface:'#FFFFFF',text:'#0A0A0A',muted:'#30363F',border:'#1F2328',primary:'#0B3D73',onPrimary:'#FFFFFF',privacy:'#4A2A85',privacyBg:'#EAE2F6'},
+  {key:'soft',name:'Soft',bg:'#F4EEE2',surface:'#FBF8F1',text:'#2A2620',muted:'#5C564D',border:'#DED4C2',primary:'#2F5D8A',onPrimary:'#FFFFFF',privacy:'#6B4FA0',privacyBg:'#EAE3EE'},
+];
+
+const STATUS = {
+  'Submitted':{icon:'send',fg:'var(--text)',bg:'var(--surface-2)',bd:'var(--border-strong)'},
+  'Under review':{icon:'eye',fg:'var(--primary)',bg:'var(--primary-bg)',bd:'transparent'},
+  'Plan active':{icon:'circle-check',fg:'var(--accent-ink)',bg:'var(--accent-bg)',bd:'transparent'},
+  'Follow-up due':{icon:'calendar-clock',fg:'var(--warning-ink)',bg:'var(--warning-bg)',bd:'transparent'},
+  'Closed':{icon:'archive',fg:'var(--text-muted)',bg:'transparent',bd:'var(--border)'},
+};
+const URG = [
+  {label:'Standard',icon:'minus',fg:'var(--text-muted)',w:400},
+  {label:'Soon',icon:'clock',fg:'var(--warning-ink)',w:700},
+  {label:'Urgent',icon:'triangle-alert',fg:'var(--danger)',w:700},
+];
+const ROWS = [
+  ['NB-0142','Adaeze Okonkwo','Computing & Engineering Sciences',1,'Under review','2026-10-13',2],
+  ['NB-0143','Tunde Bakare','Management Sciences',0,'Submitted','2026-10-14',4],
+  ['NB-0139','Chiamaka Eze','Basic & Applied Sciences',2,'Under review','2026-10-12',0],
+  ['NB-0131','Ibrahim Musa','Law & Security Studies',0,'Plan active','2026-10-02',6],
+  ['NB-0144','Funmilayo Adeyemi','Education & Humanities',1,'Submitted','2026-10-15',5],
+  ['NB-0127','Emeka Nwosu','Computing & Engineering Sciences',0,'Follow-up due','2026-09-24',-1],
+  ['NB-0140','Zainab Bello','Public & Allied Health',2,'Submitted','2026-10-13',-2],
+  ['NB-0135','Oluwaseun Adebayo','Management Sciences',0,'Plan active','2026-10-06',9],
+  ['NB-0129','Ngozi Obi','Basic & Applied Sciences',1,'Follow-up due','2026-09-29',1],
+  ['NB-0137','Yusuf Abdullahi','Computing & Engineering Sciences',0,'Under review','2026-10-09',3],
+  ['NB-0141','Temitope Ogunleye','Education & Humanities',0,'Submitted','2026-10-13',4],
+  ['NB-0133','Kelechi Ibe','Public & Allied Health',1,'Plan active','2026-10-04',12],
+].map(r=>({id:r[0],name:r[1],faculty:r[2],urg:r[3],status:r[4],received:r[5],sla:r[6]}));
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+const PROS = [
+  {name:'Dr. Kemi Adewale',role:'Learning support specialist',avail:'Free Thu 16 Oct',free:true},
+  {name:'Mr. Segun Afolabi',role:'Counsellor',avail:'Next slot Mon 20 Oct',free:true},
+  {name:'Mrs. Ifeoma Chukwu',role:'Academic skills tutor',avail:'Free today',free:true},
+  {name:'Dr. Halima Sani',role:'Disability services officer',avail:'Booked this week',free:false},
+];
+const CHIPS = ['Timed reading tasks','Note-taking in lectures','Noisy group work','Keeping track of deadlines','Long written assignments','Exams in large halls','Something else'];
+const EVKIND = {
+  follow:{label:'Follow-up',icon:'calendar-check',fg:'var(--warning-ink)',bg:'var(--warning-bg)'},
+  consult:{label:'Consultation',icon:'messages-square',fg:'var(--primary)',bg:'var(--primary-bg)'},
+  review:{label:'Plan review',icon:'clipboard-check',fg:'var(--accent-ink)',bg:'var(--accent-bg)'},
+};
+const EVENTS = [
+  {d:6,time:'10:00',title:'Emeka N.',kind:'follow'},
+  {d:13,time:'14:00',title:'Adaeze O.',kind:'consult'},
+  {d:14,time:'09:30',title:'Ngozi O.',kind:'follow'},
+  {d:15,time:'11:00',title:'Chiamaka E.',kind:'consult'},
+  {d:16,time:'15:00',title:'Ibrahim M.',kind:'review'},
+  {d:20,time:'10:00',title:'Zainab B.',kind:'consult'},
+  {d:22,time:'09:00',title:'Kelechi I.',kind:'follow'},
+  {d:22,time:'13:30',title:'Oluwaseun A.',kind:'review'},
+  {d:28,time:'12:00',title:'Tunde B.',kind:'consult'},
+];
+const DEFAULT_PREFS = {size:'S',line:'1.6',letter:'0em',font:'default',theme:'light',motion:false,focus:false};
+const PKEY = 'nb-reading-prefs';
+
+class Component extends DCLogic {
+  state = {
+    prefs: {...DEFAULT_PREFS}, prefsOpen:false, speaking:false, narrow:false,
+    btnLoading:false, likert:4, prefer:false, chips:['Timed reading tasks','Note-taking in lectures'],
+    toggles:{share:true, exams:false},
+    sortKey:'received', sortDir:'desc', statusFilter:'All', page:0, tableLoading:false,
+    files:[
+      {id:1,name:'CSC301_Lecture4_Recursion.pdf',size:2.4,progress:100,status:'done'},
+      {id:2,name:'Week5_Slides_Trees.pptx',size:8.1,progress:38,status:'uploading'},
+      {id:3,name:'Reading_List_2026.docx',size:0.6,progress:54,status:'error'},
+    ],
+    comboQ:'', comboOpen:false, comboValue:null,
+    calView:'month', toasts:[], modal:false, accepted:false, bold:false, bullets:false,
+  };
+
+  componentDidMount() {
+    let saved = null; try { saved = JSON.parse(localStorage.getItem(PKEY)||'null'); } catch(e) {}
+    const init = {...DEFAULT_PREFS, ...(saved||{})};
+    this.apply(init); if (saved) this.setState({prefs:init});
+    this.onResize = () => this.setState({narrow: window.innerWidth < 980});
+    this.onResize(); window.addEventListener('resize', this.onResize);
+    this.onKey = e => { if (e.key==='Escape') this.setState({prefsOpen:false, modal:false, comboOpen:false}); };
+    window.addEventListener('keydown', this.onKey);
+    this.timer = setInterval(() => {
+      if (!this.state.files.some(f=>f.status==='uploading')) return;
+      this.setState(s=>({files:s.files.map(f=>{ if(f.status!=='uploading') return f; const p=Math.min(100,f.progress+Math.max(2,Math.round(14/f.size))); return {...f,progress:p,status:p>=100?'done':'uploading'}; })}));
+    }, 500);
+  }
+  componentWillUnmount() { window.removeEventListener('resize',this.onResize); window.removeEventListener('keydown',this.onKey); clearInterval(this.timer); if (window.speechSynthesis) speechSynthesis.cancel(); }
+  componentDidUpdate(_, ps) { if (ps.prefs !== this.state.prefs) { this.apply(this.state.prefs); try { localStorage.setItem(PKEY, JSON.stringify(this.state.prefs)); } catch(e) {} } }
+
+  apply(p) {
+    const r = document.documentElement;
+    r.dataset.theme = p.theme;
+    r.style.fontSize = {S:'16px',M:'18px',L:'20px',XL:'24px'}[p.size] || '16px';
+    r.style.setProperty('--lh', p.line);
+    r.style.setProperty('--ls', p.letter);
+    r.style.setProperty('--font', p.font==='dyslexic' ? '"OpenDyslexic","Atkinson Hyperlegible",sans-serif' : '"Atkinson Hyperlegible",Lexend,system-ui,sans-serif');
+    if (p.motion) r.dataset.motion='reduce'; else delete r.dataset.motion;
+  }
+  setPrefs(next) {
+    this.apply(next);
+    try { localStorage.setItem(PKEY, JSON.stringify(next)); } catch(e) {}
+    this.setState({prefs:next});
+  }
+  setPref(k,v) { this.setPrefs({...this.state.prefs,[k]:v}); }
+  toast(msg, kind) {
+    const id = Date.now()+Math.random();
+    const t = kind==='error' ? {icon:'circle-alert',fg:'#E07A7A'} : {icon:'circle-check',fg:'#6BC1AE'};
+    this.setState(s=>({toasts:[...s.toasts,{id,msg,...t}]}));
+    setTimeout(()=>this.setState(s=>({toasts:s.toasts.filter(x=>x.id!==id)})), 6000);
+  }
+  seg(key, opts) {
+    const cur = this.state.prefs[key];
+    return opts.map(o => { const on = cur===o.v; return {
+      label:o.label, sub:o.sub||'', size:o.size||'0.9375rem', font:o.font||'inherit',
+      hasSwatch:!!o.swatch, swatch:o.swatch||'transparent',
+      pressed:String(on), bg:on?'var(--primary-bg)':'var(--surface)', bd:on?'var(--primary)':'var(--border)',
+      onClick:()=>this.setPref(key,o.v) }; });
+  }
+  switchVals(on) {
+    return { on:String(on), isOn:on, label:on?'On':'Off', track:on?'var(--primary)':'var(--surface-2)', trackBd:on?'var(--primary)':'var(--border-strong)', knob:on?'var(--on-primary)':'var(--border-strong)', knobLeft:on?'22px':'2px' };
+  }
+
+  renderVals() {
+    const s = this.state, p = s.prefs;
+    const themeIdx = {light:0,dark:1,hc:2}[p.theme];
+
+    const tokenRows = TOKENS.map(([name,use,kind,...hex]) => ({ name, use, cells: hex.map((h,i) => {
+      const r = kind==='bg' ? ratio(BASE.text[i],h) : ratio(h,BASE.surface[i]);
+      let verdict, vIcon, vColor;
+      if (kind==='bg') { verdict='text on it'; }
+      if (r>=4.5) { verdict = kind==='bg' ? 'AA with text' : 'AA text'; vIcon='circle-check'; vColor='var(--accent-ink)'; }
+      else if (r>=3) { verdict='UI and large text'; vIcon='circle-dot'; vColor='var(--text-muted)'; }
+      else { verdict = kind==='line' ? 'Divider only' : 'Decorative only'; vIcon='circle-minus'; vColor='var(--text-muted)'; }
+      return { hex:h, ratio:r.toFixed(1)+':1', verdict, vIcon, vColor };
+    }) }));
+
+    const typeScale = [
+      {name:'Heading 1',spec:'32 / 700 / 1.25',size:'2rem',weight:700,sample:'Your support plan'},
+      {name:'Heading 2',spec:'24 / 700 / 1.3',size:'1.5rem',weight:700,sample:'Approved accommodations'},
+      {name:'Heading 3',spec:'20 / 700 / 1.4',size:'1.25rem',weight:700,sample:'Extra time on assessments'},
+      {name:'Heading 4',spec:'18 / 700 / 1.4',size:'1.125rem',weight:700,sample:'Next appointment'},
+      {name:'Body student',spec:'18 / 400 / 1.6',size:'1.125rem',weight:400,sample:'Tell us what\'s getting in the way. You can skip anything.'},
+      {name:'Body',spec:'16 / 400 / 1.6',size:'1rem',weight:400,sample:'Your lecturer will see the support you need, not the reason.'},
+      {name:'Label',spec:'14 / 700 · labels only',size:'0.875rem',weight:700,sample:'Visible to: you and your support officer'},
+    ];
+    const spacing = [['space-1','8px'],['space-2','16px'],['space-3','24px'],['space-4','32px'],['space-5','40px'],['space-6','48px'],['space-8','64px']].map(([name,px])=>({name,px}));
+
+    const likertOpts = [1,2,3,4,5].map(v => { const on = s.likert===v && !s.prefer; return {
+      label:String(v), aria:v+' of 5', checked:String(on), isChecked:on,
+      bg:on?'var(--primary)':'var(--surface)', fg:on?'var(--on-primary)':'var(--text)', bd:on?'var(--primary)':'var(--border-strong)',
+      onClick:()=>this.setState({likert:v, prefer:false}) }; });
+
+    const chipOpts = CHIPS.map(c => { const on = s.chips.includes(c); return {
+      label:c, pressed:String(on), icon:on?'check':'plus',
+      bg:on?'var(--primary-bg)':'var(--surface)', fg:on?'var(--primary)':'var(--text)', bd:on?'var(--primary)':'var(--border-strong)',
+      onClick:()=>this.setState(st=>({chips: on ? st.chips.filter(x=>x!==c) : [...st.chips,c]})) }; });
+
+    const toggleOpts = [
+      {id:'tg-share',key:'share',title:'Share approved accommodations with Dr. Ogunleye',desc:'CSC 301 · Data Structures. Your lecturer sees the support, never your answers or the reason.'},
+      {id:'tg-exams',key:'exams',title:'Share with the exams office',desc:'Needed for extra time in end-of-semester exams.'},
+    ].map(t => ({...t, ...this.switchVals(s.toggles[t.key]), onClick:()=>this.setState(st=>({toggles:{...st.toggles,[t.key]:!st.toggles[t.key]}}))}));
+    const sharePreview = s.toggles.share ? 'Your lecturer will see: Extra time on assessments (25%). They will not see your questionnaire answers.' : 'Your lecturer will not see any of your support. You may need to arrange extra time yourself.';
+
+    const fileRows = s.files.map(f => {
+      const ext = f.name.split('.').pop();
+      const st = f.status==='done' ? {stLabel:'Uploaded',stIcon:'circle-check',stColor:'var(--accent-ink)',barColor:'var(--accent)'}
+        : f.status==='error' ? {stLabel:'Upload stopped',stIcon:'circle-alert',stColor:'var(--danger)',barColor:'var(--danger)'}
+        : {stLabel:f.progress+'%',stIcon:'loader',stColor:'var(--primary)',barColor:'var(--primary)'};
+      return { ...f, ...st, typeIcon: ext==='pdf'?'file-text':ext==='pptx'?'presentation':'file-type',
+        width:f.progress+'%', isError:f.status==='error', removeLabel:'Remove '+f.name,
+        meta: f.status==='error' ? 'Check your connection and try again.' : f.size.toFixed(1)+' MB · '+ext.toUpperCase(),
+        onRetry:()=>this.setState(x=>({files:x.files.map(y=>y.id===f.id?{...y,status:'uploading',progress:0}:y)})),
+        onRemove:()=>this.setState(x=>({files:x.files.filter(y=>y.id!==f.id)})) };
+    });
+
+    const statusList = Object.entries(STATUS).map(([label,m])=>({label,...m}));
+    const banners = [
+      {role:'note',icon:'info',title:'This is not a diagnosis',body:'It helps us understand what support might help.',fg:'var(--primary)',bg:'var(--primary-bg)',bd:'transparent'},
+      {role:'note',icon:'shield-check',title:'You see accommodations, not diagnoses',body:'Names appear only where students chose to share.',fg:'var(--privacy)',bg:'var(--privacy-bg)',bd:'transparent'},
+      {role:'note',icon:'scroll-text',title:'Access to this record is logged',body:'Your name and the time are recorded.',fg:'var(--text-muted)',bg:'var(--surface-2)',bd:'var(--border)'},
+      {role:'note',icon:'clock',title:'Needs review by Friday',body:'This plan reaches its review date in 2 days.',fg:'var(--warning-ink)',bg:'var(--warning-bg)',bd:'transparent'},
+      {role:'alert',icon:'circle-alert',title:'We couldn\'t send your request',body:'Nothing was lost. Try again in a moment.',fg:'var(--danger)',bg:'var(--danger-bg)',bd:'transparent',hasAction:true,action:'Try again'},
+      {role:'status',icon:'wifi-off',title:'You\'re offline',body:'Your answers are saved on this device.',fg:'var(--text)',bg:'var(--surface)',bd:'var(--border-strong)'},
+    ];
+
+    const toolbar = [
+      {label:'Heading',icon:'heading-2'},{label:'Bold',icon:'bold',key:'bold'},{label:'Bulleted list',icon:'list',key:'bullets'},{label:'Numbered list',icon:'list-ordered'},
+      {label:'Link',icon:'link'},{label:'Summary box',icon:'square-dashed'},{label:'Undo',icon:'undo-2'},{label:'Redo',icon:'redo-2'},
+    ].map(t => { const on = t.key ? s[t.key] : false; return {...t, pressed:String(on), bg:on?'var(--surface)':'transparent', bd:on?'var(--border-strong)':'transparent', onClick:t.key?()=>this.setState(st=>({[t.key]:!st[t.key]})):undefined}; });
+    const acc = s.accepted;
+    const outcomes = [
+      {text:'Explain how a recursive function reaches its base case',ok:true},
+      {text:'Trace the call stack for a recursive factorial',ok:true},
+      {text:'Compare recursion and iteration for tree traversal',ok:true},
+      {text:'Apply recursion to a real payment-splitting problem',ok:false},
+    ].map(o=>({...o, icon:o.ok?'circle-check':'triangle-alert', fg:o.ok?'var(--accent-ink)':'var(--warning-ink)', bg:o.ok?'transparent':'var(--warning-bg)', state:o.ok?'Covered':'Not covered yet'}));
+
+    const kpis = [
+      {label:'New requests',value:'14',icon:'inbox',note:'+4 since Monday'},
+      {label:'Awaiting assignment',value:'6',icon:'user-plus',note:'Oldest: 3 days'},
+      {label:'Follow-ups this week',value:'9',icon:'calendar-check',note:'2 today'},
+      {label:'Overdue',value:'2',icon:'triangle-alert',note:'Past 5-day target',danger:true},
+      {label:'Law & Security requests',icon:'lock',note:'Fewer than 5 students',supp:true},
+    ].map(k=>({...k, shown:!k.supp, suppressed:!!k.supp, fg:k.danger?'var(--danger)':k.supp?'var(--privacy)':'var(--text-muted)', bd:k.danger?'var(--danger)':'var(--border)', noteColor:k.danger?'var(--danger)':'var(--text-muted)'}));
+
+    const filters = ['All','Submitted','Under review','Plan active','Follow-up due','Closed'];
+    const filterOpts = filters.map(f => { const on = s.statusFilter===f; const n = f==='All'?ROWS.length:ROWS.filter(r=>r.status===f).length; return {label:f, count:String(n), pressed:String(on), bg:on?'var(--primary)':'var(--surface)', fg:on?'var(--on-primary)':'var(--text)', bd:on?'var(--primary)':'var(--border-strong)', onClick:()=>this.setState({statusFilter:f,page:0})}; });
+    let rows = ROWS.filter(r => s.statusFilter==='All' || r.status===s.statusFilter);
+    const dir = s.sortDir==='asc'?1:-1;
+    rows = [...rows].sort((a,b)=>{ const k=s.sortKey; const A=a[k],B=b[k]; return (A>B?1:A<B?-1:0)*dir; });
+    const per = 5, pages = Math.max(1,Math.ceil(rows.length/per)), page = Math.min(s.page,pages-1);
+    const pageRows = rows.slice(page*per,page*per+per).map(r => {
+      const st = STATUS[r.status], u = URG[r.urg]; const d = new Date(r.received);
+      const sla = r.sla<0 ? {slaLabel:Math.abs(r.sla)+(r.sla===-1?' day':' days')+' overdue',slaIcon:'circle-alert',slaFg:'var(--danger)',slaW:700}
+        : r.sla===0 ? {slaLabel:'Due today',slaIcon:'clock',slaFg:'var(--warning-ink)',slaW:700}
+        : {slaLabel:r.sla+(r.sla===1?' day':' days')+' left',slaIcon:'clock',slaFg:'var(--text-muted)',slaW:400};
+      return {...r, ...sla, urgency:u.label, urgIcon:u.icon, urgFg:u.fg, urgW:u.w, sIcon:st.icon, sFg:st.fg, sBg:st.bg, sBd:st.bd,
+        receivedLabel:d.getDate()+' '+MON[d.getMonth()], openLabel:'Open case '+r.id, onOpen:()=>this.toast('Opening case '+r.id+'. This access is logged.')};
+    });
+    const columns = [
+      {label:'Case',key:'id'},{label:'Student',key:'name'},{label:'Faculty'},{label:'Urgency',key:'urg'},{label:'Status'},{label:'Received',key:'received'},{label:'Target',key:'sla'},{label:''}
+    ].map(c => { const on = s.sortKey===c.key; return {...c, sortable:!!c.key, plain:!c.key,
+      icon: on ? (s.sortDir==='asc'?'arrow-up':'arrow-down') : 'arrow-up-down', fg: on?'var(--text)':'var(--text-muted)',
+      ariaSort: on ? (s.sortDir==='asc'?'ascending':'descending') : 'none',
+      onSort:()=>this.setState(st=>({sortKey:c.key, sortDir: st.sortKey===c.key && st.sortDir==='asc' ? 'desc':'asc'})) }; });
+
+    const vals = [12,18,25,31,22,14,19,27,33,29,16,9], vmax = 40;
+    const pts = vals.map((v,i)=>[(i/11*600).toFixed(1),(220-v/vmax*220).toFixed(1)]);
+    const linePoints = pts.map(p=>p.join(',')).join(' ');
+    const areaPoints = '0,220 '+linePoints+' 600,220';
+    const months = ['Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];
+    const lineDots = vals.map((v,i)=>({v:String(v), left:(i/11*100)+'%', top:((1-v/vmax)*100)+'%'}));
+    const fac = [['Computing & Eng.',38],['Management',24],['Basic & Applied',17],['Law & Security',3],['Education',12],['Public Health',9]];
+    const facultyBars = fac.map(([label,v])=>({label, v:String(v), shown:v>=5, suppressed:v<5, h:(v/40*100)+'%'}));
+    const accomBars = [['Extra time (25%)',46],['Alternative format materials',31],['Deadline flexibility',22],['Note-taking support',18],['Accessible seating',3]].map(([label,v])=>({label, valLabel: v<5?'Suppressed for privacy':v+' students', valColor: v<5?'var(--privacy)':'var(--text)', w: v<5?'100%':(v/50*100)+'%', fill: v<5?'repeating-linear-gradient(135deg,var(--privacy-bg) 0 5px,var(--surface) 5px 10px)':'var(--accent)'}));
+
+    const stepDefs = ['Submitted','Under review','Support plan agreed','Follow-up'], cur = 1;
+    const steps = stepDefs.map((label,i) => { const done=i<cur, now=i===cur; return {label, n:String(i+1), done, notDone:!done, current: now?'step':'false',
+      state: done?'Done':now?'Current step':'Not started', stateFg: now?'var(--primary)':'var(--text-muted)',
+      bar: done?'var(--accent)':now?'var(--primary)':'var(--surface-2)',
+      dotBg: done?'var(--accent)':now?'var(--surface)':'var(--surface)', dotFg: done?'#FFFFFF':now?'var(--primary)':'var(--text-muted)', dotBd: done?'var(--accent)':now?'var(--primary)':'var(--border-strong)'}; });
+    const vdefs = ['Setup','Configure','Generate','Review and edit','Export'], vcur = 3;
+    const vsteps = vdefs.map((label,i)=>{ const done=i<vcur, now=i===vcur; return {label, mark: done?'✓':String(i+1), current: now?'step':'false',
+      state: done?'Done':now?'You are here':'Next', stateFg: now?'var(--primary)':'var(--text-muted)',
+      dotBg: done?'var(--accent-bg)':'var(--surface)', dotFg: done?'var(--accent-ink)':now?'var(--primary)':'var(--text-muted)', dotBd: done?'var(--accent)':now?'var(--primary)':'var(--border-strong)',
+      line: i===vdefs.length-1?'transparent':done?'var(--accent)':'var(--border)'}; });
+    const timeline = [
+      {icon:'send',fg:'var(--text)',text:'Adaeze sent a support request',when:'13 Oct, 09:12'},
+      {icon:'user-check',fg:'var(--primary)',text:'Mariam Ojo picked up the case',when:'13 Oct, 11:40'},
+      {icon:'eye',fg:'var(--privacy)',text:'Check-in answers revealed by Mariam Ojo (logged)',when:'13 Oct, 11:42'},
+      {icon:'calendar-plus',fg:'var(--primary)',text:'Consultation booked with Dr. Kemi Adewale',when:'14 Oct, 10:05'},
+      {icon:'clipboard-pen',fg:'var(--accent-ink)',text:'Support plan drafted',when:'Today, 08:30'},
+    ];
+    const people = [
+      {initials:'AO',name:'Adaeze Okonkwo',role:'Student',icon:'graduation-cap',bg:'var(--primary-bg)',fg:'var(--primary)'},
+      {initials:'MO',name:'Mariam Ojo',role:'Support Officer',icon:'badge-check',bg:'var(--accent-bg)',fg:'var(--accent-ink)'},
+      {initials:'TO',name:'Dr. Temitope Ogunleye',role:'Lecturer',icon:'presentation',bg:'var(--warning-bg)',fg:'var(--warning-ink)'},
+    ];
+
+    const wd = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const monthCells = Array.from({length:35},(_,i)=>{ const day = i-2; const inM = day>=1 && day<=31; const num = inM?day:(day<1?30+day:day-31); const today = inM && day===15;
+      const evs = inM ? EVENTS.filter(e=>e.d===day).map(e=>({title:e.time+' '+e.title, ...EVKIND[e.kind]})) : [];
+      return {num:String(num), bg: inM?'var(--surface)':'var(--surface-2)', weight: today?700:400, numBg: today?'var(--primary)':'transparent', numFg: today?'var(--on-primary)':inM?'var(--text)':'var(--text-muted)', current: today?'date':'false', events:evs}; });
+    const weekCols = [12,13,14,15,16].map((d,i)=>{ const evs = EVENTS.filter(e=>e.d===d).map(e=>({...e, ...EVKIND[e.kind]})); const today=d===15; return {day:wd[i], num:String(d), events:evs, empty:!evs.length, headBg: today?'var(--primary)':'var(--surface-2)', headFg: today?'var(--on-primary)':'var(--text)'}; });
+    const agenda = EVENTS.filter(e=>e.d>=15).map(e=>{ const k=EVKIND[e.kind]; const dow = wd[(e.d+2)%7]; return {day:dow, num:String(e.d), title:e.title, time:e.time, kindLabel:k.label, icon:k.icon, fg:k.fg}; });
+    const calTabs = ['month','week','agenda'].map(v=>{ const on=s.calView===v; return {label:v[0].toUpperCase()+v.slice(1), selected:String(on), bg:on?'var(--surface)':'transparent', bd:on?'var(--border-strong)':'transparent', onClick:()=>this.setState({calView:v})}; });
+
+    const sideItems = [
+      {label:'Home',short:'Home',icon:'house'},{label:'Caseload',short:'Cases',icon:'inbox',count:'14',current:true},{label:'Professionals',short:'People',icon:'users'},
+      {label:'Follow-ups',short:'Follow-ups',icon:'calendar-check',count:'9'},{label:'Messages',short:'Messages',icon:'message-square',count:'3'},{label:'Referrals',short:'Referrals',icon:'share-2'},
+    ].map(i=>({...i, count:i.count||'', current:i.current?'page':'false', fg:i.current?'var(--primary)':'var(--text)', bg:i.current?'var(--primary-bg)':'transparent', weight:i.current?700:400, bar:i.current?'var(--primary)':'transparent'}));
+    const tabItems = [{label:'Home',icon:'house',current:true},{label:'Check-in',icon:'clipboard-list'},{label:'My plan',icon:'clipboard-check'},{label:'Messages',icon:'message-square'},{label:'Bookings',icon:'calendar'}]
+      .map(i=>({...i, current:i.current?'page':'false', fg:i.current?'var(--primary)':'var(--text-muted)', weight:i.current?700:400, pill:i.current?'var(--primary-bg)':'transparent'}));
+
+    const q = s.comboQ.trim().toLowerCase();
+    const comboOptions = PROS.filter(x=>!q || (x.name+' '+x.role).toLowerCase().includes(q)).map(x=>({...x,
+      selected:String(s.comboValue===x.name), availIcon:x.free?'circle-check':'circle-minus', availColor:x.free?'var(--accent-ink)':'var(--text-muted)',
+      onPick:()=>{ this.setState({comboQ:x.name, comboValue:x.name, comboOpen:false}); this.toast(x.name+' assigned. The student will get a message.'); }}));
+
+    const prefGroups = [
+      {label:'Text size', cols:4, opts:this.seg('size',[{v:'S',label:'S',sub:'16px',size:'0.875rem'},{v:'M',label:'M',sub:'18px',size:'1rem'},{v:'L',label:'L',sub:'20px',size:'1.125rem'},{v:'XL',label:'XL',sub:'24px',size:'1.25rem'}])},
+      {label:'Line spacing', cols:3, opts:this.seg('line',[{v:'1.6',label:'Default',sub:'1.6'},{v:'1.8',label:'Relaxed',sub:'1.8'},{v:'2',label:'Loose',sub:'2.0'}])},
+      {label:'Letter spacing', cols:3, opts:this.seg('letter',[{v:'0em',label:'Default'},{v:'0.04em',label:'Wide'},{v:'0.08em',label:'Wider'}])},
+      {label:'Font', cols:2, opts:this.seg('font',[{v:'default',label:'Default',sub:'Atkinson Hyperlegible',font:'"Atkinson Hyperlegible",sans-serif'},{v:'dyslexic',label:'Dyslexia-friendly',sub:'OpenDyslexic',font:'"OpenDyslexic",sans-serif',size:'0.8125rem'}])},
+      {label:'Theme', cols:2, opts:this.seg('theme',[{v:'light',label:'Light',swatch:'#FAF8F5'},{v:'dark',label:'Dark',swatch:'#14161A'},{v:'hc',label:'High contrast',swatch:'#0A0A0A'},{v:'soft',label:'Soft',sub:'Cream background',swatch:'#F4EEE2'}])},
+    ];
+    const prefToggles = [
+      {id:'pt-motion',key:'motion',title:'Reduce motion',desc:'Stops pulsing skeletons and sliding panels.'},
+      {id:'pt-focus',key:'focus',title:'Focus mode',desc:'Hides the side menu and secondary content.'},
+    ].map(t=>({...t, ...this.switchVals(!!p[t.key]), onClick:()=>this.setPref(t.key,!p[t.key])}));
+
+    return {
+      themeLabel: {light:'Light',dark:'Dark',hc:'High contrast',soft:'Soft'}[p.theme],
+      navDisplay: (!p.focus && !s.narrow) ? 'flex' : 'none',
+      navLinks: [['colour','Colour'],['type','Typography'],['space','Space and shape'],['buttons','Buttons'],['forms','Form fields'],['selection','Choice controls'],['upload','File uploader'],['status','Status and privacy'],['ai','AI drafting'],['data','KPIs and tables'],['charts','Charts'],['progress','Steppers and timeline'],['calendar','Calendar'],['nav','Navigation'],['overlays','Overlays'],['empty','States']].map(([h,label])=>({href:'#'+h,label})),
+      themeCards: THEME_CARDS, tokenRows, typeScale, spacing,
+      btnLoading: s.btnLoading, btnBusy: String(s.btnLoading), btnLabel: s.btnLoading ? 'Sending…' : 'Submit request',
+      submitDemo: () => { if (s.btnLoading) return; this.setState({btnLoading:true}); setTimeout(()=>{ this.setState({btnLoading:false}); this.toast('Your support request was sent.'); }, 1600); },
+      comboQ: s.comboQ, comboOpen: s.comboOpen, comboExpanded: String(s.comboOpen), comboOptions, comboEmpty: comboOptions.length===0,
+      onComboChange: e => this.setState({comboQ:e.target.value, comboOpen:true}),
+      onComboFocus: () => this.setState({comboOpen:true}),
+      likertOpts, preferPressed:String(s.prefer), preferBg: s.prefer?'var(--primary-bg)':'var(--surface)', likertPrefer: () => this.setState(st=>({prefer:!st.prefer})),
+      chipOpts, chipCount: s.chips.length + (s.chips.length===1?' selected':' selected') + ' · you can change these later',
+      toggleOpts, sharePreview,
+      fileRows, onFiles: e => { const fl = Array.from(e.target.files||[]); if(!fl.length) return; this.setState(st=>({files:[...st.files, ...fl.map((f,i)=>({id:Date.now()+i,name:f.name,size:Math.max(0.1,f.size/1048576),progress:0,status:'uploading'}))]})); e.target.value=''; },
+      statusList, banners,
+      toolbar, outcomes,
+      draftBg: acc?'var(--surface)':'var(--surface-2)', draftBd: acc?'var(--border)':'var(--primary)', draftBorderStyle: acc?'solid':'dashed',
+      draftTag: acc?'Accepted by you':'AI draft · check before sharing', draftTagIcon: acc?'user-check':'sparkles',
+      draftTagBg: acc?'var(--accent-bg)':'var(--primary-bg)', draftTagFg: acc?'var(--accent-ink)':'var(--primary)',
+      acceptLabel: acc?'Undo accept':'Accept paragraph', acceptIcon: acc?'undo-2':'check',
+      toggleAccept: () => this.setState(st=>({accepted:!st.accepted})),
+      kpis, filterOpts, columns, pageRows,
+      tableLoading: s.tableLoading, showRows: !s.tableLoading, skeletonRows:[1,2,3,4,5],
+      tableEmpty: !s.tableLoading && rows.length===0,
+      loadingLabel: s.tableLoading?'Show data':'Show loading', loadingPressed:String(s.tableLoading),
+      toggleLoading: () => this.setState(st=>({tableLoading:!st.tableLoading})),
+      clearFilter: () => this.setState({statusFilter:'All',page:0}),
+      pageSummary: rows.length ? ('Showing '+(page*per+1)+'–'+Math.min(rows.length,page*per+per)+' of '+rows.length+' cases') : 'No cases',
+      prevDisabled: page===0, nextDisabled: page>=pages-1,
+      prevPage: () => this.setState({page:Math.max(0,page-1)}), nextPage: () => this.setState({page:Math.min(pages-1,page+1)}),
+      linePoints, areaPoints, lineDots, months, lineAria:'Support requests per month: '+months.map((m,i)=>m+' '+vals[i]).join(', '),
+      facultyBars, barAria:'Requests by faculty: '+fac.map(([l,v])=>l+' '+(v<5?'suppressed':v)).join(', '), accomBars,
+      steps, vsteps, timeline, people,
+      calTabs, isMonth:s.calView==='month', isWeek:s.calView==='week', isAgenda:s.calView==='agenda', weekdays:wd, monthCells, weekCols, agenda,
+      eventKinds: Object.values(EVKIND),
+      sideItems, tabItems,
+      prefsOpen: s.prefsOpen, openPrefs: () => this.setState({prefsOpen:true}), closePrefs: () => this.setState({prefsOpen:false}),
+      prefGroups, prefToggles, resetPrefs: () => this.setPrefs({...DEFAULT_PREFS}),
+      speakLabel: s.speaking?'Stop reading':'Read page aloud', speakIcon: s.speaking?'square':'volume-2',
+      toggleSpeak: () => {
+        if (!window.speechSynthesis) { this.toast('Read aloud isn\'t available in this browser.','error'); return; }
+        if (s.speaking) { speechSynthesis.cancel(); this.setState({speaking:false}); return; }
+        const main = document.getElementById('main'); const u = new SpeechSynthesisUtterance((main?main.innerText:'').slice(0,2500));
+        u.onend = () => this.setState({speaking:false}); speechSynthesis.speak(u); this.setState({speaking:true});
+      },
+      modalOpen: s.modal, openModal: () => this.setState({modal:true}), closeModal: () => this.setState({modal:false}),
+      confirmModal: () => { this.setState({modal:false}); this.toast('Case NB-0131 closed. You can reopen it for 90 days.'); },
+      toastSuccess: () => this.toast('Your support request was reviewed.'),
+      toastError: () => this.toast('We couldn\'t save that. Your work is still here. Try again.','error'),
+      toasts: s.toasts.map(t=>({...t, onClose:()=>this.setState(st=>({toasts:st.toasts.filter(x=>x.id!==t.id)}))})),
+    };
+  }
+}
+</script>
+</body>
+</html>
